@@ -38,4 +38,16 @@ router.get('/products/:product', function(req, res) {
   res.json(req.product);
 });
 
+//var cas = require('grand_master_cas');
+//var routes = require('.');
+
+
+//router.get('/splash', routes.splash);
+ // grand_master_cas provides a logout
+//router.get('/logout', cas.logout);
+ // cas.bouncer prompts for authentication and performs login if not logged in. If logged in it passes on.
+//router.get('/login', cas.bouncer, routes.login);
+ // cas.blocker redirects to the redirectUrl supplied above if not logged in.
+//router.get('/', cas.blocker, routes.index);
+
 module.exports = router;
