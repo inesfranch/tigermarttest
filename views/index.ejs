@@ -21,7 +21,7 @@
 
       <div ng-repeat="product in products | orderBy: 'price'">
         <span style="font-size: 20px; margin-left: 10px;">
-          {{product.title}}: {{product.description}} - ${{product.price}}
+          {{product.title}} ({{product.category}}) - ${{product.price}}, {{product.pictures}}, {{product.tags}}, {{product.date}}, {{product.net_id}}, {{product.active}}
         </span>
       </div>
 
@@ -30,12 +30,39 @@
         <div class="form-group">
           <input type="text" class="form-control" placeholder="Title" ng-model="title"></input>
         </div>
-        <div class="form-group">
-          <input type="text" class="form-control" placeholder="Description" ng-model="description"></input>
+
+         <div class="form-group">
+           <select required name="category" class="form-control" ng-model="category">
+              <option selected="selected" disabled>Choose Category...</option> <!-- NEED TO FIX SELECTED -->
+              <option value="apparel">Apparel</option>
+              <option value="dorm_items">Dorm Items</option>
+              <option value="electronics" selected>Electronics</option>
+              <option value="food_drinks">Food & Drinks</option>
+              <option value="furniture">Furniture</option>
+              <option value="textbooks">Textbooks</option>
+              <option value="tickets">Tickets</option>
+              <option value="transportation">Transportation</option>
+              <option value="other">Other</option>
+            </select>
         </div>
+
         <div class="form-group">
-          <input type="number" class="form-control" placeholder="Price" ng-model="price"></input>
+          <textarea name="description" rows="5" cols="30" class="form-control" placeholder="Description" ng-model="description"></textarea>
         </div>
+
+        <div class="form-group">
+          <input type="number" min="0" class="form-control" placeholder="Price" ng-model="price"></input>
+        </div>
+
+         <div class="form-group">
+          <input type="text" class="form-control" placeholder="Upload Picture(s)" ng-model="pictures"></input>
+        </div>
+
+         <div class="form-group">
+          <input type="text" class="form-control" placeholder="Add Tags" ng-model="tags"></input>
+        </div>
+
+
         <button type="submit">Post product</button>
       </form>
     </script>

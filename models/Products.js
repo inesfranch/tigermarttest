@@ -1,9 +1,15 @@
 var mongoose = require('mongoose');
 
 var ProductSchema = new mongoose.Schema({
-  title: String,
+  title: {type: String, required: true},
+  category: {type: String, required: true},
   description: String,
-  price: {type: Number, default: 0}
+  price: {type: Number, min: 0, required: true},
+  pictures: {type: String}, // ASSERT MAX LENGTH = 5
+  tags: {type: String},
+  date: {type: Date, default: Date.now, required: true},
+  net_id: {type: String, default: 'mfishman', required: true}, // NEED TO CHANGE NET_ID DEFAULT!
+  active: {type: Boolean, default: true, required: true}
 });
 
 mongoose.model('Product', ProductSchema);

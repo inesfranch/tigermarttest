@@ -47,14 +47,24 @@ function($scope, products){
 
   $scope.addProduct = function(){
     if(!$scope.title || $scope.title === '') { return; }
+    // ADD VALIDATIONS LATER!
     products.create({
       title: $scope.title,
+      category: $scope.category,
       description: $scope.description,
-      price: $scope.price
+      price: $scope.price,
+      pictures: $scope.pictures,
+      tags: $scope.tags,
+      date: new Date(),
+      net_id: "mfishman", // NEED TO CHANGE NET_ID!
+      active: true
     });
     $scope.title = '';
+    $scope.category = '';
     $scope.description = '';
     $scope.price = '';
+    $scope.pictures = '';
+    $scope.tags = '';
   };
 
 }]);
