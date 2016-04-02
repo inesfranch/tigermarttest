@@ -16,6 +16,19 @@ router.get('/products', function(req, res, next) {
 	});
 });
 
+router.get('/search', function(req, res, next) {
+	var q = req.query.q;
+	console.log(typeof q)
+	console.log(q);
+	var qu = Product.find({'$or': [
+		{'title': {$regex: q, $options: "i"}},
+		{'description': {$regex: q, $options: "i"}}]});
+	qu.exec(function(err, products) {
+		if(err){return next(err);}
+		res.json(products);
+	});
+});
+
 router.post('/products', function(req, res, next) {
 	var product = new Product(req.body);
 	product.save(function(err, product) {
