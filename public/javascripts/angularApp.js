@@ -34,6 +34,15 @@ app.factory('products', ['$http', function($http){
       o.products.push(data);
     });
   };
+  o.search = function(q) {
+    console.log(q);
+    q = q.toString();
+    console.log(typeof q);
+    console.log(q);
+    return $http.get("/search?q="+q).success(function(data) {
+      angular.copy(data, o.products);
+    });
+  };
   return o;
 }])
 
@@ -43,7 +52,12 @@ app.controller('MainCtrl', [
   'products',
   function($scope, products){
 
-    $scope.products = products.products;
+    $scope.products = products.products
+    
+    $scope.search = function(){
+      if(!$scope.q || $scope.q === '') { return; }
+      products.search($scope.q)
+    };
 
     $scope.addProduct = function(){
       if(!$scope.title || $scope.title === '') { return; }
