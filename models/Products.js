@@ -5,7 +5,7 @@ var ProductSchema = new mongoose.Schema({
   category: {type: String, required: true},
   description: String,
   price: {type: Number, min: 0, required: true},
-  pictures: {type: String}, // ASSERT MAX LENGTH = 5
+  pictures: {type: Image}, // ASSERT MAX LENGTH = 5
   tags: {type: String},
   date: {type: Date, default: Date.now, required: true},
   net_id: {type: String, default: 'mfishman', required: true}, // NEED TO CHANGE NET_ID DEFAULT!

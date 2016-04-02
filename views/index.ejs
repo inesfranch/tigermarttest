@@ -32,7 +32,7 @@
         </div>
 
          <div class="form-group">
-           <select required name="category" class="form-control" ng-model="category">
+           <select name="category" class="form-control" ng-model="category">
               <option selected="selected" disabled>Choose Category...</option> <!-- NEED TO FIX SELECTED -->
               <option value="apparel">Apparel</option>
               <option value="dorm_items">Dorm Items</option>
@@ -54,8 +54,15 @@
           <input type="number" min="0" class="form-control" placeholder="Price" ng-model="price"></input>
         </div>
 
-         <div class="form-group">
-          <input type="text" class="form-control" placeholder="Upload Picture(s)" ng-model="pictures"></input>
+        <div class="form-group">
+          <h5>Upload picture(s)</h5>
+          <input type="file" class="form-control" ng-model="pictures" name="pic" accept="image/*"></input>
+        </div>
+
+        <div class="form-group">
+          <input type="file" class="form-control" data-ng-file-select="onFileSelect($files)" accept="image/png, image/jpeg">
+          <span data-ng-if="uploadInProgress">Upload progress: {{ uploadProgress }}</span>
+          <img data-ng-src="uploadedImage" data-ng-if="uploadedImage">
         </div>
 
          <div class="form-group">
