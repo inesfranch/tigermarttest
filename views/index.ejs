@@ -6,7 +6,13 @@
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.js"></script>
     <script src="/javascripts/angularApp.js"></script>
+    <script src="/javascripts/ng-file-upload-shim.min.js"></script> <!-- for no html5 browsers support -->
+    <script src="/javascripts/ng-file-upload.min.js"></script>
+    <script src="/javascripts/ng-img-crop.js"></script>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/ng-img-crop.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
   </head>
+
   <body ng-app="tigerMart">
     <div class="row">
       <div>
@@ -101,7 +107,19 @@
           <input type="number" min="0" class="form-control" placeholder="Price" ng-model="price"></input>
         </div>
 
-        <div class="form-group">
+        <button ngf-select ng-model="picFile" accept="image/*">
+            Select Picture</button>
+        <div ngf-drop ng-model="picFile" ngf-pattern="image/*"
+             class="cropArea">
+            <img-crop image="picFile  | ngfDataUrl"                 
+            result-image="croppedDataUrl" ng-init="croppedDataUrl=''">
+            </img-crop>
+        </div>
+        <div>
+            <img ng-src="{{croppedDataUrl}}" />
+        </div>
+
+        <!-- <div class="form-group">
           <h5>Upload picture(s)</h5>
           <input type="file" class="form-control" ng-model="pictures" name="pic" accept="image/*"></input>
         </div>
@@ -110,7 +128,7 @@
           <input type="file" class="form-control" data-ng-file-select="onFileSelect($files)" accept="image/png, image/jpeg">
           <span data-ng-if="uploadInProgress">Upload progress: {{ uploadProgress }}</span>
           <img data-ng-src="uploadedImage" data-ng-if="uploadedImage">
-        </div>
+        </div> -->
 
          <div class="form-group">
           <input type="text" class="form-control" placeholder="Add Tags" ng-model="tags"></input>

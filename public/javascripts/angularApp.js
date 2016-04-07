@@ -1,4 +1,4 @@
-var app = angular.module('tigerMart', ['ui.router']);
+var app = angular.module('tigerMart', ['ui.router', 'ngFileUpload', 'ngImgCrop']);
 
 app.config([
   '$stateProvider',
