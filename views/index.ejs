@@ -30,6 +30,16 @@
           </div>
           <button type="submit">Search</button>
         </form>
+
+        <div class="form-group">
+           <select class="form-control" ng-model="sorting">
+              <option value=price>Price: low to high</option>
+              <option value=-price>Price: high to low</option>
+              <option value=-date>Date: new to old</option>
+              <option value=date>Date: old to new</option>
+            </select>
+        </div>
+
       </div>
 
       <div class="container"> <!-- Code modified from: http://bootsnipp.com/snippets/49An-->
@@ -45,7 +55,7 @@
         </div> -->
 
         <div id="products-view" class="row list-group">
-          <div ng-repeat="product in products | orderBy: 'price'">
+          <div ng-repeat="product in products | orderBy:sorting">
             <div class="item  col-xs-4 col-lg-4">
               <div class="thumbnail">
                 <img class="group list-group-image" src="http://placehold.it/400x250/000/fff" alt="" />

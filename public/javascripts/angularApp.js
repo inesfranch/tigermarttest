@@ -52,7 +52,7 @@ app.controller('MainCtrl', [
   'products',
   function($scope, products){
 
-    $scope.products = products.products
+    $scope.products = products.products;
     
     $scope.search = function(){
       if(!$scope.q || $scope.q === '') { return; }
