@@ -9,17 +9,35 @@ router.get('/', function(req, res, next) {
 var mongoose = require('mongoose');
 var Product = mongoose.model('Product');
 
-router.get('/products', function(req, res, next) {
+/*router.get('/products', function(req, res, next) {
 	Product.find(function(err, products){
 		if(err){return next(err);}
 		res.json(products);
 	});
+});*/
+
+router.get('/products', function(req, res, next) {
+	var cat = req.query.cat;
+	if (cat == "all") {
+		Product.find(function(err, products){
+			if(err){return next(err);}
+			res.json(products);
+		});
+	}
+	else {
+		var qu = Product.find({
+			'category': cat
+		});
+		qu.exec(function(err, products){
+			if(err){return next(err);}
+			res.json(products);
+		});
+	}
+
 });
 
 router.get('/search', function(req, res, next) {
 	var q = req.query.q;
-	console.log(typeof q)
-	console.log(q);
 	var qu = Product.find({'$or': [
 		{'title': {$regex: q, $options: "i"}},
 		{'description': {$regex: q, $options: "i"}}]});
