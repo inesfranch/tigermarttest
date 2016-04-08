@@ -25,7 +25,6 @@ app.factory('products', ['$http', function($http){
     products: []
   };
   o.getAll = function(cat) {
-    console.log(cat);
     return $http.get('/products?cat='+cat).success(function(data){
       angular.copy(data, o.products);
     });
@@ -35,9 +34,10 @@ app.factory('products', ['$http', function($http){
       o.products.push(data);
     });
   };
-  o.search = function(q) {
+  o.search = function(q, cat) {
     q = q.toString();
-    return $http.get("/search?q="+q).success(function(data) {
+    cat = cat.toString();
+    return $http.get("/search?q="+q+"&cat="+cat).success(function(data) {
       angular.copy(data, o.products);
     });
   };
@@ -54,7 +54,8 @@ app.controller('MainCtrl', [
     
     $scope.search = function(){
       if(!$scope.q || $scope.q === '') { return; }
-      products.search($scope.q)
+      if(!$scope.cat || $scope.cat === '') {$scope.cat = "all";}
+      products.search($scope.q, $scope.cat)
     };
 
     $scope.filterCat = function(){

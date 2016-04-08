@@ -38,13 +38,26 @@ router.get('/products', function(req, res, next) {
 
 router.get('/search', function(req, res, next) {
 	var q = req.query.q;
-	var qu = Product.find({'$or': [
-		{'title': {$regex: q, $options: "i"}},
-		{'description': {$regex: q, $options: "i"}}]});
-	qu.exec(function(err, products) {
-		if(err){return next(err);}
-		res.json(products);
-	});
+	var cat = req.query.cat;
+	if (cat == "all") {
+		var qu = Product.find({'$or': [
+			{'title': {$regex: q, $options: "i"}},
+			{'description': {$regex: q, $options: "i"}}]});
+		qu.exec(function(err, products) {
+			if(err){return next(err);}
+			res.json(products);
+		});
+	}
+	else {
+		var qu = Product.find({'$or': [
+			{'title': {$regex: q, $options: "i"}, 'category': {$regex: cat}},
+			{'description': {$regex: q, $options: "i"}, 'category': {$regex: cat}}]});
+		qu.exec(function(err, products) {
+			if(err){return next(err);}
+			res.json(products);
+		});
+	}
+	
 });
 
 router.post('/products', function(req, res, next) {
