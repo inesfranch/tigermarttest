@@ -12,7 +12,7 @@ app.config([
       controller: 'MainCtrl',
       resolve: {
         postPromise: ['products', function(products){
-          return products.getAll();
+          return products.getAll('all');
         }]
       }
     });
@@ -37,8 +37,8 @@ app.factory('products', ['$http', function($http){
   var o = {
     products: []
   };
-  o.getAll = function() {
-    return $http.get('/products').success(function(data){
+  o.getAll = function(cat) {
+    return $http.get('/products?cat='+cat).success(function(data){
       angular.copy(data, o.products);
     });
   };
@@ -47,9 +47,10 @@ app.factory('products', ['$http', function($http){
       o.products.push(data);
     });
   };
-  o.search = function(q) {
+  o.search = function(q, cat) {
     q = q.toString();
-    return $http.get("/search?q="+q).success(function(data) {
+    cat = cat.toString();
+    return $http.get("/search?q="+q+"&cat="+cat).success(function(data) {
       angular.copy(data, o.products);
     });
   };
@@ -67,11 +68,16 @@ app.controller('MainCtrl', [
   'products',
   function($scope, products){
 
-    $scope.products = products.products
+    $scope.products = products.products;
     
     $scope.search = function(){
       if(!$scope.q || $scope.q === '') { return; }
-      products.search($scope.q)
+      if(!$scope.cat || $scope.cat === '') {$scope.cat = "all";}
+      products.search($scope.q, $scope.cat)
+    };
+
+    $scope.filterCat = function(){
+      products.getAll($scope.cat)
     };
 
     $scope.addProduct = function(){

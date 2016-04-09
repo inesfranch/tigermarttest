@@ -6,7 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/products');
+mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/products');
 require('./models/Products');
 
 var routes = require('./routes/index');
