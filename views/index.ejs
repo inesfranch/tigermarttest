@@ -188,27 +188,28 @@
 
       <div id="products-view" class="row list-group">
             <div class="item  col-xs-4 col-lg-4">
-              <div class="thumbnail">
+              <div class="thumbnail" float="left">
                 <img class="group list-group-image" src="http://placehold.it/400x250/000/fff" alt="" />
-                <div class="caption">
-                  <h4 class="group inner list-group-item-heading">
-                    {{product.title}}</h4>
-                  <p class="group inner list-group-item-text">
-                    {{product.description}}</p>
-                  <div class="row">
-                    <div class="col-xs-12 col-md-6">
-                      <p class="lead">
-                        ${{product.price}}
-                      </p>
-                    </div>
-                    <div class="col-xs-12 col-md-6">
-                      <!-- <form ng-submit="getProduct(product._id)">
-                        <button type="submit">View Details</button> -->
-                        <a class="btn btn-success" href="#/products/{{product._id}}">View Details</a>
-                      <!-- </form> -->
-                    </div>
-                  </div>
-                </div>
+              </div>
+              <div class="thumbnail">
+                <h4 class="group inner list-group-item-heading">
+                  {{product.title}} - ${{product.price}}
+                </h4>
+                <p class="group inner list-group-item-text">
+                    {{product.description}}
+                </p>
+                <p class="group inner list-group-item-text">
+                    Category: {{product.category}}
+                </p>
+                <p class="group inner list-group-item-text">
+                    Tags: {{product.tags}}
+                </p>
+                <p class="group inner list-group-item-text">
+                    Posted by: {{product.net_id}}
+                </p>
+                <p>
+                    Posted on: {{product.date}}
+                </p>
               </div>
             </div>
         </div>
