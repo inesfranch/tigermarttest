@@ -16,7 +16,20 @@ app.config([
         }]
       }
     });
+    $stateProvider
+    .state('products', {
+    url: '/products/{id}',
+    templateUrl: '/products.html',
+    controller: 'ProductsCtrl',
+    resolve: {
+      product: ['$stateParams', 'products', function($stateParams, products) {
+        return products.get($stateParams.id);
+      }]
+    }
+  });
 
+    // $urlRouterProvider.when('products');
+    // $urlRouterProvider.when('products/:product');
     $urlRouterProvider.otherwise('home');
   }]);
 
@@ -35,12 +48,14 @@ app.factory('products', ['$http', function($http){
     });
   };
   o.search = function(q) {
-    console.log(q);
     q = q.toString();
-    console.log(typeof q);
-    console.log(q);
     return $http.get("/search?q="+q).success(function(data) {
       angular.copy(data, o.products);
+    });
+  };
+  o.get = function(id) {
+    return $http.get("/products/" + id).then(function(res){
+      return res.data;
     });
   };
   return o;
@@ -111,4 +126,19 @@ $scope.uploadedImage = JSON.parse(data);
   console.log('Error uploading file: ' + err.message || err);
 });
 };
+}]);
+
+app.controller('ProductsCtrl', [
+'$scope',
+'products',
+'product',
+function($scope, products, product){
+  $scope.product = product;
+
+  
+
+  // FUNCTION GOES HERE!
+
+
+  //$scope.product = products.products[$stateParams.id];
 }]);

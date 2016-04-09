@@ -18,8 +18,6 @@ router.get('/products', function(req, res, next) {
 
 router.get('/search', function(req, res, next) {
 	var q = req.query.q;
-	console.log(typeof q)
-	console.log(q);
 	var qu = Product.find({'$or': [
 		{'title': {$regex: q, $options: "i"}},
 		{'description': {$regex: q, $options: "i"}}]});
@@ -48,7 +46,7 @@ router.param('product', function(req, res, next, id) {
 });
 
 router.get('/products/:product', function(req, res) {
-  res.json(req.product);
+  	res.json(req.product);
 });
 
 //var cas = require('grand_master_cas');
