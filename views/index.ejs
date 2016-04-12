@@ -179,6 +179,7 @@
       </form>
     </script>
 
+
     <script type="text/ng-template" id="/products.html">
       <div class="page-header col-md-offset-1">
         <h3>{{product.title}}</h3>
@@ -203,10 +204,10 @@
                     Tags: {{product.tags}}
                 </p>
                 <p style="font-size: 16px">
-                    Posted by: {{product.net_id}}
+                    Posted by: {{product.net_id}}@princeton.edu
                 </p>
                 <p style="font-size: 16px">
-                    Posted on: {{product.date}}
+                    Posted on: {{product.month}}/{{product.day}}/{{product.year}}
                 </p>
                 <br>
                 <a class="btn btn-success col-md-offset-7" href="">Contact seller</a>
