@@ -21,12 +21,15 @@
     </div>
 
     <script type="text/ng-template" id="/home.html">
-    <nav>
+    <div>
+      <a class="btn btn-success col-md-offset-10" href="#/users/mfishman">User Profile</a>
+    </div>
+    <!--<nav>
       <ul>
         <li><strong>Home</strong></li>
         <li><a href="about.html">Add New Product</a></li>
       </ul>
-    </nav>
+    </nav>-->
       <div>
         <div class="text-center">
           <h1>TigerMart</h1>
@@ -109,10 +112,7 @@
                       </p>
                     </div>
                     <div class="col-md-6">
-                      <!-- <form ng-submit="getProduct(product._id)">
-                        <button type="submit">View Details</button> -->
                         <a class="btn btn-success" href="#/products/{{product._id}}">View Details</a>
-                      <!-- </form> -->
                     </div>
                   </div>
                 </div>
@@ -158,20 +158,22 @@
           <input type="number" min="0" class="form-control" placeholder="Price" ng-model="price"></input>
         </div>
 
-        <button ngf-select ng-model="picFile" accept="image/*">
-            Select Picture</button>
-        <div ngf-drop ng-model="picFile" ngf-pattern="image/*"
-             class="cropArea">
-            <img-crop 
-              image="picFile  | ngfDataUrl"                 
-              result-image="croppedDataUrl" 
-              ng-init="croppedDataUrl=''" 
-              result-image-size="300" 
-              area-type="square">
-            </img-crop>
-        </div>
-        <div>
-            <img ng-src="{{croppedDataUrl}}" />
+        <div class="center-block">
+          <button ngf-select class="btn btn-default center-block" ng-model="picFile" accept="image/*">Select Picture</button>
+          <center>
+          <div ngf-drop ng-model="picFile" ngf-pattern="image/*" class="cropArea center-block" style="margin-top: 20px">
+              <img-crop 
+                image="picFile  | ngfDataUrl"                 
+                result-image="croppedDataUrl" 
+                ng-init="croppedDataUrl=''" 
+                result-image-size="300" 
+                area-type="square">
+              </img-crop>
+          </div>
+          </center>
+          <div>
+              <img ng-src="{{croppedDataUrl}}" />
+          </div>
         </div>
 
         <!-- <div class="form-group">
@@ -186,11 +188,12 @@
         </div> -->
 
          <div class="form-group">
-          <input type="text" class="form-control" placeholder="Add Tags" ng-model="tags"></input>
+          <input type="text" class="form-control" style="margin-top: 20px" placeholder="Add Tags" ng-model="tags"></input>
         </div>
 
-
-        <button type="submit">Post product</button>
+        <div class="center-block">
+          <button type="submit" class="text-center btn btn-primary center-block">Post product</button>
+        </div>
       </form>
     </script>
 
@@ -232,6 +235,12 @@
             </div>
         </div>
 
+    </script>
+
+    <script type="text/ng-template" id="/user.html">
+      <div class="text-center">
+        <h2>Welcome to your user page</h2>
+      </div>
     </script>
 
   </body>

@@ -18,15 +18,26 @@ app.config([
     });
     $stateProvider
     .state('products', {
-    url: '/products/{id}',
-    templateUrl: '/products.html',
-    controller: 'ProductsCtrl',
-    resolve: {
-      product: ['$stateParams', 'products', function($stateParams, products) {
-        return products.get($stateParams.id);
-      }]
-    }
-  });
+      url: '/products/{id}',
+      templateUrl: '/products.html',
+      controller: 'ProductsCtrl',
+      resolve: {
+        product: ['$stateParams', 'products', function($stateParams, products) {
+          return products.get($stateParams.id);
+        }]
+      }
+    });
+    $stateProvider
+    .state('users', {
+      url: '/users/{id}',
+      templateUrl: '/user.html',
+      controller: 'UsersCtrl',
+      resolve: {
+        user: ['$stateParams', 'products', function($stateParams, products) {
+          return products.user($stateParams.id);
+        }]
+      }
+    });
 
     // $urlRouterProvider.when('products');
     // $urlRouterProvider.when('products/:product');
@@ -56,6 +67,11 @@ app.factory('products', ['$http', function($http){
   };
   o.get = function(id) {
     return $http.get("/products/" + id).then(function(res){
+      return res.data;
+    });
+  };
+  o.user = function(netid) {
+    return $http.get("/users/" + netid).then(function(res){
       return res.data;
     });
   };
@@ -143,6 +159,21 @@ app.controller('ProductsCtrl', [
 'product',
 function($scope, products, product){
   $scope.product = product;
+
+  
+
+  // FUNCTION GOES HERE!
+
+
+  //$scope.product = products.products[$stateParams.id];
+}]);
+
+app.controller('UsersCtrl', [
+'$scope',
+'products',
+'user',
+function($scope, products, user){
+  $scope.user = user;
 
   
 
