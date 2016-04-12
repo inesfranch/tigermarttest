@@ -32,8 +32,7 @@
         <h5>Filter by category</h5>
         <form ng-submit="filterCat()">
           <div class="form-group">
-           <select name="cat" class="form-control" ng-model="cat">
-              <option disabled>Choose Category...</option> <!-- NEED TO FIX SELECTED -->
+           <select name="cat" class="form-control" ng-model="cat" placeholder="Choose Category...">
               <option value="all" selected>All categories</option>
               <option value="apparel">Apparel</option>
               <option value="dorm_items">Dorm Items</option>
@@ -57,7 +56,7 @@
         </form>
         <h5>Sort the products</h5>
         <div class="form-group">
-           <select class="form-control" ng-model="sorting">
+           <select class="form-control" ng-model="sorting" placeholder="Choose sorting order">
               <option value=price>Price: low to high</option>
               <option value=-price>Price: high to low</option>
               <option value=-date>Date: new to old</option>
@@ -123,8 +122,7 @@
         </div>
 
          <div class="form-group">
-           <select name="category" class="form-control" ng-model="category">
-              <option selected="selected" disabled>Choose Category...</option> <!-- NEED TO FIX SELECTED -->
+           <select name="category" class="form-control" ng-model="category" placeholder="Choose Category">
               <option value="apparel">Apparel</option>
               <option value="dorm_items">Dorm Items</option>
               <option value="electronics">Electronics</option>
