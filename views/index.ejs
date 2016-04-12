@@ -27,11 +27,15 @@
         <li><a href="about.html">Add New Product</a></li>
       </ul>
     </nav>
-      <div class="page-header col-md-6 col-md-offset-3">
-        <h1>TigerMart</h1>
-        <h5>Filter by category</h5>
+      <div>
+        <div class="text-center">
+          <h1>TigerMart</h1>
+        </center>
+        <div class="text-left col-md-6 col-md-offset-3">
+          <h5>Filter by category</h5>
+        </div>
         <form ng-submit="filterCat()">
-          <div class="form-group">
+          <div class="col-md-6 col-md-offset-3">
            <select name="cat" class="form-control" ng-model="cat" placeholder="Category">
               <option value="" selected="selected" disabled>Choose Category...</option>
               <option value="all">All categories</option>
@@ -46,18 +50,25 @@
               <option value="other">Other</option>
             </select>
           </div>
-
-          <button type="submit">Update</button>
+          <div class="col-md-1">
+            <button class="btn btn-primary"type="submit">Update</button>
+          </div>
         </form>
-        <h5>Search</h5>
+        <div class="text-left col-md-6 col-md-offset-3">
+          <h5>Search</h5>
+        </div>
         <form ng-submit="search()"> 
-          <div class="form-group">
+          <div class="form-group col-md-6 col-md-offset-3">
             <input type="text" class="form-control" placeholder="Search..." ng-model="q"></input>
           </div>
-          <button type="submit">Search</button>
+          <div class="col-md-1">
+            <button class="btn btn-primary" type="submit">Search</button>
+          </div>
         </form>
-        <h5>Sort the products</h5>
-        <div class="form-group">
+        <div class="text-left col-md-6 col-md-offset-3">
+          <h5>Sort the products</h5>
+        </div>
+        <div class="form-group col-md-6 col-md-offset-3">
            <select name="sorting" class="form-control" ng-model="sorting" placeholder="Sorting order">
               <option value="" selected="selected" disabled>Choose sorting order</option>
               <option value=price>Price: low to high</option>
@@ -69,7 +80,7 @@
 
       </div>
 
-      <div class="container"> <!-- Code modified from: http://bootsnipp.com/snippets/49An-->
+      <div class="container col-md-12" style="margin-top: 50px"> <!-- Code modified from: http://bootsnipp.com/snippets/49An-->
 
         <!-- <div class="well well-sm">
           <strong>View Type: </strong>
