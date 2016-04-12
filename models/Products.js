@@ -8,6 +8,9 @@ var ProductSchema = new mongoose.Schema({
   pictures: {type: String},
   tags: {type: String},
   date: {type: Date, default: Date.now, required: true},
+  month: {type: String, required: true},
+  day: {type: String, required: true},
+  year: {type: String, required: true},
   net_id: {type: String, default: 'mfishman', required: true}, // NEED TO CHANGE NET_ID DEFAULT!
   active: {type: Boolean, default: true, required: true}
 });

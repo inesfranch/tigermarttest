@@ -34,16 +34,16 @@
           <div class="form-group">
            <select name="cat" class="form-control" ng-model="cat">
               <option disabled>Choose Category...</option> <!-- NEED TO FIX SELECTED -->
-              <option value="all" selected>All categories</option>
-              <option value="apparel">Apparel</option>
-              <option value="dorm_items">Dorm Items</option>
-              <option value="electronics">Electronics</option>
-              <option value="food_drinks">Food & Drinks</option>
-              <option value="furniture">Furniture</option>
-              <option value="textbooks">Textbooks</option>
-              <option value="tickets">Tickets</option>
-              <option value="transportation">Transportation</option>
-              <option value="other">Other</option>
+              <option value="All" selected>All categories</option>
+              <option value="Apparel">Apparel</option>
+              <option value="Dorm Items">Dorm Items</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Food & Drinks">Food & Drinks</option>
+              <option value="Furniture">Furniture</option>
+              <option value="Textbooks">Textbooks</option>
+              <option value="Tickets">Tickets</option>
+              <option value="Transportation">Transportation</option>
+              <option value="Other">Other</option>
             </select>
           </div>
           <button type="submit">Update</button>
@@ -125,15 +125,15 @@
          <div class="form-group">
            <select name="category" class="form-control" ng-model="category">
               <option selected="selected" disabled>Choose Category...</option> <!-- NEED TO FIX SELECTED -->
-              <option value="apparel">Apparel</option>
-              <option value="dorm_items">Dorm Items</option>
-              <option value="electronics">Electronics</option>
-              <option value="food_drinks">Food & Drinks</option>
-              <option value="furniture">Furniture</option>
-              <option value="textbooks">Textbooks</option>
-              <option value="tickets">Tickets</option>
-              <option value="transportation">Transportation</option>
-              <option value="other">Other</option>
+              <option value="Apparel">Apparel</option>
+              <option value="Dorm Items">Dorm Items</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Food & Drinks">Food & Drinks</option>
+              <option value="Furniture">Furniture</option>
+              <option value="Textbooks">Textbooks</option>
+              <option value="Tickets">Tickets</option>
+              <option value="Transportation">Transportation</option>
+              <option value="Other">Other</option>
             </select>
         </div>
 
@@ -181,6 +181,7 @@
       </form>
     </script>
 
+
     <script type="text/ng-template" id="/products.html">
       <div class="page-header col-md-offset-1">
         <h3>{{product.title}}</h3>
@@ -205,10 +206,10 @@
                     Tags: {{product.tags}}
                 </p>
                 <p style="font-size: 16px">
-                    Posted by: {{product.net_id}}
+                    Posted by: {{product.net_id}}@princeton.edu
                 </p>
                 <p style="font-size: 16px">
-                    Posted on: {{product.date}}
+                    Posted on: {{product.month}}/{{product.day}}/{{product.year}}
                 </p>
                 <br>
                 <a class="btn btn-success col-md-offset-7" href="">Contact seller</a>

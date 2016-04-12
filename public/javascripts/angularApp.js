@@ -91,6 +91,9 @@ app.controller('MainCtrl', [
       pictures: $scope.pictures,
       tags: $scope.tags,
       date: new Date(),
+      month: ((new Date()).getMonth() + 1),
+      day: (new Date()).getDate(),
+      year: (new Date()).getYear() - 100,
       net_id: "mfishman", // NEED TO CHANGE NET_ID!
       active: true
     });
