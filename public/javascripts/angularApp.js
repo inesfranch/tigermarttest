@@ -83,7 +83,7 @@ app.factory('products', ['$http', function($http){
     console.log("hello8");
     o.user = data;
     console.log(o.user);
-    console.log(o.user.net_id);
+    //console.log(o.user.net_id);
     });
   };
   o.search = function(q, cat) {
@@ -111,8 +111,7 @@ app.factory('products', ['$http', function($http){
 app.controller('MainCtrl', [
   '$scope',
   'products',
-  'user',
-  function($scope, products, user){
+  function($scope, products){
 
     $scope.products = products.products;
 
