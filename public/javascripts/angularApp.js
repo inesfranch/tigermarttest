@@ -220,4 +220,3 @@ function($scope, $state, products){
 
   };
 }]);
-
