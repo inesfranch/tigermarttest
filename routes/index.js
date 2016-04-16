@@ -87,6 +87,7 @@ router.get('/users/:user', function(req, res) {
   	res.json(req.user);
 });
 
+
 router.post('/register', function(req, res, next){
   if(!req.body.username){
     //some error
@@ -110,7 +111,16 @@ router.post('/register', function(req, res, next){
     return res.json({token: user.generateJWT()})
   });
 });
+router.get('/addproduct', function(req, res) {
+  	res.json(req);
+});
 
+router.get('/welcome', function(req, res) {
+  	res.json(req);
+});
+
+//var cas = require('grand_master_cas');
+//var routes = require('.');
 exports.index = function(req, res){
   res.render('index', { name: req.session.cas_user, title: 'Grand Master CAS' });
 };

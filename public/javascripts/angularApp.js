@@ -38,6 +38,18 @@ app.config([
         }]
       }
     });
+    $stateProvider
+    .state('form', {
+      url: '/addproduct',
+      templateUrl: '/addproduct.html',
+      controller: 'FormCtrl',
+    });
+    $stateProvider
+    .state('welcome', {
+      url: '/welcome',
+      templateUrl: '/welcome.html',
+      controller: 'WelcomeCtrl',
+    });
 
     // $urlRouterProvider.when('products');
     // $urlRouterProvider.when('products/:product');
@@ -96,30 +108,6 @@ app.controller('MainCtrl', [
       products.getAll($scope.cat)
     };
 
-    $scope.addProduct = function(dataUrl1){
-      if(!$scope.title || $scope.title === '') { return; }
-    // ADD VALIDATIONS LATER!
-    products.create({
-      title: $scope.title,
-      category: $scope.category,
-      description: $scope.description,
-      price: $scope.price,
-      pictures: dataUrl1.split("base64,")[1],
-      tags: $scope.tags,
-      date: new Date(),
-      month: ((new Date()).getMonth() + 1),
-      day: (new Date()).getDate(),
-      year: (new Date()).getYear() - 100,
-      net_id: "mfishman", // NEED TO CHANGE NET_ID!
-      active: true
-    });
-    $scope.title = '';
-    $scope.category = '';
-    $scope.description = '';
-    $scope.price = '';
-    $scope.picFile1 = '';
-    $scope.tags = '';
-  };
 }]);
 
 app.controller('ProductsCtrl', [
@@ -150,4 +138,48 @@ function($scope, products, user){
 
 
   //$scope.product = products.products[$stateParams.id];
+}]);
+
+app.controller('FormCtrl', [
+'$scope',
+'products',
+function($scope, products){
+  $scope.addProduct = function(dataUrl1){
+      if(!$scope.title || $scope.title === '') { return; }
+    // ADD VALIDATIONS LATER!
+    products.create({
+      title: $scope.title,
+      category: $scope.category,
+      description: $scope.description,
+      price: $scope.price,
+      pictures: dataUrl1.split("base64,")[1],
+      tags: $scope.tags,
+      date: new Date(),
+      month: ((new Date()).getMonth() + 1),
+      day: (new Date()).getDate(),
+      year: (new Date()).getYear() - 100,
+      net_id: "mfishman", // NEED TO CHANGE NET_ID!
+      active: true
+    });
+    $scope.title = '';
+    $scope.category = '';
+    $scope.description = '';
+    $scope.price = '';
+    $scope.picFile1 = '';
+    $scope.tags = '';
+  };
+
+app.controller('UsersCtrl', [
+  '$scope',
+  function($scope){
+
+  
+
+  // FUNCTION GOES HERE!
+
+
+  //$scope.product = products.products[$stateParams.id];
+}]);
+
+  
 }]);

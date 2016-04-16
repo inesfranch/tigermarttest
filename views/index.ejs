@@ -24,6 +24,10 @@
     <div>
       <a class="btn btn-success col-md-offset-10" href="#/users/mfishman">User Profile</a>
     </div>
+
+    <div style="margin-top: 20px">
+        <a class="btn btn-primary col-md-offset-10" href="#/addproduct">Add Product</a>
+    </div>
     <!--<nav>
       <ul>
         <li><strong>Home</strong></li>
@@ -123,63 +127,6 @@
 
       </div>
 
-      <form style="margin-top: 30px;" class="col-md-6 col-md-offset-3">
-        <h3>Add a new product</h3>
-        <div class="form-group">
-          <input type="text" class="form-control" placeholder="Title" ng-model="title"></input>
-        </div>
-
-         <div class="form-group">
-           <select name="category" class="form-control" ng-model="category" placeholder="Category">
-              <option value="" selected="selected" disabled>Choose Category...</option>
-              <option value="apparel">Apparel</option>
-              <option value="dorm_items">Dorm Items</option>
-              <option value="electronics">Electronics</option>
-              <option value="food_drinks">Food & Drinks</option>
-              <option value="furniture">Furniture</option>
-              <option value="textbooks">Textbooks</option>
-              <option value="tickets">Tickets</option>
-              <option value="transportation">Transportation</option>
-              <option value="other">Other</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-          <textarea name="description" rows="5" cols="30" class="form-control" placeholder="Description" ng-model="description"></textarea>
-        </div>
-
-        <div class="form-group">
-          <input type="number" min="0" class="form-control" placeholder="Price" ng-model="price"></input>
-        </div>
-
-        <div class="center-block">
-          <button ngf-select class="btn btn-default center-block" ng-model="picFile1" accept="image/*">Select Picture</button>
-          <center>
-            <div ngf-drop ng-model="picFile1" ngf-pattern="image/*" 
-            class="cropArea center-block" style="margin-top: 20px">
-              <img-crop 
-                image="picFile1  | ngfDataUrl"                 
-                result-image="croppedDataUrl1" 
-                ng-init="croppedDataUrl1=''"
-                result-image-size="300" 
-                area-type="square">
-              </img-crop>
-            </div>
-            <div ng-show="picFile1">
-              <h5>Preview:</h5>
-              <img ng-src="{{croppedDataUrl1}}" />
-            </div>
-          </center>
-        </div>
-
-         <div class="form-group">
-          <input type="text" class="form-control" style="margin-top: 20px" placeholder="Add Tags" ng-model="tags"></input>
-        </div>
-
-        <div class="center-block">
-          <button ng-click="addProduct(croppedDataUrl1)" class="text-center btn btn-primary center-block">Post product</button>
-        </div>
-      </form>
     </script>
 
 
@@ -226,6 +173,84 @@
       <div class="text-center">
         <h2>Welcome to your user page</h2>
       </div>
+    </script>
+
+    <script type="text/ng-template" id="/addproduct.html">
+      <form style="margin-top: 30px;" class="col-md-6 col-md-offset-3">
+        <h3>Add a new product</h3>
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Title" ng-model="title"></input>
+        </div>
+
+         <div class="form-group">
+           <select name="category" class="form-control" ng-model="category" placeholder="Category">
+              <option value="" selected="selected" disabled>Choose Category...</option>
+              <option value="apparel">Apparel</option>
+              <option value="dorm_items">Dorm Items</option>
+              <option value="electronics">Electronics</option>
+              <option value="food_drinks">Food & Drinks</option>
+              <option value="furniture">Furniture</option>
+              <option value="textbooks">Textbooks</option>
+              <option value="tickets">Tickets</option>
+              <option value="transportation">Transportation</option>
+              <option value="other">Other</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+          <textarea name="description" rows="5" cols="30" class="form-control" placeholder="Description" ng-model="description"></textarea>
+        </div>
+
+        <div class="form-group">
+          <input type="number" min="0" class="form-control" placeholder="Price" ng-model="price"></input>
+        </div>
+
+        <div class="center-block">
+          <button ngf-select class="btn btn-default center-block" ng-model="picFile1" accept="image/*">Select Picture</button>
+          <center>
+          <div ngf-drop ng-model="picFile1" ngf-pattern="image/*" class="cropArea center-block" style="margin-top: 20px">
+              <img-crop 
+                image="picFile1  | ngfDataUrl"                 
+                result-image="croppedDataUrl1" 
+                ng-init="croppedDataUrl1=''" 
+                result-image-size="300" 
+                area-type="square">
+              </img-crop>
+          </div>
+          <div ng-show="picFile1">
+              <h5>Preview:</h5>
+              <img ng-src="{{croppedDataUrl1}}" />
+            </div>
+          </center>
+        </div>
+
+        <!-- <div class="form-group">
+          <h5>Upload picture(s)</h5>
+          <input type="file" class="form-control" ng-model="pictures" name="pic" accept="image/*"></input>
+        </div>
+
+        <div class="form-group">
+          <input type="file" class="form-control" data-ng-file-select="onFileSelect($files)" accept="image/png, image/jpeg">
+          <span data-ng-if="uploadInProgress">Upload progress: {{ uploadProgress }}</span>
+          <img data-ng-src="uploadedImage" data-ng-if="uploadedImage">
+        </div> -->
+
+         <div class="form-group">
+          <input type="text" class="form-control" style="margin-top: 20px" placeholder="Add Tags" ng-model="tags"></input>
+        </div>
+
+        <div class="center-block">
+          <button ng-click="addProduct(croppedDataUrl1)" onclick="location.href='/'" class="text-center btn btn-primary center-block">Post product</button>
+        </div>
+
+      </form>
+    </script>
+
+    <script type="text/ng-template" id="/welcome.html">
+      <div class="text-center">
+        <h2>Welcome to TigerMart</h2>
+      </div>
+      <button class="btn btn-primary center-block">Log in via CAS</button>
     </script>
 
   </body>
