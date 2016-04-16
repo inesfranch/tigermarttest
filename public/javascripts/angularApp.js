@@ -112,7 +112,7 @@ app.controller('MainCtrl', [
   '$scope',
   'products',
   'user',
-  function($scope, products, 'user'){
+  function($scope, products, user){
 
     $scope.products = products.products;
 
