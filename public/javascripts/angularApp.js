@@ -59,7 +59,7 @@ app.config([
 
     // $urlRouterProvider.when('products');
     // $urlRouterProvider.when('products/:product');
-    $urlRouterProvider.otherwise('home');
+    $urlRouterProvider.otherwise('welcome');
   }]);
 
 app.factory('products', ['$http', function($http){
