@@ -90,6 +90,10 @@ router.get('/addproduct', function(req, res) {
   	res.json(req);
 });
 
+router.get('/welcome', function(req, res) {
+  	res.json(req);
+});
+
 //var cas = require('grand_master_cas');
 //var routes = require('.');
 

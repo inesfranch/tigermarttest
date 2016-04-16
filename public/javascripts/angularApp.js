@@ -44,6 +44,12 @@ app.config([
       templateUrl: '/addproduct.html',
       controller: 'FormCtrl',
     });
+    $stateProvider
+    .state('welcome', {
+      url: '/welcome',
+      templateUrl: '/welcome.html',
+      controller: 'WelcomeCtrl',
+    });
 
     // $urlRouterProvider.when('products');
     // $urlRouterProvider.when('products/:product');
@@ -162,6 +168,18 @@ function($scope, products){
     $scope.picFile1 = '';
     $scope.tags = '';
   };
+
+app.controller('UsersCtrl', [
+  '$scope',
+  function($scope){
+
+  
+
+  // FUNCTION GOES HERE!
+
+
+  //$scope.product = products.products[$stateParams.id];
+}]);
 
   
 }]);
