@@ -181,4 +181,5 @@ function($scope, products){
     $scope.picFile1 = '';
     $scope.tags = '';
   };
+}]);
 
