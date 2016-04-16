@@ -111,6 +111,8 @@ app.controller('MainCtrl', [
   'products',
   function($scope, products){
 
+    $scope.user = products.user;
+
     $scope.products = products.products;
     
     $scope.search = function(){
