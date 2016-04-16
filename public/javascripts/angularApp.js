@@ -111,9 +111,12 @@ app.factory('products', ['$http', function($http){
 app.controller('MainCtrl', [
   '$scope',
   'products',
-  function($scope, products){
+  'user',
+  function($scope, products, 'user'){
 
     $scope.products = products.products;
+
+    $scope.user = products.user;
     
     $scope.search = function(){
       if(!$scope.q || $scope.q === '') { return; }
