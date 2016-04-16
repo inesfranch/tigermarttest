@@ -121,16 +121,50 @@ router.get('/welcome', function(req, res) {
 
 //var cas = require('grand_master_cas');
 //var routes = require('.');
-exports.index = function(req, res){
+
+
+module.exports = router;
+
+/*module.exports.index = function(req, res){
   res.render('index', { name: req.session.cas_user, title: 'Grand Master CAS' });
 };
 
-exports.splash = function(req, res){
+module.exports.splash = function(req, res){
   res.render('splash', { name: req.session.cas_user, title: 'Grand Master CAS' });
 };
 
-exports.login = function(req, res) {
+module.exports.login = function(req, res) {
   res.redirect('/');
-}
+}*/
 
-module.exports = router;
+var cas = require('grand_master_cas');
+
+cas.configure({
+  casHost: "fed.princeton.edu",   // required
+  casPath: "/cas",                  // your cas login route (defaults to "/cas")
+  ssl: true,                        // is the cas url https? defaults to false
+  port: 443,                        // defaults to 80 if ssl false, 443 if ssl true
+  service: "http://localhost:3000", // your site
+  sessionName: "cas_user",          // the cas user_name will be at req.session.cas_user (this is the default)
+  renew: false,                     // true or false, false is the default
+  gateway: false,                   // true or false, false is the default
+  redirectUrl: '/splash'            // the route that cas.blocker will send to if not authed. Defaults to '/'
+});
+
+
+router.get('/splash', function(req, res){
+  res.render('splash', { name: req.session.cas_user, title: 'Grand Master CAS' });
+});
+
+ // grand_master_cas provides a logout
+router.get('/logout', cas.logout);
+
+ // cas.bouncer prompts for authentication and performs login if not logged in. If logged in it passes on.
+router.get('/login', cas.bouncer, function(req, res) {
+  res.redirect('/');
+});
+
+ // cas.blocker redirects to the redirectUrl supplied above if not logged in.
+router.get('/', cas.blocker, function(req, res){
+  res.render('index', { name: req.session.cas_user, title: 'Grand Master CAS' });
+});
