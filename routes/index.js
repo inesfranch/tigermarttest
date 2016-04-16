@@ -86,6 +86,10 @@ router.get('/users/:user', function(req, res) {
   	res.json(req.user);
 });
 
+router.get('/addproduct', function(req, res) {
+  	res.json(req);
+});
+
 //var cas = require('grand_master_cas');
 //var routes = require('.');
 
