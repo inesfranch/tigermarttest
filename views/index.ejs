@@ -38,7 +38,10 @@
       <div>
         <div class="text-center">
           <h1>TigerMart</h1>
-        </center>
+        </div>
+        <div class="text-center">
+          <h1>Hello {{user.net_id}} hello</h1>
+        </div>
         <div class="text-left col-md-6 col-md-offset-3">
           <h5>Filter by category</h5>
         </div>
@@ -291,10 +294,52 @@
       <div class="text-center">
         <h2>Welcome to TigerMart</h2>
       </div>
+      <button class="btn btn-primary center-block" onclick="location.href='#/register'">Register</button>
       <div class="form-group col-md-4 col-md-offset-4">
         <input type="text" class="form-control" style="margin-top: 20px" placeholder="NetID" ng-model="netid"></input>
       </div>
-      <button class="btn btn-primary center-block">Log in</button>
+      <button class="btn btn-primary center-block" ng-click="getUser(netid)">Log in</button>
+    </script>
+
+    <script type="text/ng-template" id="/register.html">
+      <div class="page-header">
+        <h1>TigerMart</h1>
+      </div>
+
+      <div ng-show="error" class="alert alert-danger row">
+        <span>{{ error.message }}</span>
+      </div>
+
+      <form ng-submit="register()"
+        style="margin-top:30px;">
+        <h3>Register</h3>
+
+        <div class="form-group">
+          <input type="text"
+          class="form-control"
+          placeholder="NetID"
+          ng-model="user.net_id"></input>
+        </div>
+        <div class="form-group">
+          <input type="text"
+          class="form-control"
+          placeholder="Email"
+          ng-model="user.email"></input>
+        </div>
+        <div class="form-group">
+          <input type="text"
+          class="form-control"
+          placeholder="First Name"
+          ng-model="user.firstName"></input>
+        </div>
+        <div class="form-group">
+          <input type="text"
+          class="form-control"
+          placeholder="Last Name"
+          ng-model="user.lastName"></input>
+        </div>
+        <button type="submit" class="btn btn-primary">Register</button>
+      </form>
     </script>
 
 

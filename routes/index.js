@@ -89,28 +89,33 @@ router.get('/users/:user', function(req, res) {
 
 
 router.post('/register', function(req, res, next){
+console.log("hello3");
   if(!req.body.username){
     //some error
   }
   if(!req.body.email || !req.body.firstName || !req.body.lastName){
   	return res.status(400).json({message: 'Please fill out all fields'});
   }
-
+console.log("hello4");
   var user = new User();
 
-  user.netid = req.body.netid;
+  user.net_id = req.body.net_id;
 
   user.email = req.body.email;
   user.firstName = req.body.firstName;
   user.lastName = req.body.lastName;
   user.posted = null;
-
+console.log("hello5");
   user.save(function (err){
-    if(err){ return next(err); }
-
-    return res.json({token: user.generateJWT()})
+  	console.log("hello6");
+    if(err){ 
+    	console.log(err);
+    	return next(err); }
+    console.log("hello7");
+    res.json(user);
   });
 });
+
 router.get('/addproduct', function(req, res) {
   	res.json(req);
 });
@@ -137,7 +142,7 @@ module.exports.login = function(req, res) {
   res.redirect('/');
 }*/
 
-var cas = require('grand_master_cas');
+/*var cas = require('grand_master_cas');
 
 cas.configure({
   casHost: "fed.princeton.edu",   // required
@@ -167,4 +172,4 @@ router.get('/login', cas.bouncer, function(req, res) {
  // cas.blocker redirects to the redirectUrl supplied above if not logged in.
 router.get('/', cas.blocker, function(req, res){
   res.render('index', { name: req.session.cas_user, title: 'Grand Master CAS' });
-});
+});*/
