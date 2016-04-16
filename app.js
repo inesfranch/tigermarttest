@@ -13,30 +13,7 @@ require('./models/Users');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
-var cas = require('grand_master_cas');
 
-cas.configure({
-  casHost: "fed.princeton.edu",   // required
-  casPath: "/cas",                  // your cas login route (defaults to "/cas")
-  ssl: true,                        // is the cas url https? defaults to false
-  port: 443,                        // defaults to 80 if ssl false, 443 if ssl true
-  service: "http://localhost:3000", // your site
-  sessionName: "cas_user",          // the cas user_name will be at req.session.cas_user (this is the default)
-  renew: false,                     // true or false, false is the default
-  gateway: false,                   // true or false, false is the default
-  redirectUrl: '/splash'            // the route that cas.blocker will send to if not authed. Defaults to '/'
-});
-
-app.get('/splash', routes.splash);
-
- // grand_master_cas provides a logout
-app.get('/logout', cas.logout);
-
- // cas.bouncer prompts for authentication and performs login if not logged in. If logged in it passes on.
-app.get('/login', cas.bouncer, routes.login);
-
- // cas.blocker redirects to the redirectUrl supplied above if not logged in.
-app.get('/', cas.blocker, routes.index);
 
 var app = express();
 
@@ -86,5 +63,32 @@ app.use(function(err, req, res, next) {
   });
 });
 
+/*
+var cas = require('grand_master_cas');
+
+cas.configure({
+  casHost: "fed.princeton.edu",   // required
+  casPath: "/cas",                  // your cas login route (defaults to "/cas")
+  ssl: true,                        // is the cas url https? defaults to false
+  port: 443,                        // defaults to 80 if ssl false, 443 if ssl true
+  service: "http://localhost:3000", // your site
+  sessionName: "cas_user",          // the cas user_name will be at req.session.cas_user (this is the default)
+  renew: false,                     // true or false, false is the default
+  gateway: false,                   // true or false, false is the default
+  redirectUrl: '/splash'            // the route that cas.blocker will send to if not authed. Defaults to '/'
+});
+*/
+
+/*
+app.get('/splash', routes.splash);
+
+ // grand_master_cas provides a logout
+app.get('/logout', cas.logout);
+
+ // cas.bouncer prompts for authentication and performs login if not logged in. If logged in it passes on.
+app.get('/login', cas.bouncer, routes.login);
+
+ // cas.blocker redirects to the redirectUrl supplied above if not logged in.
+app.get('/', cas.blocker, routes.index);*/
 
 module.exports = app;
