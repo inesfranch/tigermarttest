@@ -29,14 +29,14 @@ app.config([
     });
     $stateProvider
     .state('users', {
-      url: '/users/{id}',
+      url: '/users',
       templateUrl: '/user.html',
       controller: 'UsersCtrl',
-      resolve: {
-        user: ['$stateParams', 'products', function($stateParams, products) {
-          return products.user($stateParams.id);
-        }]
-      }
+      //resolve: {
+        //user: ['$stateParams', 'products', function($stateParams, products) {
+          //return products.user($stateParams.id);
+        //}]
+      //}
     });
     $stateProvider
     .state('form', {
@@ -50,15 +50,20 @@ app.config([
       templateUrl: '/welcome.html',
       controller: 'WelcomeCtrl',
     });
+    $stateProvider
+    .state('register', {
+      url: '/register',
+      templateUrl: '/register.html',
+      controller: 'WelcomeCtrl',
+    });
 
-    // $urlRouterProvider.when('products');
-    // $urlRouterProvider.when('products/:product');
-    $urlRouterProvider.otherwise('home');
+    $urlRouterProvider.otherwise('welcome');
   }]);
 
 app.factory('products', ['$http', function($http){
   var o = {
-    products: []
+    products: [],
+    user: ""
   };
   o.getAll = function(cat) {
     return $http.get('/products?cat='+cat).success(function(data){
@@ -68,6 +73,15 @@ app.factory('products', ['$http', function($http){
   o.create = function(product) {
     return $http.post('/products', product).success(function(data){
       o.products.push(data);
+    });
+  };
+  o.register = function(user){
+    console.log("hello2");
+  return $http.post('/register', user).success(function(data){
+    console.log("hello8");
+    o.user = data;
+    console.log(o.user);
+    //console.log(o.user.net_id);
     });
   };
   o.search = function(q, cat) {
@@ -83,7 +97,7 @@ app.factory('products', ['$http', function($http){
     });
   };
   o.user = function(netid) {
-    return $http.get("/users/" + netid).then(function(res){
+    return $http.get("/users").then(function(res){
       return res.data;
     });
   };
@@ -91,12 +105,15 @@ app.factory('products', ['$http', function($http){
 }])
 
 
+// MAIN CONTROLLER
 app.controller('MainCtrl', [
   '$scope',
   'products',
   function($scope, products){
 
     $scope.products = products.products;
+
+    $scope.user = products.user;
     
     $scope.search = function(){
       if(!$scope.q || $scope.q === '') { return; }
@@ -110,42 +127,33 @@ app.controller('MainCtrl', [
 
 }]);
 
+// PRODUCT CONTROLLER
 app.controller('ProductsCtrl', [
 '$scope',
 'products',
 'product',
 function($scope, products, product){
   $scope.product = product;
-
-  
-
-  // FUNCTION GOES HERE!
-
-
-  //$scope.product = products.products[$stateParams.id];
 }]);
 
+// USER CONTROLLER
 app.controller('UsersCtrl', [
 '$scope',
 'products',
-'user',
-function($scope, products, user){
-  $scope.user = user;
-
-  
-
-  // FUNCTION GOES HERE!
-
-
-  //$scope.product = products.products[$stateParams.id];
+function($scope, products){
+  //$scope.product = product;
+  $scope.user = products.user;
 }]);
 
+
+// FORM CONTROL
 app.controller('FormCtrl', [
 '$scope',
 'products',
 function($scope, products){
   $scope.addProduct = function(dataUrl1){
       if(!$scope.title || $scope.title === '') { return; }
+    
     // ADD VALIDATIONS LATER!
     products.create({
       title: $scope.title,
@@ -168,18 +176,24 @@ function($scope, products){
     $scope.picFile1 = '';
     $scope.tags = '';
   };
-
-app.controller('UsersCtrl', [
-  '$scope',
-  function($scope){
-
-  
-
-  // FUNCTION GOES HERE!
-
-
-  //$scope.product = products.products[$stateParams.id];
 }]);
 
-  
+app.controller('WelcomeCtrl', [
+'$scope',
+'$state',
+'products',
+function($scope, $state, products){
+
+  $scope.getuser = function(netid) {
+
+  }
+  $scope.register = function() {
+    console.log("hello1");
+    products.register($scope.user).error(function(error) {
+      $scope.error = error;
+    }).then(function() {
+      $state.go('home');
+    });
+
+  };
 }]);
