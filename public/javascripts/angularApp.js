@@ -111,66 +111,6 @@ app.controller('MainCtrl', [
 
 }]);
 
-app.controller('ProductsCtrl', [
-'$scope',
-'products',
-'product',
-function($scope, products, product){
-  $scope.product = product;
-
-  
-
-  // FUNCTION GOES HERE!
-
-
-  //$scope.product = products.products[$stateParams.id];
-}]);
-
-app.controller('UsersCtrl', [
-'$scope',
-'products',
-'user',
-function($scope, products, user){
-  $scope.user = user;
-
-  
-
-  // FUNCTION GOES HERE!
-
-
-  //$scope.product = products.products[$stateParams.id];
-}]);
-
-app.controller('FormCtrl', [
-'$scope',
-'products',
-function($scope, products){
-  $scope.addProduct = function(dataUrl1){
-      if(!$scope.title || $scope.title === '') { return; }
-    
-    // ADD VALIDATIONS LATER!
-    products.create({
-      title: $scope.title,
-      category: $scope.category,
-      description: $scope.description,
-      price: $scope.price,
-      pictures: dataUrl1.split("base64,")[1],
-      tags: $scope.tags,
-      date: new Date(),
-      month: ((new Date()).getMonth() + 1),
-      day: (new Date()).getDate(),
-      year: (new Date()).getYear() - 100,
-      net_id: "mfishman", // NEED TO CHANGE NET_ID!
-      active: true
-    });
-    $scope.title = '';
-    $scope.category = '';
-    $scope.description = '';
-    $scope.price = '';
-    $scope.picFile1 = '';
-    $scope.tags = '';
-  };
-
 // PRODUCT CONTROLLER
 app.controller('ProductsCtrl', [
 '$scope',
@@ -209,3 +149,36 @@ $('.carousel .item').each(function(){
   }
 })
 }]);
+
+
+// FORM CONTROL
+app.controller('FormCtrl', [
+'$scope',
+'products',
+function($scope, products){
+  $scope.addProduct = function(dataUrl1){
+      if(!$scope.title || $scope.title === '') { return; }
+    
+    // ADD VALIDATIONS LATER!
+    products.create({
+      title: $scope.title,
+      category: $scope.category,
+      description: $scope.description,
+      price: $scope.price,
+      pictures: dataUrl1.split("base64,")[1],
+      tags: $scope.tags,
+      date: new Date(),
+      month: ((new Date()).getMonth() + 1),
+      day: (new Date()).getDate(),
+      year: (new Date()).getYear() - 100,
+      net_id: "mfishman", // NEED TO CHANGE NET_ID!
+      active: true
+    });
+    $scope.title = '';
+    $scope.category = '';
+    $scope.description = '';
+    $scope.price = '';
+    $scope.picFile1 = '';
+    $scope.tags = '';
+  };
+
