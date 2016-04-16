@@ -205,8 +205,6 @@ app.controller('WelcomeCtrl', [
 'products',
 function($scope, $state, products){
 
-  $scope.user = products.user;
-
   $scope.getuser = function(netid) {
 
   }
