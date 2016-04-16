@@ -129,11 +129,11 @@ app.controller('UsersCtrl', [
 function($scope, products, product, user){
   $scope.product = product;
   $scope.user = user;
+
+  // Code from http://www.bootply.com/94444
   $('#myCarousel').carousel({
   interval: 10000
 })
-
-// Code from http://www.bootply.com/94444
 $('.carousel .item').each(function(){
   var next = $(this).next();
   if (!next.length) {

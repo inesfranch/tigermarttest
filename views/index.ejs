@@ -239,56 +239,125 @@
 
     <!-- ________________ USER PAGE ____________________ -->
     <script type="text/ng-template" id="/user.html">
+      <div>
+        <a class="btn btn-success col-md-offset-10" href="#/">Back to Home</a>
+      </div>
+      <div>
+        <a class="btn btn-success col-md-offset-10" style="margin-top: 10px" href="#/users/mfishman">Edit My Profile</a>
+      </div>
       <div class="text-center">
         <h2>{{user.firstName}} {{user.lastName}}</h2>
       </div>
 
-      <div align="center" style="margin-top: 40px">
-        <div class="carousel slide" id="myCarousel">
-          <div class="carousel-inner">
-            <!-- <div ng-repeat="product in {{user.posted}} | orderBy:sorting">LOOP THROUGH ALL PRODUCTS--> 
-              <div class="item active">
-                <div class="item col-md-4">
-                  <div class="thumbnail">
-                    <img class="group list-group-image" ng-src="data:image/png;base64,{{product.pictures}}" alt="" />
-                    <div class="caption">
-                      <h4 class="group inner list-group-item-heading">
-                        {{product.title}}</h4>
-                      <div class="row">
-                        <div class="col-md-6">
-                          <p class="lead">${{product.price}}</p>
-                        </div>
-                        <div class="col-md-6" style="margint-top: 20px">
-                            <a class="btn btn-success" href="#/products/{{product._id}}">View Details</a>
-                        </div>
-                        <div class="col-md-6" style="margin-top: 5px">
-                          <a class="btn btn-success" href="#/products/{{product._id}}">Mark as Sold</a>
-                        </div>
-                        <div class="col-md-6" style="margin-top: 5px">
-                          <a class="btn btn-success" href="#/products/{{product._id}}">Edit Post</a>
-                        </div>
-                        <div class="col-md-6" style="margin-top: 5px">
-                          <a class="btn btn-success" href="#/products/{{product._id}}">Delete Post</a>
-                        </div>
-                      </div>
-                      <div class="item">
-                        <div class="col-md-4"><a href="#"><img src="http://placehold.it/500/CCCCCC&amp;text=2" class="img-responsive"></a></div>
-                      </div>
-                      <div class="item">
-                        <div class="col-md-4"><a href="#"><img src="http://placehold.it/500/eeeeee&amp;text=3" class="img-responsive"></a></div>
-                      </div>
-                      <div>
-                        <a class="left carousel-control" href="#myCarousel" data-slide="prev"><i class="glyphicon glyphicon-chevron-left"></i></a>
-                        <a class="right carousel-control" href="#myCarousel" data-slide="next"><i class="glyphicon glyphicon-chevron-right"></i></a>
-                      </div>
+      <div class="container col-md-12" style="margin-top: 20px"> <!-- Code modified from: http://bootsnipp.com/snippets/49An-->
+
+        <div class="well well-sm">
+          <strong>View My Items: </strong>
+          <div class="btn-group" style="margin-left: 10px">
+            <a href="#" id="active_posts" class="btn btn-default btn-md">Active Items</a>
+            <a href="#" id="active_posts" class="btn btn-default btn-md">Sold Items</a>
+          </div>
+          <!-- <form ng-submit="filterCat()">
+            <div class="col-md-6 col-md-offset-3">
+             <select name="cat" class="form-control" ng-model="cat" placeholder="Category">
+                <option value="" selected="selected" disabled>Choose Category...</option>
+                <option value="All">All categories</option>
+                <option value="Apparel">Apparel</option>
+                <option value="Dorm Items">Dorm Items</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Food & Drinks">Food & Drinks</option>
+                <option value="Furniture">Furniture</option>
+                <option value="Textbooks">Textbooks</option>
+                <option value="Tickets">Tickets</option>
+                <option value="Transportation">Transportation</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="col-md-1">
+              <button class="btn btn-primary"type="submit">Update</button>
+            </div>
+          </form> --> 
+          <ng-submit="search()"> 
+            <div class="form-group col-sm-3 col-sm-offset-7">
+              <input type="text" class="form-control" placeholder="Search..." ng-model="q"></input>
+            </div>
+            <div class="col-md-1">
+              <button class="btn btn-primary" type="submit">Search</button>
+            </div>
+          </form> 
+          <!--
+          <strong>Sort by:</strong>
+          <div class="form-group col-sm-3" style="margin-left: 20px">
+             <select name="sorting" class="form-control" ng-model="sorting" placeholder="Sorting order">
+                <option value=price>Price: low to high</option>
+                <option value=-price>Price: high to low</option>
+                <option value=-date selected="selected">Date: new to old</option>
+                <option value=date>Date: old to new</option>
+              </select>
+          </div> -->
+        </div>
+
+        <div class="item  col-md-4">
+          <div class="thumbnail">
+            <img class="group list-group-image" ng-src="data:image/png;base64,{{product.pictures}}" alt="" />
+            <div class="caption">
+              <h4 class="group inner list-group-item-heading">
+                {{product.title}}</h4>
+              <div class="row">
+                <div class="col-md-6">
+                  <p class="lead">
+                    ${{product.price}}
+                  </p>
+                </div>
+                <div class="col-md-6" style="margin-top: 5px">
+                    <a class="btn btn-success" href="#/products/{{product._id}}">View Details</a>
+                </div>
+                <div class="col-md-6" style="margin-top: 5px">
+                    <a class="btn btn-success" href="#/products/{{product._id}}">Mark as Sold</a>
+                </div>
+                <div class="col-md-6" style="margin-top: 5px">
+                    <a class="btn btn-success" href="#/products/{{product._id}}">Edit Post</a>
+                </div>
+                <div class="col-md-6" style="margin-top: 5px">
+                    <a class="btn btn-success" href="#/products/{{product._id}}">Delete Item</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="products-view" class="row list-group">
+          <div ng-repeat="product in products | orderBy:sorting">
+            <div class="item  col-md-4">
+              <div class="thumbnail">
+                <img class="group list-group-image" ng-src="data:image/png;base64,{{product.pictures}}" alt="" />
+                <div class="caption">
+                  <h4 class="group inner list-group-item-heading">
+                    {{product.title}}</h4>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <p class="lead">
+                        ${{product.price}}
+                      </p>
+                    </div>
+                    <div class="col-md-6" style="margin-top: 5px">
+                      <a class="btn btn-success" href="#/products/{{product._id}}">View Details</a>
+                    </div>
+                    <div class="col-md-6" style="margin-top: 5px">
+                      <a class="btn btn-success" href="#/products/{{product._id}}">Mark as Sold</a>
+                    </div>
+                    <div class="col-md-6" style="margin-top: 5px">
+                      <a class="btn btn-success" href="#/products/{{product._id}}">Edit Post</a>
+                    </div>
+                    <div class="col-md-6" style="margin-top: 5px">
+                      <a class="btn btn-success" href="#/products/{{product._id}}">Delete Item</a>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </div>  
     </script>
 
 
