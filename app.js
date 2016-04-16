@@ -8,11 +8,12 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/products');
 require('./models/Products');
+require('./models/Users');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
-/*var cas = require('grand_master_cas');
+var cas = require('grand_master_cas');
 
 cas.configure({
   casHost: "fed.princeton.edu",   // required
@@ -24,8 +25,18 @@ cas.configure({
   renew: false,                     // true or false, false is the default
   gateway: false,                   // true or false, false is the default
   redirectUrl: '/splash'            // the route that cas.blocker will send to if not authed. Defaults to '/'
-});*/
+});
 
+app.get('/splash', routes.splash);
+
+ // grand_master_cas provides a logout
+app.get('/logout', cas.logout);
+
+ // cas.bouncer prompts for authentication and performs login if not logged in. If logged in it passes on.
+app.get('/login', cas.bouncer, routes.login);
+
+ // cas.blocker redirects to the redirectUrl supplied above if not logged in.
+app.get('/', cas.blocker, routes.index);
 
 var app = express();
 

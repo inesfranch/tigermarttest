@@ -8,6 +8,7 @@ router.get('/', function(req, res, next) {
 
 var mongoose = require('mongoose');
 var Product = mongoose.model('Product');
+var User = mongoose.model('User');
 
 /*router.get('/products', function(req, res, next) {
 	Product.find(function(err, products){
@@ -86,16 +87,50 @@ router.get('/users/:user', function(req, res) {
   	res.json(req.user);
 });
 
+
+router.post('/register', function(req, res, next){
+  if(!req.body.username){
+    //some error
+  }
+  if(!req.body.email || !req.body.firstName || !req.body.lastName){
+  	return res.status(400).json({message: 'Please fill out all fields'});
+  }
+
+  var user = new User();
+
+  user.netid = req.body.netid;
+
+  user.email = req.body.email;
+  user.firstName = req.body.firstName;
+  user.lastName = req.body.lastName;
+  user.posted = null;
+
+  user.save(function (err){
+    if(err){ return next(err); }
+
+    return res.json({token: user.generateJWT()})
+  });
+});
+router.get('/addproduct', function(req, res) {
+  	res.json(req);
+});
+
+router.get('/welcome', function(req, res) {
+  	res.json(req);
+});
+
 //var cas = require('grand_master_cas');
 //var routes = require('.');
+exports.index = function(req, res){
+  res.render('index', { name: req.session.cas_user, title: 'Grand Master CAS' });
+};
 
+exports.splash = function(req, res){
+  res.render('splash', { name: req.session.cas_user, title: 'Grand Master CAS' });
+};
 
-//router.get('/splash', routes.splash);
- // grand_master_cas provides a logout
-//router.get('/logout', cas.logout);
- // cas.bouncer prompts for authentication and performs login if not logged in. If logged in it passes on.
-//router.get('/login', cas.bouncer, routes.login);
- // cas.blocker redirects to the redirectUrl supplied above if not logged in.
-//router.get('/', cas.blocker, routes.index);
+exports.login = function(req, res) {
+  res.redirect('/');
+}
 
 module.exports = router;

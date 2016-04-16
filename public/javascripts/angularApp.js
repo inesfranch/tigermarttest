@@ -38,6 +38,18 @@ app.config([
         }]
       }
     });
+    $stateProvider
+    .state('form', {
+      url: '/addproduct',
+      templateUrl: '/addproduct.html',
+      controller: 'FormCtrl',
+    });
+    $stateProvider
+    .state('welcome', {
+      url: '/welcome',
+      templateUrl: '/welcome.html',
+      controller: 'WelcomeCtrl',
+    });
 
     // $urlRouterProvider.when('products');
     // $urlRouterProvider.when('products/:product');
@@ -97,7 +109,43 @@ app.controller('MainCtrl', [
       products.getAll($scope.cat)
     };
 
-    $scope.addProduct = function(dataUrl1){
+}]);
+
+app.controller('ProductsCtrl', [
+'$scope',
+'products',
+'product',
+function($scope, products, product){
+  $scope.product = product;
+
+  
+
+  // FUNCTION GOES HERE!
+
+
+  //$scope.product = products.products[$stateParams.id];
+}]);
+
+app.controller('UsersCtrl', [
+'$scope',
+'products',
+'user',
+function($scope, products, user){
+  $scope.user = user;
+
+  
+
+  // FUNCTION GOES HERE!
+
+
+  //$scope.product = products.products[$stateParams.id];
+}]);
+
+app.controller('FormCtrl', [
+'$scope',
+'products',
+function($scope, products){
+  $scope.addProduct = function(dataUrl1){
       if(!$scope.title || $scope.title === '') { return; }
     
     // ADD VALIDATIONS LATER!
@@ -122,7 +170,6 @@ app.controller('MainCtrl', [
     $scope.picFile1 = '';
     $scope.tags = '';
   };
-}]);
 
 // PRODUCT CONTROLLER
 app.controller('ProductsCtrl', [

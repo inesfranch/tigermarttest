@@ -25,6 +25,10 @@
     <div>
       <a class="btn btn-success col-md-offset-10" href="#/users/mfishman">User Profile</a>
     </div>
+
+    <div style="margin-top: 20px">
+        <a class="btn btn-primary col-md-offset-10" href="#/addproduct">Add Product</a>
+    </div>
     <!--<nav>
       <ul>
         <li><strong>Home</strong></li>
@@ -121,6 +125,55 @@
         </div>
       </div>
 
+    </script>
+
+
+    <script type="text/ng-template" id="/products.html">
+      <div class="page-header col-md-offset-1">
+        <h3>{{product.title}}</h3>
+      </div>
+
+      <div id="products-view" class="row list-group">
+            <div>
+              <div class="thumbnail col-md-4 col-md-offset-1" style="margin-top: 10px">
+                <img class="group list-group-image" ng-src="data:image/png;base64,{{product.pictures}}" alt="" />
+              </div>
+              <div class="thumbnail col-md-4 col-md-offset-1" style="margin-top: 10px">
+                <h4 class="group inner list-group-item-heading">
+                  {{product.title}} - ${{product.price}}
+                </h4>
+                <p style="font-size: 16px">
+                    {{product.description}}
+                </p>
+                <p style="font-size: 16px">
+                    Category: {{product.category}}
+                </p>
+                <p style="font-size: 16px">
+                    Tags: {{product.tags}}
+                </p>
+                <p style="font-size: 16px">
+                    Posted by: {{product.net_id}}@princeton.edu
+                </p>
+                <p style="font-size: 16px">
+                    Posted on: {{product.month}}/{{product.day}}/{{product.year}}
+                </p>
+                <br>
+                <a class="btn btn-success col-md-offset-7" href="">Contact seller</a>
+                <br>
+                <br>
+              </div>
+            </div>
+        </div>
+
+    </script>
+
+    <script type="text/ng-template" id="/user.html">
+      <div class="text-center">
+        <h2>Welcome to your user page</h2>
+      </div>
+    </script>
+
+    <script type="text/ng-template" id="/addproduct.html">
       <form style="margin-top: 30px;" class="col-md-6 col-md-offset-3">
         <h3>Add a new product</h3>
         <div class="form-group">
@@ -153,22 +206,32 @@
         <div class="center-block">
           <button ngf-select class="btn btn-default center-block" ng-model="picFile1" accept="image/*">Select Picture</button>
           <center>
-            <div ngf-drop ng-model="picFile1" ngf-pattern="image/*" 
-            class="cropArea center-block" style="margin-top: 20px">
+          <div ngf-drop ng-model="picFile1" ngf-pattern="image/*" class="cropArea center-block" style="margin-top: 20px">
               <img-crop 
                 image="picFile1  | ngfDataUrl"                 
                 result-image="croppedDataUrl1" 
-                ng-init="croppedDataUrl1=''"
+                ng-init="croppedDataUrl1=''" 
                 result-image-size="300" 
                 area-type="square">
               </img-crop>
-            </div>
-            <div ng-show="picFile1">
+          </div>
+          <div ng-show="picFile1">
               <h5>Preview:</h5>
               <img ng-src="{{croppedDataUrl1}}" />
             </div>
           </center>
         </div>
+
+        <!-- <div class="form-group">
+          <h5>Upload picture(s)</h5>
+          <input type="file" class="form-control" ng-model="pictures" name="pic" accept="image/*"></input>
+        </div>
+
+        <div class="form-group">
+          <input type="file" class="form-control" data-ng-file-select="onFileSelect($files)" accept="image/png, image/jpeg">
+          <span data-ng-if="uploadInProgress">Upload progress: {{ uploadProgress }}</span>
+          <img data-ng-src="uploadedImage" data-ng-if="uploadedImage">
+        </div> -->
 
          <div class="form-group">
           <input type="text" class="form-control" style="margin-top: 20px" placeholder="Add Tags" ng-model="tags"></input>
@@ -186,38 +249,38 @@
         <h3>{{product.title}}</h3>
       </div>
       <div id="products-view" class="row list-group">
-            <div>
-              <div class="thumbnail col-md-4 col-md-offset-1" style="margin-top: 10px">
-                <img class="group list-group-image" ng-src="data:image/png;base64,{{product.pictures}}" alt="" />
-              </div>
-              <div class="thumbnail col-md-4 col-md-offset-1" style="margin-top: 10px">
-                <h4 class="group inner list-group-item-heading">
-                  {{product.title}} - ${{product.price}}
-                </h4>
-                <p style="font-size: 16px">
-                    {{product.description}}
-                </p>
-                <p style="font-size: 16px">
-                    Category: {{product.category}}
-                </p>
-                <p style="font-size: 16px">
-                    Tags: {{product.tags}}
-                </p>
-                <p style="font-size: 16px">
-                    Posted by: {{product.net_id}}@princeton.edu
-                </p>
-                <p style="font-size: 16px">
-                    Posted on: {{product.month}}/{{product.day}}/{{product.year}}
-                </p>
-                <br>
-                <a class="btn btn-success col-md-offset-7" href="">Contact {{product.net_id}}</a>
-                <br>
-                <br>
-              </div>
-            </div>
+        <div>
+          <div class="thumbnail col-md-4 col-md-offset-1" style="margin-top: 10px">
+            <img class="group list-group-image" ng-src="data:image/png;base64,{{product.pictures}}" alt="" />
+          </div>
+          <div class="thumbnail col-md-4 col-md-offset-1" style="margin-top: 10px">
+            <h4 class="group inner list-group-item-heading">
+              {{product.title}} - ${{product.price}}
+            </h4>
+            <p style="font-size: 16px">
+              {{product.description}}
+            </p>
+            <p style="font-size: 16px">
+              Category: {{product.category}}
+            </p>
+            <p style="font-size: 16px">
+              Tags: {{product.tags}}
+            </p>
+            <p style="font-size: 16px">
+              Posted by: {{product.net_id}}@princeton.edu
+            </p>
+            <p style="font-size: 16px">
+              Posted on: {{product.month}}/{{product.day}}/{{product.year}}
+            </p>
+            <br>
+              <a class="btn btn-success col-md-offset-7" href="">Contact {{product.net_id}}</a>
+            <br>
+            <br>
+          </div>
         </div>
-
+      </div>
     </script>
+
 
     <!-- ________________ USER PAGE ____________________ -->
     <script type="text/ng-template" id="/user.html">
@@ -265,7 +328,15 @@
           </div>
         </div>
       </div>
+    </script>
 
+
+    <!-- ________________ WELCOME PAGE ____________________ -->
+    <script type="text/ng-template" id="/welcome.html">
+      <div class="text-center">
+        <h2>Welcome to TigerMart</h2>
+      </div>
+      <button class="btn btn-primary center-block">Log in via CAS</button>
     </script>
 
   </body>
