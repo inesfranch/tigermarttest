@@ -91,6 +91,7 @@ app.factory('products', ['$http', function($http){
 }])
 
 
+// MAIN CONTROLLER
 app.controller('MainCtrl', [
   '$scope',
   'products',
@@ -110,42 +111,54 @@ app.controller('MainCtrl', [
 
 }]);
 
+// PRODUCT CONTROLLER
 app.controller('ProductsCtrl', [
 '$scope',
 'products',
 'product',
 function($scope, products, product){
   $scope.product = product;
-
-  
-
-  // FUNCTION GOES HERE!
-
-
-  //$scope.product = products.products[$stateParams.id];
 }]);
 
+// USER CONTROLLER
 app.controller('UsersCtrl', [
 '$scope',
 'products',
+'product',
 'user',
-function($scope, products, user){
+function($scope, products, product, user){
+  $scope.product = product;
   $scope.user = user;
+  $('#myCarousel').carousel({
+  interval: 10000
+})
 
+// Code from http://www.bootply.com/94444
+$('.carousel .item').each(function(){
+  var next = $(this).next();
+  if (!next.length) {
+    next = $(this).siblings(':first');
+  }
+  next.children(':first-child').clone().appendTo($(this));
   
-
-  // FUNCTION GOES HERE!
-
-
-  //$scope.product = products.products[$stateParams.id];
+  if (next.next().length>0) {
+    next.next().children(':first-child').clone().appendTo($(this));
+  }
+  else {
+    $(this).siblings(':first').children(':first-child').clone().appendTo($(this));
+  }
+})
 }]);
 
+
+// FORM CONTROL
 app.controller('FormCtrl', [
 '$scope',
 'products',
 function($scope, products){
   $scope.addProduct = function(dataUrl1){
       if(!$scope.title || $scope.title === '') { return; }
+    
     // ADD VALIDATIONS LATER!
     products.create({
       title: $scope.title,
@@ -169,17 +182,3 @@ function($scope, products){
     $scope.tags = '';
   };
 
-app.controller('UsersCtrl', [
-  '$scope',
-  function($scope){
-
-  
-
-  // FUNCTION GOES HERE!
-
-
-  //$scope.product = products.products[$stateParams.id];
-}]);
-
-  
-}]);
