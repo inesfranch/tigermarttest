@@ -29,14 +29,14 @@ app.config([
     });
     $stateProvider
     .state('users', {
-      url: '/users/{id}',
+      url: '/users',
       templateUrl: '/user.html',
       controller: 'UsersCtrl',
-      resolve: {
-        user: ['$stateParams', 'products', function($stateParams, products) {
-          return products.user($stateParams.id);
-        }]
-      }
+      //resolve: {
+        //user: ['$stateParams', 'products', function($stateParams, products) {
+          //return products.user($stateParams.id);
+        //}]
+      //}
     });
     $stateProvider
     .state('form', {
@@ -57,8 +57,6 @@ app.config([
       controller: 'WelcomeCtrl',
     });
 
-    // $urlRouterProvider.when('products');
-    // $urlRouterProvider.when('products/:product');
     $urlRouterProvider.otherwise('welcome');
   }]);
 
@@ -99,7 +97,7 @@ app.factory('products', ['$http', function($http){
     });
   };
   o.user = function(netid) {
-    return $http.get("/users/" + netid).then(function(res){
+    return $http.get("/users").then(function(res){
       return res.data;
     });
   };
@@ -142,30 +140,9 @@ function($scope, products, product){
 app.controller('UsersCtrl', [
 '$scope',
 'products',
-'product',
-'user',
-function($scope, products, product, user){
-  $scope.product = product;
-  $scope.user = user;
-
-  // Code from http://www.bootply.com/94444
-  $('#myCarousel').carousel({
-  interval: 10000
-})
-$('.carousel .item').each(function(){
-  var next = $(this).next();
-  if (!next.length) {
-    next = $(this).siblings(':first');
-  }
-  next.children(':first-child').clone().appendTo($(this));
-  
-  if (next.next().length>0) {
-    next.next().children(':first-child').clone().appendTo($(this));
-  }
-  else {
-    $(this).siblings(':first').children(':first-child').clone().appendTo($(this));
-  }
-})
+function($scope, products){
+  //$scope.product = product;
+  $scope.user = products.user;
 }]);
 
 

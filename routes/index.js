@@ -83,8 +83,8 @@ router.get('/products/:product', function(req, res) {
   	res.json(req.product);
 });
 
-router.get('/users/:user', function(req, res) {
-  	res.json(req.user);
+router.get('/users', function(req, res) {
+  	res.json(req);
 });
 
 
