@@ -225,13 +225,13 @@
               Tags: {{product.tags}}
             </p>
             <p style="font-size: 16px">
-              Posted by: {{product.net_id}}@princeton.edu
+              Posted by: {{product.userid.firstName}} {{product.userid.lastName}}
             </p>
             <p style="font-size: 16px">
               Posted on: {{product.month}}/{{product.day}}/{{product.year}}
             </p>
             <br>
-              <a class="btn btn-success col-md-offset-7" href="">Contact {{product.net_id}}</a>
+              <a class="btn btn-success col-md-offset-7" href="">Contact {{product.userid.firstName}}</a>
             <br>
             <br>
           </div>
@@ -243,7 +243,7 @@
     <!-- ________________ USER PAGE ____________________ -->
     <script type="text/ng-template" id="/user.html">
       <div>
-        <a class="btn btn-success col-md-offset-10" href="#/">Back to Home</a>
+        <a class="btn btn-success col-md-offset-10" href="#/home">Back to Home</a>
       </div>
       <div>
         <a class="btn btn-success col-md-offset-10" style="margin-top: 10px" href="#/users">Edit My Profile</a>
@@ -369,15 +369,21 @@
       <div class="text-center">
         <h2>Welcome to TigerMart</h2>
       </div>
-      <button class="btn btn-primary center-block" onclick="location.href='#/register'">Register</button>
-      <div class="form-group col-md-4 col-md-offset-4">
-        <input type="text" class="form-control" style="margin-top: 20px" placeholder="NetID" ng-model="netid"></input>
+      <div class="panel panel-default col-md-3 col-md-offset-2" style="margin-top: 30px">
+        <h3 class="text-center">Are you a new user?</h3>
+        <h4 class="text-center" style="margin-top: 20px">Register now to start using TigerMart</h4>
+        <button class="btn btn-success center-block" style="margin-top: 20px; margin-bottom: 20px" onclick="location.href='#/register'">Register</button>
       </div>
-      <button class="btn btn-primary center-block" ng-click="getUser(netid)">Log in</button>
+      <div class="panel panel-default form-group col-md-3 col-md-offset-2" style="margin-top: 30px">
+        <h3 class="text-center">Are you a returning user?</h3>
+        <h4 class="text-center">Enter your NetID</h4>
+        <input type="text" class="form-control" style="margin-top: 20px" placeholder="NetID" ng-model="netid"></input>
+        <button class="btn btn-primary center-block" ng-click="getUser(netid)" style="margin-top: 20px; margin-bottom: 20px">Log in</button>
+      </div>
     </script>
 
     <script type="text/ng-template" id="/register.html">
-      <div class="page-header">
+      <div class="page-header col-md-6 col-md-offset-3 text-center">
         <h1>TigerMart</h1>
       </div>
 
@@ -385,10 +391,8 @@
         <span>{{ error.message }}</span>
       </div>
 
-      <form ng-submit="register()"
-        style="margin-top:30px;">
-        <h3>Register</h3>
-
+      <form ng-submit="register()" class="col-md-4 col-md-offset-4">
+        <h3 class="text-center" style="margin-bottom:20px;">Register by filling out the following form</h3>
         <div class="form-group">
           <input type="text"
           class="form-control"
@@ -413,7 +417,7 @@
           placeholder="Last Name"
           ng-model="user.lastName"></input>
         </div>
-        <button type="submit" class="btn btn-primary">Register</button>
+        <button type="submit" class="btn btn-primary center-block">Register</button>
       </form>
     </script>
 
