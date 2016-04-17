@@ -29,14 +29,14 @@ app.config([
     });
     $stateProvider
     .state('users', {
-      url: '/users',
+      url: '/users/{id}',
       templateUrl: '/user.html',
       controller: 'UsersCtrl',
-      //resolve: {
-        //user: ['$stateParams', 'products', function($stateParams, products) {
-          //return products.user($stateParams.id);
-        //}]
-      //}
+      resolve: {
+        user: ['$stateParams', 'products', function($stateParams, products) {
+          return products.getUser($stateParams.id);
+        }]
+      }
     });
     $stateProvider
     .state('form', {
@@ -71,8 +71,9 @@ app.factory('products', ['$http', function($http){
     });
   };
   o.create = function(product) {
-    return $http.post('/products', product).success(function(data){
+    return $http.post('/products/' + o.user._id, product).success(function(data){
       o.products.push(data);
+      o.user.posted.push(data);
     });
   };
   o.register = function(user){
@@ -92,8 +93,8 @@ app.factory('products', ['$http', function($http){
       return res.data;
     });
   };
-  o.user = function(netid) {
-    return $http.get("/users").then(function(res){
+  o.getUser = function(netid) {
+    return $http.get("/users" + id).then(function(res){
       return res.data;
     });
   };
@@ -149,7 +150,10 @@ app.controller('FormCtrl', [
 function($scope, products){
   $scope.addProduct = function(dataUrl1){
       if(!$scope.title || $scope.title === '') { return; }
-    
+    console.log("hello1");
+    console.log(products.user);
+    console.log("hello2");
+    console.log(products.user.net_id);
     // ADD VALIDATIONS LATER!
     products.create({
       title: $scope.title,
@@ -162,7 +166,7 @@ function($scope, products){
       month: ((new Date()).getMonth() + 1),
       day: (new Date()).getDate(),
       year: (new Date()).getYear() - 100,
-      net_id: "mfishman", // NEED TO CHANGE NET_ID!
+      userid: products.user._id,
       active: true
     });
     $scope.title = '';
@@ -180,9 +184,6 @@ app.controller('WelcomeCtrl', [
 'products',
 function($scope, $state, products){
 
-  $scope.getuser = function(netid) {
-
-  }
   $scope.register = function() {
     products.register($scope.user).error(function(error) {
       $scope.error = error;

@@ -61,16 +61,20 @@ router.get('/search', function(req, res, next) {
 	
 });
 
-router.post('/products', function(req, res, next) {
-	console.log("hello1");
+router.post('/products/:user', function(req, res, next) {
 	var product = new Product(req.body);
-	console.log("hello2");
+	product.user = req.user;
+	console.log(req.user);
+	console.log(req.user.net_id);
+	console.log(req.user.firstName);
 	product.save(function(err, product) {
-		console.log("hello3");
-		if(err){ console.log(err); 
+		if(err){ console.log(err);
 			return next(err); }
-		console.log("hello4")
-		res.json(product);
+		req.user.posted.push(product);
+		req.user.save(function(err, user) {
+			if (err) {return next(err);}
+			res.json(product);
+		})
 	});
 });
 
@@ -84,12 +88,28 @@ router.param('product', function(req, res, next, id) {
 	});
 });
 
-router.get('/products/:product', function(req, res) {
-  	res.json(req.product);
+router.get('/products/:product', function(req, res, next) {
+	req.product.populate('userid', function(err, product) {
+		if (err) { return next(err); }
+		res.json(product);
+	});
 });
 
-router.get('/users', function(req, res) {
-  	res.json(req);
+router.param('user', function(req, res, next, id) {
+	var query = User.findById(id);
+	query.exec(function(err, user) {
+		if (err) {return next(err); }
+		if (!user) {return next(new Error('can\'t find user')); }
+		req.user = user;
+		return next();
+	});
+});
+
+router.get('/users/:user', function(req, res, next) {
+	req.user.populate('posted', function(err, user) {
+		if (err) {return next(err);}
+		res.json(user);
+	});
 });
 
 
@@ -107,7 +127,7 @@ router.post('/register', function(req, res, next){
   user.email = req.body.email;
   user.firstName = req.body.firstName;
   user.lastName = req.body.lastName;
-  user.posted = null;
+  user.posted = [];
   user.save(function (err){
     if(err){ 
     	console.log(err);

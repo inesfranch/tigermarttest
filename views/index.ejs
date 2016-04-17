@@ -23,7 +23,7 @@
     <!-- ________________ HOME PAGE (SEARCH FOR PRODUCTS) ____________________ -->
     <script type="text/ng-template" id="/home.html">
     <div>
-      <a class="btn btn-success col-md-offset-10" href="#/users">User Profile</a>
+      <a class="btn btn-success col-md-offset-10" href="#/users/{{user._id}}">User Profile</a>
     </div>
 
     <div style="margin-top: 20px">
@@ -40,7 +40,7 @@
           <h1>TigerMart</h1>
         </div>
         <div class="text-center">
-          <h4>Hello {{user.firstName}}</h4>
+          <h4>Hello {{user.firstName}} {{user._id}}</h4>
         </div>
         <div class="text-left col-md-6 col-md-offset-3">
           <h5>Filter by category</h5>
@@ -231,7 +231,7 @@
               Posted on: {{product.month}}/{{product.day}}/{{product.year}}
             </p>
             <br>
-              <a class="btn btn-success col-md-offset-7" href="mailto: mfishman@princeton.edu">Contact {{product.userid.firstName}}</a>
+              <a class="btn btn-success col-md-offset-7" href="mailto: {{product.userid.email}}">Contact {{product.userid.firstName}}</a>
             <br>
             <br>
           </div>
@@ -246,7 +246,7 @@
         <a class="btn btn-success col-md-offset-10" href="#/home">Back to Home</a>
       </div>
       <div>
-        <a class="btn btn-success col-md-offset-10" style="margin-top: 10px" href="#/users">Edit My Profile</a>
+        <a class="btn btn-success col-md-offset-10" style="margin-top: 10px" href="#/users/{{user._id}}">Edit My Profile</a>
       </div>
       <div class="text-center">
         <h2>{{user.firstName}} {{user.lastName}}</h2>
@@ -330,7 +330,7 @@
         </div>
 
         <div id="products-view" class="row list-group">
-          <div ng-repeat="product in products | orderBy:sorting">
+          <div ng-repeat="product in user.posted | orderBy:sorting">
             <div class="item  col-md-4">
               <div class="thumbnail">
                 <img class="group list-group-image" ng-src="data:image/png;base64,{{product.pictures}}" alt="" />
