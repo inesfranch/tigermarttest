@@ -34,7 +34,7 @@ app.config([
       controller: 'UsersCtrl',
       resolve: {
         user: ['$stateParams', 'products', function($stateParams, products) {
-          return products.getUser($stateParams.id);
+          return products.getUserInfo($stateParams.id);
         }]
       }
     });
@@ -101,8 +101,8 @@ app.factory('products', ['$http', function($http){
       return res.data;
     });
   };
-  o.getUser = function(netid) {
-    return $http.get("/users" + id).then(function(res){
+  o.getUserInfo = function(id) {
+    return $http.get("/users/" + id).then(function(res){
       return res.data;
     });
   };
