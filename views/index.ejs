@@ -377,8 +377,15 @@
       <div class="panel panel-default form-group col-md-3 col-md-offset-2" style="margin-top: 30px">
         <h3 class="text-center">Are you a returning user?</h3>
         <h4 class="text-center">Enter your NetID</h4>
-        <input type="text" class="form-control" style="margin-top: 20px" placeholder="NetID" ng-model="netid"></input>
-        <button class="btn btn-primary center-block" ng-click="getUser(netid)" style="margin-top: 20px; margin-bottom: 20px">Log in</button>
+        <form ng-submit= "getUser()">
+          <div class="form-group">
+            <input type="text"
+            class="form-control"
+            placeholder="NetID"
+            ng-model="user.net_id"></input>
+          </div>
+          <button type="submit" class="btn btn-primary">Log In</button>
+        </form>
       </div>
     </script>
 

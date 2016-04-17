@@ -114,7 +114,7 @@ router.get('/users/:user', function(req, res, next) {
 
 
 router.post('/register', function(req, res, next){
-  if(!req.body.username){
+  if(!req.body.net_id){
     //some error
   }
   if(!req.body.email || !req.body.firstName || !req.body.lastName){
@@ -134,6 +134,20 @@ router.post('/register', function(req, res, next){
     	return next(err); }
     res.json(user);
   });
+});
+
+router.post('/getUser', function(req, res, next){
+	console.log(req.body);
+	if(!req.body.net_id) {return res.status(400).json({message: 'please enter netid'});}
+	var net_id = req.body.net_id;
+	var uqu = User.findOne({'net_id': net_id});
+	uqu.exec(function(err, user){
+		if (err) {
+			return next(err);
+		}
+		if(!user) {return res.status(400).json({message: 'unregistered netid'});}
+		res.json(user);
+	});
 });
 
 router.get('/addproduct', function(req, res) {
