@@ -76,8 +76,16 @@ app.factory('products', ['$http', function($http){
     });
   };
   o.register = function(user){
-  return $http.post('/register', user).success(function(data){
-    o.user = data;
+    return $http.post('/register', user).success(function(data){
+      o.user = data;  
+      console.log(user);
+    });
+  };
+  o.getUser = function(user){
+    console.log(user.net_id + "2"); 
+    return $http.post('/getUser', user).success(function(data){
+      o.user = data;
+      console.log(o.user + "1s");
     });
   };
   o.search = function(q, cat) {
@@ -180,8 +188,13 @@ app.controller('WelcomeCtrl', [
 'products',
 function($scope, $state, products){
 
-  $scope.getuser = function(netid) {
-
+  $scope.getUser = function() {
+    console.log($scope.user.net_id + "1");
+    products.getUser($scope.user).error(function(error){
+      $scope.error = error;
+    }).then(function() {
+      $state.go('home');
+    });
   }
   $scope.register = function() {
     products.register($scope.user).error(function(error) {
