@@ -76,12 +76,8 @@ app.factory('products', ['$http', function($http){
     });
   };
   o.register = function(user){
-    console.log("hello2");
   return $http.post('/register', user).success(function(data){
-    console.log("hello8");
     o.user = data;
-    console.log(o.user);
-    //console.log(o.user.net_id);
     });
   };
   o.search = function(q, cat) {
@@ -188,7 +184,6 @@ function($scope, $state, products){
 
   }
   $scope.register = function() {
-    console.log("hello1");
     products.register($scope.user).error(function(error) {
       $scope.error = error;
     }).then(function() {

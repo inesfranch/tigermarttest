@@ -62,9 +62,14 @@ router.get('/search', function(req, res, next) {
 });
 
 router.post('/products', function(req, res, next) {
+	console.log("hello1");
 	var product = new Product(req.body);
+	console.log("hello2");
 	product.save(function(err, product) {
-		if(err){ return next(err); }
+		console.log("hello3");
+		if(err){ console.log(err); 
+			return next(err); }
+		console.log("hello4")
 		res.json(product);
 	});
 });
@@ -89,14 +94,12 @@ router.get('/users', function(req, res) {
 
 
 router.post('/register', function(req, res, next){
-console.log("hello3");
   if(!req.body.username){
     //some error
   }
   if(!req.body.email || !req.body.firstName || !req.body.lastName){
   	return res.status(400).json({message: 'Please fill out all fields'});
   }
-console.log("hello4");
   var user = new User();
 
   user.net_id = req.body.net_id;
@@ -105,13 +108,10 @@ console.log("hello4");
   user.firstName = req.body.firstName;
   user.lastName = req.body.lastName;
   user.posted = null;
-console.log("hello5");
   user.save(function (err){
-  	console.log("hello6");
     if(err){ 
     	console.log(err);
     	return next(err); }
-    console.log("hello7");
     res.json(user);
   });
 });
