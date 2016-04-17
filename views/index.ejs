@@ -303,7 +303,7 @@
           </div> -->
         </div>
 
-        <div class="item  col-md-4">
+        <!--<div class="item  col-md-4">
           <div class="thumbnail">
             <img class="group list-group-image" ng-src="data:image/png;base64,{{product.pictures}}" alt="" />
             <div class="caption">
@@ -330,10 +330,10 @@
               </div>
             </div>
           </div>
-        </div>
+        </div>-->
 
         <div id="products-view" class="row list-group">
-          <div ng-repeat="product in user.posted | orderBy:sorting">
+          <div ng-repeat="product in user.posted | orderBy:price">
             <div class="item  col-md-4">
               <div class="thumbnail">
                 <img class="group list-group-image" ng-src="data:image/png;base64,{{product.pictures}}" alt="" />
