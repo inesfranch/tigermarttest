@@ -12,7 +12,7 @@ app.config([
       controller: 'MainCtrl',
       resolve: {
         postPromise: ['products', function(products){
-          return products.getAll('all');
+          return products.getAll('All');
         }]
       }
     });
@@ -121,8 +121,7 @@ app.controller('MainCtrl', [
     $scope.user = products.user;
     
     $scope.search = function(){
-      if(!$scope.q || $scope.q === '') { return; }
-      if(!$scope.cat || $scope.cat === '') {$scope.cat = "all";}
+      if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
       products.search($scope.q, $scope.cat)
     };
 

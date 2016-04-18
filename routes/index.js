@@ -19,7 +19,8 @@ var User = mongoose.model('User');
 
 router.get('/products', function(req, res, next) {
 	var cat = req.query.cat;
-	if (cat == "all") {
+	if (cat == "All") {
+           console.log("here");
 		Product.find(function(err, products){
 			if(err){return next(err);}
 			res.json(products);
@@ -40,7 +41,7 @@ router.get('/products', function(req, res, next) {
 router.get('/search', function(req, res, next) {
 	var q = req.query.q;
 	var cat = req.query.cat;
-	if (cat == "all") {
+	if (cat == "All") {
 		var qu = Product.find({'$or': [
 			{'title': {$regex: q, $options: "i"}},
 			{'description': {$regex: q, $options: "i"}}]});
@@ -49,16 +50,15 @@ router.get('/search', function(req, res, next) {
 			res.json(products);
 		});
 	}
-	else {
-		var qu = Product.find({'$or': [
-			{'title': {$regex: q, $options: "i"}, 'category': {$regex: cat}},
-			{'description': {$regex: q, $options: "i"}, 'category': {$regex: cat}}]});
-		qu.exec(function(err, products) {
-			if(err){return next(err);}
-			res.json(products);
-		});
-	}
-	
+    else {
+        var qu = Product.find({'$or': [
+            {'title': {$regex: q, $options: "i"}, 'category': {$regex: cat}},
+            {'description': {$regex: q, $options: "i"}, 'category': {$regex: cat}}]});
+        qu.exec(function(err, products) {
+            if(err){return next(err);}
+            res.json(products);
+        });
+    }
 });
 
 router.post('/products/:user', function(req, res, next) {
