@@ -77,15 +77,15 @@ app.factory('products', ['$http', function($http){
   };
   o.register = function(user){
     return $http.post('/register', user).success(function(data){
-      o.user = data;  
-      console.log(user);
+      o.user = data;
+      sessionStorage.setItem('user', JSON.stringify(data));  
     });
   };
   o.getUser = function(user){
-    console.log(user.net_id + "2"); 
     return $http.post('/getUser', user).success(function(data){
+      console.log(data);
       o.user = data;
-      console.log(o.user + "1s");
+      sessionStorage.setItem('user', JSON.stringify(data));
     });
   };
   o.search = function(q, cat) {
@@ -118,7 +118,11 @@ app.controller('MainCtrl', [
     $scope.products = products.products;
 
     $scope.user = products.user;
-    
+
+    if($scope.user.net_id == null) {
+      $scope.user = JSON.parse(sessionStorage.getItem('user'));
+    }
+
     $scope.search = function(){
       if(!$scope.q || $scope.q === '') { return; }
       if(!$scope.cat || $scope.cat === '') {$scope.cat = "all";}
@@ -147,6 +151,11 @@ app.controller('UsersCtrl', [
 function($scope, products){
   //$scope.product = product;
   $scope.user = products.user;
+  
+  if($scope.user.net_id == null) {
+      $scope.user = JSON.parse(sessionStorage.getItem('user'));
+    }
+
 }]);
 
 
@@ -189,7 +198,6 @@ app.controller('WelcomeCtrl', [
 function($scope, $state, products){
 
   $scope.getUser = function() {
-    console.log($scope.user.net_id + "1");
     products.getUser($scope.user).error(function(error){
       $scope.error = error;
     }).then(function() {

@@ -107,7 +107,7 @@ router.post('/register', function(req, res, next){
   user.email = req.body.email;
   user.firstName = req.body.firstName;
   user.lastName = req.body.lastName;
-  user.posted = null;
+  user.posted = [];
   user.save(function (err){
     if(err){ 
     	console.log(err);
