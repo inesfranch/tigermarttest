@@ -23,7 +23,7 @@
     <!-- ________________ HOME PAGE (SEARCH FOR PRODUCTS) ____________________ -->
     <script type="text/ng-template" id="/home.html">
     <div>
-      <a class="btn btn-success col-md-offset-10" href="#/users">User Profile</a>
+      <a class="btn btn-success col-md-offset-10" href="#/users/{{user._id}}">User Profile</a>
     </div>
 
     <div style="margin-top: 20px">
@@ -203,6 +203,9 @@
 
     <!-- ________________ PRODUCT PAGE ____________________ -->
     <script type="text/ng-template" id="/products.html">
+      <div>
+        <a class="btn btn-success col-md-offset-10" href="#/home">Back to Home</a>
+      </div>
       <div class="page-header col-md-offset-1">
         <h3>{{product.title}}</h3>
       </div>
@@ -231,7 +234,7 @@
               Posted on: {{product.month}}/{{product.day}}/{{product.year}}
             </p>
             <br>
-              <a class="btn btn-success col-md-offset-7" href="mailto: mfishman@princeton.edu">Contact {{product.userid.firstName}}</a>
+<a class="btn btn-success col-md-offset-7" href="mailto: {{product.userid.email}}?subject=Hey! I am interested in your {{product.title}} on TigerMart&body=Hey {{product.userid.firstName}}! %0A%0AI saw your {{product.title}} on TigerMart and I am interested in buying it. Let me know if it is still available. %0A%0AThanks! %0A%0A{{user.firstName}}" target="_blank">Contact {{product.userid.firstName}}</a>
             <br>
             <br>
           </div>
@@ -246,7 +249,7 @@
         <a class="btn btn-success col-md-offset-10" href="#/home">Back to Home</a>
       </div>
       <div>
-        <a class="btn btn-success col-md-offset-10" style="margin-top: 10px" href="#/users">Edit My Profile</a>
+        <a class="btn btn-success col-md-offset-10" style="margin-top: 10px" href="#/users/{{user._id}}">Edit My Profile</a>
       </div>
       <div class="text-center">
         <h2>{{user.firstName}} {{user.lastName}}</h2>
@@ -280,14 +283,14 @@
               <button class="btn btn-primary"type="submit">Update</button>
             </div>
           </form> --> 
-          <ng-submit="search()"> 
+          <!--<ng-submit="search()"> 
             <div class="form-group col-sm-3 col-sm-offset-7">
               <input type="text" class="form-control" placeholder="Search..." ng-model="q"></input>
             </div>
             <div class="col-md-1">
               <button class="btn btn-primary" type="submit">Search</button>
             </div>
-          </form> 
+          </form> -->
           <!--
           <strong>Sort by:</strong>
           <div class="form-group col-sm-3" style="margin-left: 20px">
@@ -300,7 +303,7 @@
           </div> -->
         </div>
 
-        <div class="item  col-md-4">
+        <!--<div class="item  col-md-4">
           <div class="thumbnail">
             <img class="group list-group-image" ng-src="data:image/png;base64,{{product.pictures}}" alt="" />
             <div class="caption">
@@ -327,10 +330,10 @@
               </div>
             </div>
           </div>
-        </div>
+        </div>-->
 
         <div id="products-view" class="row list-group">
-          <div ng-repeat="product in products | orderBy:sorting">
+          <div ng-repeat="product in user.posted | orderBy:price">
             <div class="item  col-md-4">
               <div class="thumbnail">
                 <img class="group list-group-image" ng-src="data:image/png;base64,{{product.pictures}}" alt="" />
@@ -384,7 +387,7 @@
             placeholder="NetID"
             ng-model="user.net_id"></input>
           </div>
-          <button type="submit" class="btn btn-primary">Log In</button>
+          <button type="submit" class="btn btn-primary center-block">Log In</button>
         </form>
       </div>
     </script>

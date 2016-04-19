@@ -12,7 +12,7 @@ app.config([
       controller: 'MainCtrl',
       resolve: {
         postPromise: ['products', function(products){
-          return products.getAll('all');
+          return products.getAll('All');
         }]
       }
     });
@@ -29,14 +29,14 @@ app.config([
     });
     $stateProvider
     .state('users', {
-      url: '/users',
+      url: '/users/{id}',
       templateUrl: '/user.html',
       controller: 'UsersCtrl',
-      //resolve: {
-        //user: ['$stateParams', 'products', function($stateParams, products) {
-          //return products.user($stateParams.id);
-        //}]
-      //}
+      resolve: {
+        user: ['$stateParams', 'products', function($stateParams, products) {
+          return products.getUserInfo($stateParams.id);
+        }]
+      }
     });
     $stateProvider
     .state('form', {
@@ -71,8 +71,9 @@ app.factory('products', ['$http', function($http){
     });
   };
   o.create = function(product) {
-    return $http.post('/products', product).success(function(data){
+    return $http.post('/products/' + o.user._id, product).success(function(data){
       o.products.push(data);
+      o.user.posted.push(data);
     });
   };
   o.register = function(user){
@@ -100,8 +101,8 @@ app.factory('products', ['$http', function($http){
       return res.data;
     });
   };
-  o.user = function(netid) {
-    return $http.get("/users").then(function(res){
+  o.getUserInfo = function(id) {
+    return $http.get("/users/" + id).then(function(res){
       return res.data;
     });
   };
@@ -124,8 +125,7 @@ app.controller('MainCtrl', [
     }
 
     $scope.search = function(){
-      if(!$scope.q || $scope.q === '') { return; }
-      if(!$scope.cat || $scope.cat === '') {$scope.cat = "all";}
+      if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
       products.search($scope.q, $scope.cat)
     };
 
@@ -166,7 +166,10 @@ app.controller('FormCtrl', [
 function($scope, products){
   $scope.addProduct = function(dataUrl1){
       if(!$scope.title || $scope.title === '') { return; }
-    
+    console.log("hello1");
+    console.log(products.user);
+    console.log("hello2");
+    console.log(products.user.net_id);
     // ADD VALIDATIONS LATER!
     products.create({
       title: $scope.title,
@@ -179,7 +182,7 @@ function($scope, products){
       month: ((new Date()).getMonth() + 1),
       day: (new Date()).getDate(),
       year: (new Date()).getYear() - 100,
-      net_id: "mfishman", // NEED TO CHANGE NET_ID!
+      userid: products.user._id,
       active: true
     });
     $scope.title = '';
@@ -204,6 +207,7 @@ function($scope, $state, products){
       $state.go('home');
     });
   }
+
   $scope.register = function() {
     products.register($scope.user).error(function(error) {
       $scope.error = error;
