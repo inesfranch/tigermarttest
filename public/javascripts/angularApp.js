@@ -71,9 +71,11 @@ app.factory('products', ['$http', function($http){
     });
   };
   o.create = function(product) {
-    return $http.post('/products/' + o.user._id, product).success(function(data){
+    var user = JSON.parse(sessionStorage.getItem('user'));
+    return $http.post('/products/' + user._id, product).success(function(data){
       o.products.push(data);
-      o.user.posted.push(data);
+      user.posted.push(data);
+      sessionStorage.setItem('user', JSON.stringify(user));
     });
   };
   o.register = function(user){
@@ -112,27 +114,28 @@ app.factory('products', ['$http', function($http){
 
 // MAIN CONTROLLER
 app.controller('MainCtrl', [
-  '$scope',
-  'products',
-  function($scope, products){
+'$scope',
+'$state',
+'products',
+function($scope, $state, products){
 
-    $scope.products = products.products;
+  $scope.products = products.products;
 
-    $scope.user = products.user;
+  $scope.user = JSON.parse(sessionStorage.getItem('user'));
 
-    if($scope.user.net_id == null) {
-      $scope.user = JSON.parse(sessionStorage.getItem('user'));
-    }
+  $scope.logOut = function(){
+    sessionStorage.removeItem('user');
+    $state.go('welcome');
+  };
 
-    $scope.search = function(){
-      if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
+  $scope.search = function(){
+    if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
       products.search($scope.q, $scope.cat)
     };
 
-    $scope.filterCat = function(){
-      products.getAll($scope.cat)
-    };
-
+  $scope.filterCat = function(){
+    products.getAll($scope.cat)
+  };
 }]);
 
 // PRODUCT CONTROLLER
@@ -150,11 +153,7 @@ app.controller('UsersCtrl', [
 'products',
 function($scope, products){
   //$scope.product = product;
-  $scope.user = products.user;
-  
-  if($scope.user.net_id == null) {
-      $scope.user = JSON.parse(sessionStorage.getItem('user'));
-    }
+  $scope.user = JSON.parse(sessionStorage.getItem('user'));
 
 }]);
 
@@ -165,11 +164,13 @@ app.controller('FormCtrl', [
 'products',
 function($scope, products){
   $scope.addProduct = function(dataUrl1){
-      if(!$scope.title || $scope.title === '') { return; }
+    if(!$scope.title || $scope.title === '') { return; }
+    var user = JSON.parse(sessionStorage.getItem('user'));
     console.log("hello1");
-    console.log(products.user);
+    console.log(user);
     console.log("hello2");
-    console.log(products.user.net_id);
+    console.log(user.net_id);
+
     // ADD VALIDATIONS LATER!
     products.create({
       title: $scope.title,
@@ -182,7 +183,7 @@ function($scope, products){
       month: ((new Date()).getMonth() + 1),
       day: (new Date()).getDate(),
       year: (new Date()).getYear() - 100,
-      userid: products.user._id,
+      userid: user._id,
       active: true
     });
     $scope.title = '';
