@@ -86,7 +86,6 @@ app.factory('products', ['$http', function($http){
   };
   o.getUser = function(user){
     return $http.post('/getUser', user).success(function(data){
-      console.log(data);
       o.user = data;
       sessionStorage.setItem('user', JSON.stringify(data));
     });
@@ -105,6 +104,7 @@ app.factory('products', ['$http', function($http){
   };
   o.getUserInfo = function(id) {
     return $http.get("/users/" + id).then(function(res){
+      sessionStorage.setItem('user', JSON.stringify(res.data));
       return res.data;
     });
   };
@@ -151,7 +151,8 @@ function($scope, products, product){
 app.controller('UsersCtrl', [
 '$scope',
 'products',
-function($scope, products){
+'user',
+function($scope, products, user){
   //$scope.product = product;
   $scope.user = JSON.parse(sessionStorage.getItem('user'));
 
@@ -163,13 +164,13 @@ app.controller('FormCtrl', [
 '$scope',
 'products',
 function($scope, products){
+
+  //new Taggle('example1');
+
   $scope.addProduct = function(dataUrl1){
+
     if(!$scope.title || $scope.title === '') { return; }
     var user = JSON.parse(sessionStorage.getItem('user'));
-    console.log("hello1");
-    console.log(user);
-    console.log("hello2");
-    console.log(user.net_id);
 
     // ADD VALIDATIONS LATER!
     products.create({

@@ -20,7 +20,6 @@ var User = mongoose.model('User');
 router.get('/products', function(req, res, next) {
 	var cat = req.query.cat;
 	if (cat == "All") {
-           console.log("here");
 		Product.find(function(err, products){
 			if(err){return next(err);}
 			res.json(products);
@@ -64,9 +63,6 @@ router.get('/search', function(req, res, next) {
 router.post('/products/:user', function(req, res, next) {
 	var product = new Product(req.body);
 	product.user = req.user;
-	console.log(req.user);
-	console.log(req.user.net_id);
-	console.log(req.user.firstName);
 	product.save(function(err, product) {
 		if(err){ console.log(err);
 			return next(err); }
@@ -107,7 +103,8 @@ router.param('user', function(req, res, next, id) {
 
 router.get('/users/:user', function(req, res, next) {
 	req.user.populate('posted', function(err, user) {
-		if (err) {return next(err);}
+		if (err) { console.log(err);
+			return next(err);}
 		res.json(user);
 	});
 });
@@ -137,7 +134,6 @@ router.post('/register', function(req, res, next){
 });
 
 router.post('/getUser', function(req, res, next){
-	console.log(req.body);
 	if(!req.body.net_id) {return res.status(400).json({message: 'please enter netid'});}
 	var net_id = req.body.net_id;
 	var uqu = User.findOne({'net_id': net_id});
