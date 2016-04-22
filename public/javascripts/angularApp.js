@@ -116,6 +116,7 @@ app.factory('products', ['$http', function($http){
   };
   o.getUserInfo = function(id) {
     return $http.get("/users/" + id).then(function(res){
+      sessionStorage.setItem('user', JSON.stringify(res.data));
       return res.data;
     });
   };
@@ -176,7 +177,6 @@ app.controller('UsersCtrl', [
 'products',
 '$state',
 
-
 function($scope, products, $state){
   //$scope.product = product;
   if(!sessionStorage.getItem('user')) {
@@ -193,7 +193,7 @@ app.controller('EditUserCtrl', [
 'products',
 '$state',
 
-function($scope, products, $state){
+function($scope, products, user){
   //$scope.product = product;
   if(!sessionStorage.getItem('user')) {
     console.log("hello");
@@ -223,7 +223,9 @@ function($scope, products, $state){
   if(!sessionStorage.getItem('user')) {
     $state.go('welcome');
   } 
+
   $scope.addProduct = function(dataUrl1){
+
     if(!$scope.title || $scope.title === '') { return; }
     var user = JSON.parse(sessionStorage.getItem('user'));
 
