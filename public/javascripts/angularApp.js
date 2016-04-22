@@ -165,8 +165,6 @@ app.controller('FormCtrl', [
 'products',
 function($scope, products){
 
-  //new Taggle('example1');
-
   $scope.addProduct = function(dataUrl1){
 
     if(!$scope.title || $scope.title === '') { return; }
