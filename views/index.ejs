@@ -255,7 +255,7 @@
         <a class="btn btn-success col-md-offset-10" href="#/home">Back to Home</a>
       </div>
       <div>
-        <a class="btn btn-success col-md-offset-10" style="margin-top: 10px" href="#/users/{{user._id}}">Edit My Profile</a>
+        <a class="btn btn-success col-md-offset-10" style="margin-top: 10px" href="#/editUser/{{user._id}}">Edit My Profile</a>
       </div>
       <div class="text-center">
         <h2>{{user.firstName}} {{user.lastName}}</h2>
@@ -370,6 +370,39 @@
             </div>
           </div>
         </div>  
+    </script>
+
+    <script type="text/ng-template" id="/editUser.html">
+      <div class="text-center">
+        <h2>Edit My Profile</h2>
+      </div>
+      <div ng-show="error" class="alert alert-danger row">
+        <span>{{ error.message }}</span>
+      </div>
+      <form ng-submit="editUser()" class="col-md-4 col-md-offset-4">
+      <h2 class="text" style="margin-bottom:20px;"> Netid: {{user.net_id}} </h3>
+        <div class="form-group">
+          <input type="text"
+          class="form-control"
+          placeholder={{user.email}}
+          ng-model="user.email"></input>
+        </div>
+        <div class="form-group">
+          <input type="text"
+          class="form-control"
+          placeholder={{user.firstName}}
+          ng-model="user.firstName"></input>
+        </div>
+        <div class="form-group">
+          <input type="text"
+          class="form-control"
+          placeholder={{user.lastName}}
+          ng-model="user.lastName"></input>
+        </div>
+        <div class="center-block">
+          <button ng-click="editUser()" onclick="location.href='#/home'" class="text-center btn btn-primary center-block">Make Edits</button>
+        </div>
+      </form>
     </script>
 
 

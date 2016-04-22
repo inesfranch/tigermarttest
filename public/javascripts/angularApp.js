@@ -3,7 +3,9 @@ var app = angular.module('tigerMart', ['ui.router', 'ngFileUpload', 'ngImgCrop']
 app.config([
   '$stateProvider',
   '$urlRouterProvider',
+
   function($stateProvider, $urlRouterProvider) {
+
 
     $stateProvider
     .state('home', {
@@ -56,7 +58,17 @@ app.config([
       templateUrl: '/register.html',
       controller: 'WelcomeCtrl',
     });
-
+    $stateProvider
+    .state('editUser', {
+      url: '/editUser/{id}',
+      templateUrl: '/editUser.html',
+      controller: 'EditUserCtrl',
+      resolve: {
+        user: ['$stateParams', 'products', function($stateParams, products) {
+          return products.getUserInfo($stateParams.id);
+        }]
+      }
+    });
     $urlRouterProvider.otherwise('welcome');
   }]);
 
@@ -86,7 +98,6 @@ app.factory('products', ['$http', function($http){
   };
   o.getUser = function(user){
     return $http.post('/getUser', user).success(function(data){
-      console.log(data);
       o.user = data;
       sessionStorage.setItem('user', JSON.stringify(data));
     });
@@ -108,6 +119,9 @@ app.factory('products', ['$http', function($http){
       return res.data;
     });
   };
+  o.editUser = function(user) {
+    console.log(user);
+  };
   return o;
 }])
 
@@ -120,6 +134,10 @@ app.controller('MainCtrl', [
 function($scope, $state, products){
 
   $scope.products = products.products;
+
+  if(!sessionStorage.getItem('user')){
+    $state.go('welcome');
+  }
 
   $scope.user = JSON.parse(sessionStorage.getItem('user'));
 
@@ -143,7 +161,12 @@ app.controller('ProductsCtrl', [
 '$scope',
 'products',
 'product',
-function($scope, products, product){
+'$state',
+
+function($scope, products, product, $state){
+  if(!sessionStorage.getItem('user')) {
+    $state.go('welcome');
+  } 
   $scope.product = product;
 }]);
 
@@ -151,10 +174,42 @@ function($scope, products, product){
 app.controller('UsersCtrl', [
 '$scope',
 'products',
-function($scope, products){
+'$state',
+
+
+function($scope, products, $state){
   //$scope.product = product;
+  if(!sessionStorage.getItem('user')) {
+    console.log("hello");
+    $state.go('welcome');
+  } 
+
   $scope.user = JSON.parse(sessionStorage.getItem('user'));
 
+}]);
+
+app.controller('EditUserCtrl', [
+'$scope',
+'products',
+'$state',
+
+function($scope, products, $state){
+  //$scope.product = product;
+  if(!sessionStorage.getItem('user')) {
+    console.log("hello");
+    $state.go('welcome');
+  } 
+
+  $scope.user = JSON.parse(sessionStorage.getItem('user'));
+
+  $scope.editUser = function(){
+    console.log("hello");
+    products.editUser($scope.user).error(function(error){
+      $scope.error = error;
+    }).then(function() {
+      $state.go('users');
+    });
+  };
 }]);
 
 
@@ -162,14 +217,15 @@ function($scope, products){
 app.controller('FormCtrl', [
 '$scope',
 'products',
-function($scope, products){
+'$state',
+
+function($scope, products, $state){
+  if(!sessionStorage.getItem('user')) {
+    $state.go('welcome');
+  } 
   $scope.addProduct = function(dataUrl1){
     if(!$scope.title || $scope.title === '') { return; }
     var user = JSON.parse(sessionStorage.getItem('user'));
-    console.log("hello1");
-    console.log(user);
-    console.log("hello2");
-    console.log(user.net_id);
 
     // ADD VALIDATIONS LATER!
     products.create({
