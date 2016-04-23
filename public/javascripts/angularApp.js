@@ -193,7 +193,7 @@ app.controller('EditUserCtrl', [
 'products',
 '$state',
 
-function($scope, products, user){
+function($scope, products, user, $state){
   //$scope.product = product;
   if(!sessionStorage.getItem('user')) {
     console.log("hello");
