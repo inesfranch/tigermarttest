@@ -18,3 +18,8 @@ a {
 .carousel-inner .next        { left:  33%; }
 .carousel-inner .prev        { left: -33%; }
 .carousel-control.left,.carousel-control.right {background-image:none;}
+
+.form-group.required .control-label:after {
+  content:"*";
+  color:red;
+}
