@@ -226,10 +226,6 @@ function($scope, products, $state){
 
   $scope.addProduct = function(dataUrl1, mySingleField){
 
-    if(!$scope.title || $scope.title === '' || !$scope.description || $scope.description === '' || 
-      !$scope.price || $scope.price === '' || !$scope.category || $scope.category === '') { 
-
-     }
     var user = JSON.parse(sessionStorage.getItem('user'));
 
     console.log($scope.title);
