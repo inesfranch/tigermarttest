@@ -224,10 +224,17 @@ function($scope, products, $state){
     $state.go('welcome');
   } 
 
-  $scope.addProduct = function(dataUrl1){
+  $scope.addProduct = function(dataUrl1, mySingleField){
 
-    if(!$scope.title || $scope.title === '') { return; }
+    if(!$scope.title || $scope.title === '' || !$scope.description || $scope.description === '' || 
+      !$scope.price || $scope.price === '' || !$scope.category || $scope.category === '') { 
+
+     }
     var user = JSON.parse(sessionStorage.getItem('user'));
+
+    console.log($scope.title);
+    console.log(document.getElementById("mySingleField").value);
+    console.log($scope.tags);
 
     // ADD VALIDATIONS LATER!
     products.create({
@@ -236,13 +243,17 @@ function($scope, products, $state){
       description: $scope.description,
       price: $scope.price,
       pictures: dataUrl1.split("base64,")[1],
-      tags: $scope.tags,
+      tags: "tags",
       date: new Date(),
       month: ((new Date()).getMonth() + 1),
       day: (new Date()).getDate(),
       year: (new Date()).getYear() - 100,
       userid: user._id,
       active: true
+    }).error(function(error) {
+      $scope.error = error;
+    }).then(function() {
+      $state.go('home');
     });
     $scope.title = '';
     $scope.category = '';

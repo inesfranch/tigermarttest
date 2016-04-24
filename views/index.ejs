@@ -8,8 +8,106 @@
     <script src="/javascripts/ng-file-upload-shim.min.js"></script> <!-- for no html5 browsers support -->
     <script src="/javascripts/ng-file-upload.min.js"></script>
     <script src="/javascripts/ng-img-crop.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/tag-it.js" type="text/javascript" charset="utf-8"></script>
     <link rel="stylesheet" type="text/css" href="/stylesheets/ng-img-crop.css">
     <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+    <link href="/stylesheets/jquery.tagit.css" rel="stylesheet" type="text/css">
+    <link href="/stylesheets/tagit.ui-zendesk.css" rel="stylesheet" type="text/css">
+
+    <script>
+        $(function(){
+            var sampleTags = ['c++', 'java', 'php', 'coldfusion', 'javascript', 'asp', 'ruby', 'python', 'c', 'scala', 'groovy', 'haskell', 'perl', 'erlang', 'apl', 'cobol', 'go', 'lua'];
+            //-------------------------------
+            // Minimal
+            //-------------------------------
+            $('#myTags').tagit();
+            //-------------------------------
+            // Single field
+            //-------------------------------
+            $('#singleFieldTags').tagit({
+                availableTags: sampleTags,
+                // This will make Tag-it submit a single form value, as a comma-delimited field.
+                singleField: true,
+                singleFieldNode: $('#mySingleField')
+            });
+            // singleFieldTags2 is an INPUT element, rather than a UL as in the other 
+            // examples, so it automatically defaults to singleField.
+            $('#singleFieldTags2').tagit({
+                availableTags: sampleTags
+            });
+            //-------------------------------
+            // Preloading data in markup
+            //-------------------------------
+            $('#myULTags').tagit({
+                availableTags: sampleTags, // this param is of course optional. it's for autocomplete.
+                // configure the name of the input field (will be submitted with form), default: item[tags]
+                itemName: 'item',
+                fieldName: 'tags'
+            });
+            //-------------------------------
+            // Tag events
+            //-------------------------------
+            var eventTags = $('#eventTags');
+            var addEvent = function(text) {
+                $('#events_container').append(text + '<br>');
+            };
+            eventTags.tagit({
+                availableTags: sampleTags,
+                beforeTagAdded: function(evt, ui) {
+                    if (!ui.duringInitialization) {
+                        addEvent('beforeTagAdded: ' + eventTags.tagit('tagLabel', ui.tag));
+                    }
+                },
+                afterTagAdded: function(evt, ui) {
+                    if (!ui.duringInitialization) {
+                        addEvent('afterTagAdded: ' + eventTags.tagit('tagLabel', ui.tag));
+                    }
+                },
+                beforeTagRemoved: function(evt, ui) {
+                    addEvent('beforeTagRemoved: ' + eventTags.tagit('tagLabel', ui.tag));
+                },
+                afterTagRemoved: function(evt, ui) {
+                    addEvent('afterTagRemoved: ' + eventTags.tagit('tagLabel', ui.tag));
+                },
+                onTagClicked: function(evt, ui) {
+                    addEvent('onTagClicked: ' + eventTags.tagit('tagLabel', ui.tag));
+                },
+                onTagExists: function(evt, ui) {
+                    addEvent('onTagExists: ' + eventTags.tagit('tagLabel', ui.existingTag));
+                }
+            });
+            //-------------------------------
+            // Read-only
+            //-------------------------------
+            $('#readOnlyTags').tagit({
+                readOnly: true
+            });
+            //-------------------------------
+            // Tag-it methods
+            //-------------------------------
+            $('#methodTags').tagit({
+                availableTags: sampleTags
+            });
+            //-------------------------------
+            // Allow spaces without quotes.
+            //-------------------------------
+            $('#allowSpacesTags').tagit({
+                availableTags: sampleTags,
+                allowSpaces: true
+            });
+            //-------------------------------
+            // Remove confirmation
+            //-------------------------------
+            $('#removeConfirmationTags').tagit({
+                availableTags: sampleTags,
+                removeConfirmation: true
+            });
+            
+        });
+    </script>
+
   </head>
 
   <body ng-app="tigerMart">
@@ -139,6 +237,13 @@
     <script type="text/ng-template" id="/addproduct.html">
       <form style="margin-top: 30px;" class="col-md-6 col-md-offset-3">
         <h3>Add a new product</h3>
+        <div ng-show="error" class="alert alert-danger row">
+          <span>
+            <center>
+              {{ error.message }}
+            </center>
+          </span>
+        </div>
         <div class="form-group">
           <input type="text" class="form-control" placeholder="Title" ng-model="title"></input>
         </div>
@@ -196,12 +301,18 @@
           <img data-ng-src="uploadedImage" data-ng-if="uploadedImage">
         </div> -->
 
-         <div class="form-group">
+         <!--<div class="form-group">
           <input type="text" class="form-control" style="margin-top: 20px" placeholder="Add Tags" ng-model="tags"></input>
-        </div>
+        </div>-->
 
+        <div class="form-group" style="margin-top: 20px">
+          <h5>Create tags (separate by Enter key)</h5>
+          <input name="tags" id="mySingleField" value="Apple, Orange" disabled="true" ng-model="tags">
+          <ul class="form-control" id="singleFieldTags"></ul>
+        </div>
+        
         <div class="center-block">
-          <button ng-click="addProduct(croppedDataUrl1)" onclick="location.href='#/home'" class="text-center btn btn-primary center-block">Post product</button>
+          <button ng-click="addProduct(croppedDataUrl1, mySingleField)" class="text-center btn btn-primary center-block">Post product</button>
         </div>
       </form>
     </script>
@@ -410,6 +521,13 @@
       <div class="text-center">
         <h2>Welcome to TigerMart</h2>
       </div>
+      <div ng-show="error" class="alert alert-danger row col-md-4 col-md-offset-4">
+        <span>
+          <center>
+            {{ error.message }}
+          </center>
+        </span>
+      </div>  
       <div class="panel panel-default col-md-3 col-md-offset-2" style="margin-top: 30px">
         <h3 class="text-center">Are you a new user?</h3>
         <h4 class="text-center" style="margin-top: 20px">Register now to start using TigerMart</h4>
@@ -435,12 +553,15 @@
         <h1>TigerMart</h1>
       </div>
 
-      <div ng-show="error" class="alert alert-danger row">
-        <span>{{ error.message }}</span>
-      </div>
-
       <form ng-submit="register()" class="col-md-4 col-md-offset-4">
         <h3 class="text-center" style="margin-bottom:20px;">Register by filling out the following form</h3>
+        <div ng-show="error" class="alert alert-danger row">
+          <span>
+            <center>
+              {{ error.message }}
+            </center>
+          </span>
+        </div>
         <div class="form-group">
           <input type="text"
           class="form-control"

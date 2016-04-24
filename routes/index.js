@@ -61,6 +61,10 @@ router.get('/search', function(req, res, next) {
 });
 
 router.post('/products/:user', function(req, res, next) {
+	if(!req.body.title || req.body.title === '' || !req.body.description || req.body.description === '' || 
+      !req.body.price || req.body.price === '' || !req.body.category || req.body.category === '') { 
+		return res.status(400).json({message: 'Please fill out all the required fields in the form'});
+     }
 	var product = new Product(req.body);
 	product.user = req.user;
 	product.save(function(err, product) {
@@ -111,37 +115,45 @@ router.get('/users/:user', function(req, res, next) {
 
 
 router.post('/register', function(req, res, next){
-  if(!req.body.net_id){
-    //some error
+  if(!req.body.net_id || !req.body.email || !req.body.firstName || !req.body.lastName){
+  	return res.status(400).json({message: 'Please fill out all the fields in the form'});
   }
-  if(!req.body.email || !req.body.firstName || !req.body.lastName){
-  	return res.status(400).json({message: 'Please fill out all fields'});
-  }
-  var user = new User();
+  var repeateduser = false;
+  var query = User.find({net_id: req.body.net_id});
+  query.exec(function(err, user) {
+  	if (user && user != '' && user != null) {
+  		res.status(400).json({message: 'This user is already registered'});
+  	}
+  	else {
 
-  user.net_id = req.body.net_id;
+  		var user = new User();
 
-  user.email = req.body.email;
-  user.firstName = req.body.firstName;
-  user.lastName = req.body.lastName;
-  user.posted = [];
-  user.save(function (err){
-    if(err){ 
-    	console.log(err);
-    	return next(err); }
-    res.json(user);
+	  user.net_id = req.body.net_id;
+
+	  user.email = req.body.email;
+	  user.firstName = req.body.firstName;
+	  user.lastName = req.body.lastName;
+	  user.posted = [];
+	  user.save(function (err){
+	    if(err){ 
+	    	console.log(err);
+	    	return next(err); }
+	    res.json(user);
+	  });
+
+  	}
   });
 });
 
 router.post('/getUser', function(req, res, next){
-	if(!req.body.net_id) {return res.status(400).json({message: 'please enter netid'});}
+	if(!req.body.net_id) {return res.status(400).json({message: 'Please enter a NetID'});}
 	var net_id = req.body.net_id;
 	var uqu = User.findOne({'net_id': net_id});
 	uqu.exec(function(err, user){
 		if (err) {
 			return next(err);
 		}
-		if(!user) {return res.status(400).json({message: 'unregistered netid'});}
+		if(!user) {return res.status(400).json({message: 'Unregistered NetID, plase create an account'});}
 		res.json(user);
 	});
 });
