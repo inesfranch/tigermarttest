@@ -30,6 +30,17 @@ app.config([
       }
     });
     $stateProvider
+    .state('productsEdit', {
+      url: '/products/{id}/edit',
+      templateUrl: '/productsEdit.html',
+      controller: 'ProductsEditCtrl',
+      resolve: {
+        product: ['$stateParams', 'products', function($stateParams, products) {
+          return products.get($stateParams.id);
+        }]
+      }
+    });
+    $stateProvider
     .state('users', {
       url: '/users/{id}',
       templateUrl: '/user.html',
@@ -135,6 +146,15 @@ app.factory('products', ['$http', function($http){
   o.editUser = function(user) {
     console.log(user);
   };
+  o.editProduct = function(product, id) {
+    return $http.put('/products/' + id, product).success(function(data){
+      console.log(data);
+      console.log("Product Edited...");
+      $http.get('/products?cat=All').success(function(data){
+      angular.copy(data, o.products);
+      });
+    });
+  };
   /*o.filterActive = function(user) {
     return $http.get("/active?user="+user).success(function(data){
       angular.copy(data, o.products);
@@ -174,7 +194,7 @@ function($scope, $state, products){
   };
 }]);
 
-// PRODUCT CONTROLLER
+// VIEW PRODUCT CONTROLLER
 app.controller('ProductsCtrl', [
 '$scope',
 'products',
@@ -186,6 +206,48 @@ function($scope, products, product, $state){
     $state.go('welcome');
   } 
   $scope.product = product;
+}]);
+
+// EDIT PRODUCT CONTROLLER
+app.controller('ProductsEditCtrl', [
+'$scope',
+'products',
+'product',
+function($scope, products, product){
+  $scope.userid = product.userid;
+  $scope.title = product.title;
+  $scope.category = product.category;
+  $scope.description = product.description;
+  $scope.price = product.price;
+  $scope.tags = product.tags;
+  $scope.pictures = product.pictures;
+  //     pictures: dataUrl1.split("base64,")[1],
+
+$scope.editProduct = function(dataUrl1){
+    if(!$scope.title || $scope.title === '') { return; }
+
+    // ADD VALIDATIONS LATER!
+    products.editProduct({
+      title: $scope.title,
+      category: $scope.category,
+      description: $scope.description,
+      price: $scope.price,
+      pictures: dataUrl1.split("base64,")[1],
+      tags: $scope.tags,
+      date: '',
+      month: '',
+      day: '',
+      year: '',
+      userid: '',
+      active: true
+    }, product._id);
+    $scope.title = '';
+    $scope.category = '';
+    $scope.description = '';
+    $scope.price = '';
+    $scope.picFile1 = '';
+    $scope.tags = '';
+  };
 }]);
 
 // USER CONTROLLER

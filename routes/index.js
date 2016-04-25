@@ -96,6 +96,22 @@ router.get('/products/:product', function(req, res, next) {
 	});
 });
 
+router.put('/products/:product', function(req, res, next) {
+	var editedProduct = req.product;
+	editedProduct.title = req.body.title;
+	editedProduct.category = req.body.category;
+	editedProduct.description = req.body.description;
+	editedProduct.price = req.body.price;
+	editedProduct.pictures = req.body.pictures;
+	editedProduct.tags = req.body.tags;
+
+	editedProduct.save(function(err, product) {
+		if(err){ console.log(err);
+			return next(err); }
+		res.json(product);
+	});
+});
+
 router.param('user', function(req, res, next, id) {
 	var query = User.findById(id);
 	query.exec(function(err, user) {
