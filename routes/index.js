@@ -112,6 +112,17 @@ router.put('/products/:product', function(req, res, next) {
 	});
 });
 
+router.put('/products/changeAvail/:product', function(req, res, next) {
+	var editedProduct = req.product;
+	editedProduct.active = !editedProduct.active;
+
+	editedProduct.save(function(err, product) {
+		if(err){ console.log(err);
+			return next(err); }
+		res.json(product);
+	});
+});
+
 router.param('user', function(req, res, next, id) {
 	var query = User.findById(id);
 	query.exec(function(err, user) {

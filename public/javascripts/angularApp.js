@@ -155,6 +155,15 @@ app.factory('products', ['$http', function($http){
       });
     });
   };
+  o.changeProductAvail = function(id) {
+    return $http.put('/products/changeAvail/' + id).success(function(data){
+      console.log(data);
+      console.log("Product Availability changed...");
+      $http.get('/products?cat=All').success(function(data){
+      angular.copy(data, o.products);
+      });
+    });
+  };
   /*o.filterActive = function(user) {
     return $http.get("/active?user="+user).success(function(data){
       angular.copy(data, o.products);
@@ -297,6 +306,10 @@ function($scope, products, $state){
       {id: '4', name: 'Date: old to new', value: "date"}
     ],
     selectedOption: {id: '4', name: 'Date: old to new', value: "date"}
+  };
+
+  $scope.changeProductAvailability = function(id){
+    products.changeProductAvail(id);
   };
 
 }]);

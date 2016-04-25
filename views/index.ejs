@@ -494,7 +494,7 @@
                       <a class="btn btn-success" href="#/products/{{product._id}}">View Details</a>
                     </div>
                     <div class="col-md-6" style="margin-top: 5px">
-                      <a class="btn btn-success" href="#/products/{{product._id}}">Mark as Sold</a>
+                      <a class="btn btn-success" ng-click="changeProductAvailability(product._id)">Mark as Sold</a>
                     </div>
                     <div class="col-md-6" style="margin-top: 5px">
                       <a class="btn btn-success" href="#/products/{{product._id}}/edit">Edit Post</a>
