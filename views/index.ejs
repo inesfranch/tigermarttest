@@ -396,7 +396,7 @@
                 <li><a href="#">Apparel</a></li>
                 <li><a href="#">Dorm Items</a></li>
                 <li><a href="#">Electronics</a></li>
-                <li><a href="#">Food & Drinks</a></li>
+                <li><a href="#">Food and Drinks</a></li>
                 <li><a href="#">Furniture</a></li>
                 <li><a href="#">Textboks</a></li>
                 <li><a href="#">Tickets</a></li>
@@ -404,78 +404,21 @@
                 <li><a href="#">Other</a></li>
               </ul>
             </div>
+            <div class="btn-group">
+              <button type="button" class="btn btn-default col-sm-20 dropdown-toggle" data-toggle="dropdown">
+                Sort by ... <span class="caret"></span></button>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#">Price: low to high</a></li>
+                <li><a href="#">Price: high to low</a></li>
+                <li><a href="#">Date: new to old</a></li>
+                <li><a href="#">Date: old to new</a></li>
+              </ul>
+            </div>
           </div>
-          <!-- <form ng-submit="filterCat()">
-            <div class="col-md-6 col-md-offset-3">
-             <select name="cat" class="form-control" ng-model="cat" placeholder="Category">
-                <option value="" selected="selected" disabled>Choose Category...</option>
-                <option value="All">All categories</option>
-                <option value="Apparel">Apparel</option>
-                <option value="Dorm Items">Dorm Items</option>
-                <option value="Electronics">Electronics</option>
-                <option value="Food & Drinks">Food & Drinks</option>
-                <option value="Furniture">Furniture</option>
-                <option value="Textbooks">Textbooks</option>
-                <option value="Tickets">Tickets</option>
-                <option value="Transportation">Transportation</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-            <div class="col-md-1">
-              <button class="btn btn-primary"type="submit">Update</button>
-            </div>
-          </form> --> 
-          <!--<ng-submit="search()"> 
-            <div class="form-group col-sm-3 col-sm-offset-7">
-              <input type="text" class="form-control" placeholder="Search..." ng-model="q"></input>
-            </div>
-            <div class="col-md-1">
-              <button class="btn btn-primary" type="submit">Search</button>
-            </div>
-          </form> -->
-          <!--
-          <strong>Sort by:</strong>
-          <div class="form-group col-sm-3" style="margin-left: 20px">
-             <select name="sorting" class="form-control" ng-model="sorting" placeholder="Sorting order">
-                <option value=price>Price: low to high</option>
-                <option value=-price>Price: high to low</option>
-                <option value=-date selected="selected">Date: new to old</option>
-                <option value=date>Date: old to new</option>
-              </select>
-          </div> -->
         </div>
 
-        <!--<div class="item  col-md-4">
-          <div class="thumbnail">
-            <img class="group list-group-image" ng-src="data:image/png;base64,{{product.pictures}}" alt="" />
-            <div class="caption">
-              <h4 class="group inner list-group-item-heading">
-                {{product.title}}</h4>
-              <div class="row">
-                <div class="col-md-6">
-                  <p class="lead">
-                    ${{product.price}}
-                  </p>
-                </div>
-                <div class="col-md-6" style="margin-top: 5px">
-                    <a class="btn btn-success" href="#/products/{{product._id}}">View Details</a>
-                </div>
-                <div class="col-md-6" style="margin-top: 5px">
-                    <a class="btn btn-success" href="#/products/{{product._id}}">Mark as Sold</a>
-                </div>
-                <div class="col-md-6" style="margin-top: 5px">
-                    <a class="btn btn-success" href="#/products/{{product._id}}">Edit Post</a>
-                </div>
-                <div class="col-md-6" style="margin-top: 5px">
-                    <a class="btn btn-success" href="#/products/{{product._id}}">Delete Item</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>-->
-
         <div id="products-view" class="row list-group">
-          <div ng-repeat="product in user.posted | filter:active">
+          <div ng-repeat="product in user.posted | filter:{{product.active}}">
             <div class="item  col-md-4">
               <div class="thumbnail">
                 <img class="group list-group-image" ng-src="data:image/png;base64,{{product.pictures}}" alt="" />
