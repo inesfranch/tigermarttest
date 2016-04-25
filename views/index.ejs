@@ -120,7 +120,7 @@
     <!-- ________________ HOME PAGE (SEARCH FOR PRODUCTS) ____________________ -->
     <script type="text/ng-template" id="/home.html">
     <div>
-      <a class="btn btn-success col-md-offset-10" href="#/users/{{user._id}}">User Profile</a>
+      <a class="btn btn-primary col-md-offset-10" href="#/users/{{user._id}}">My Profile</a>
     </div>
 
     <div style="margin-top: 20px">
@@ -165,7 +165,7 @@
             </select>
           </div>
           <div class="col-md-1">
-            <button class="btn btn-primary"type="submit">Update</button>
+            <button class="btn btn-info"type="submit">Update</button>
           </div>
         </form>
         <div class="text-left col-md-6 col-md-offset-3">
@@ -176,7 +176,7 @@
             <input type="text" class="form-control" placeholder="Search..." ng-model="q"></input>
           </div>
           <div class="col-md-1">
-            <button class="btn btn-primary" type="submit">Search</button>
+            <button class="btn btn-info" type="submit">Search</button>
           </div>
         </form>
         <div class="text-left col-md-6 col-md-offset-3">
@@ -330,7 +330,7 @@
     <!-- ________________ PRODUCT PAGE ____________________ -->
     <script type="text/ng-template" id="/products.html">
       <div>
-        <a class="btn btn-success col-md-offset-10" href="#/home">Back to Home</a>
+        <a class="btn btn-primary col-md-offset-10" href="#/home">Back to Home</a>
       </div>
       <div class="page-header col-md-offset-1">
         <h3>{{product.title}}</h3>
@@ -372,10 +372,10 @@
     <!-- ________________ USER PAGE ____________________ -->
     <script type="text/ng-template" id="/user.html">
       <div>
-        <a class="btn btn-success col-md-offset-10" href="#/home">Back to Home</a>
+        <a class="btn btn-primary col-md-offset-10" href="#/home">Back to Home</a>
       </div>
       <div>
-        <a class="btn btn-success col-md-offset-10" style="margin-top: 10px" href="#/editUser/{{user._id}}">Edit My Profile</a>
+        <a class="btn btn-primary col-md-offset-10" style="margin-top: 10px" href="#/editUser/{{user._id}}">Edit My Profile</a>
       </div>
       <div class="text-center">
         <h2>{{user.firstName}} {{user.lastName}}</h2>
@@ -386,8 +386,24 @@
         <div class="well well-sm">
           <strong>View My Items: </strong>
           <div class="btn-group" style="margin-left: 10px">
-            <a href="#" id="active_posts" class="btn btn-default btn-md">Active Items</a>
-            <a href="#" id="active_posts" class="btn btn-default btn-md">Sold Items</a>
+            <a href="#" ng-model="active_posts" class="btn btn-default btn-md active">Active Items</a>
+            <a href="#" ng-model="sold_posts" class="btn btn-default btn-md">Sold Items</a>
+            <div class="btn-group">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                Category <span class="caret"></span></button>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#">All</a></li>
+                <li><a href="#">Apparel</a></li>
+                <li><a href="#">Dorm Items</a></li>
+                <li><a href="#">Electronics</a></li>
+                <li><a href="#">Food & Drinks</a></li>
+                <li><a href="#">Furniture</a></li>
+                <li><a href="#">Textboks</a></li>
+                <li><a href="#">Tickets</a></li>
+                <li><a href="#">Transportation</a></li>
+                <li><a href="#">Other</a></li>
+              </ul>
+            </div>
           </div>
           <!-- <form ng-submit="filterCat()">
             <div class="col-md-6 col-md-offset-3">
@@ -459,7 +475,7 @@
         </div>-->
 
         <div id="products-view" class="row list-group">
-          <div ng-repeat="product in user.posted | orderBy:price">
+          <div ng-repeat="product in user.posted | filter:active">
             <div class="item  col-md-4">
               <div class="thumbnail">
                 <img class="group list-group-image" ng-src="data:image/png;base64,{{product.pictures}}" alt="" />
@@ -492,6 +508,7 @@
         </div>  
     </script>
 
+    <!-- ________________ EDIT USER PAGE ____________________ -->
     <script type="text/ng-template" id="/editUser.html">
       <div class="text-center">
         <h2>Edit My Profile</h2>
@@ -558,6 +575,7 @@
       </div>
     </script>
 
+    <!-- ________________ REGISTRATION PAGE ____________________ -->
     <script type="text/ng-template" id="/register.html">
       <div class="page-header col-md-6 col-md-offset-3 text-center">
         <h1>TigerMart</h1>
