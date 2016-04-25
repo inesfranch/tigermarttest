@@ -135,6 +135,11 @@ app.factory('products', ['$http', function($http){
   o.editUser = function(user) {
     console.log(user);
   };
+  /*o.filterActive = function(user) {
+    return $http.get("/active?user="+user).success(function(data){
+      angular.copy(data, o.products);
+    });
+  };*/
   return o;
 }])
 
@@ -197,6 +202,39 @@ function($scope, products, $state){
   } 
 
   $scope.user = JSON.parse(sessionStorage.getItem('user'));
+
+  $scope.data = {
+    availableOptions: [
+      {id: '1', name: 'Active Posts', value: true},
+      {id: '2', name: 'Sold Posts', value: false}
+    ],
+    selectedOption: {id: '1', name: 'Active Posts', value: true}
+  };
+
+  $scope.data2 = {
+    availableOptions: [
+      {id: '1', name: 'Apparel', value: 'Apparel'},
+      {id: '2', name: 'Dorm Items', value: "Dorm Items"},
+      {id: '3', name: 'Electronics', value: "Electronics"},
+      {id: '4', name: 'Food and Drinks', value: "Food and Drinks"},
+      {id: '5', name: 'Furniture', value: "Furniture"},
+      {id: '6', name: 'Textbooks', value: "Textbooks"},
+      {id: '7', name: 'Tickets', value: "Tickets"},
+      {id: '8', name: 'Transportation', value: "Transportation"},
+      {id: '9', name: 'Other', value: "Other"}
+    ],
+    selectedOption: {id: '1', name: 'Apparel', value: "Apparel"}
+  };
+
+  $scope.data3 = {
+    availableOptions: [
+      {id: '1', name: 'Price: low to high', value: "price"},
+      {id: '2', name: 'Price: high to low', value: "-price"},
+      {id: '3', name: 'Date: new to old', value: "-date"},
+      {id: '4', name: 'Date: old to new', value: "date"}
+    ],
+    selectedOption: {id: '4', name: 'Date: old to new', value: "date"}
+  };
 
 }]);
 

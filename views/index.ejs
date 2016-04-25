@@ -386,40 +386,27 @@
         <div class="well well-sm">
           <strong>View My Items: </strong>
           <div class="btn-group" style="margin-left: 10px">
-            <a href="#" ng-model="active_posts" class="btn btn-default btn-md active">Active Items</a>
-            <a href="#" ng-model="sold_posts" class="btn btn-default btn-md">Sold Items</a>
-            <div class="btn-group">
-              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                Category <span class="caret"></span></button>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="#">All</a></li>
-                <li><a href="#">Apparel</a></li>
-                <li><a href="#">Dorm Items</a></li>
-                <li><a href="#">Electronics</a></li>
-                <li><a href="#">Food and Drinks</a></li>
-                <li><a href="#">Furniture</a></li>
-                <li><a href="#">Textboks</a></li>
-                <li><a href="#">Tickets</a></li>
-                <li><a href="#">Transportation</a></li>
-                <li><a href="#">Other</a></li>
-              </ul>
-            </div>
-            <div class="btn-group">
-              <button type="button" class="btn btn-default col-sm-20 dropdown-toggle" data-toggle="dropdown">
-                Sort by ... <span class="caret"></span></button>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Price: low to high</a></li>
-                <li><a href="#">Price: high to low</a></li>
-                <li><a href="#">Date: new to old</a></li>
-                <li><a href="#">Date: old to new</a></li>
-              </ul>
-            </div>
+
+          <div class="form-group">
+             <select name="filterActive" class="form-control" id="mySelect" ng-options="option.name for option in data.availableOptions track by option.id" ng-model="data.selectedOption">
+              </select>
+          </div>
+
+          <div class="form-group">
+             <select name="filterActive" class="form-control" id="mySelect" ng-options="option.name for option in data2.availableOptions track by option.id" ng-model="data2.selectedOption">
+              </select>
+          </div>
+
+          <div class="form-group">
+             <select name="filterActive" class="form-control" id="mySelect" ng-options="option.name for option in data3.availableOptions track by option.id" ng-model="data3.selectedOption">
+              </select>
+          </div>
+
           </div>
         </div>
 
->>>>>>> fefdd41e046878350fce50f3e353854f6015e081
         <div id="products-view" class="row list-group">
-          <div ng-repeat="product in user.posted | filter:{{product.active}}">
+          <div ng-repeat="product in user.posted | filter:{active: data.selectedOption.value} | filter:{category: data2.selectedOption.value} | orderBy:data3.selectedOption.value">
             <div class="item  col-md-4">
               <div class="thumbnail">
                 <img class="group list-group-image" ng-src="data:image/png;base64,{{product.pictures}}" alt="" />
