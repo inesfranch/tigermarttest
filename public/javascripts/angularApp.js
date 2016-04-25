@@ -69,6 +69,18 @@ app.config([
         }]
       }
     });
+    $stateProvider
+    .state('index', {
+      url: '/index',
+      templateUrl: '/index.html',
+      controller: 'WelcomeCtrl',
+    });
+    $stateProvider
+    .state('splash', {
+      url: '/splash',
+      templateUrl: '/splash.html',
+      controller: 'WelcomeCtrl',
+    });
     $urlRouterProvider.otherwise('welcome');
   }]);
 

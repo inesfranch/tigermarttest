@@ -10,10 +10,11 @@ mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/products');
 require('./models/Products');
 require('./models/Users');
 
-var routes = require('./routes/index');
+var routes = require('./routes/index.js');
 var users = require('./routes/users');
 
-
+var http = require('http');
+var cas = require('grand_master_cas');
 
 var app = express();
 
@@ -62,6 +63,50 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
+
+cas.configure({
+  casHost: 'fed.princeton.edu',
+  caspath: '/cas',
+  ssl: true,
+  service: 'http://localhost:3000',
+  redirectUrl: '/splash'
+});
+
+/*app.get('/splash', routes.splash);
+app.get('/logout', cas.logout);
+
+app.get('/login', cas.bouncer, routes.login);
+app.get('/', cas.blocker, routes.index);*/
+
+/*app.get('/splash', function(req, res){
+  res.render('splash', {name: req.session.cas_user});
+});
+app.get('/logout', cas.logout);
+
+app.get('/login', cas.bouncer, function(req, res){
+  res.redirect('/');
+});
+app.get('/', cas.blocker, function(req, res){
+  res.render('index', {name: req.session.cas_user});
+});*/
+
+
+/*module.exports.index = function(req, res){
+  res.render('index', {name: req.session.cas_user});
+};
+
+module.exports.splash = function(req, res){
+  res.render('splash', {name: req.session.cas_user});
+};
+
+module.exports.login = function(req, res){
+  res.redirect('/');
+};*/
+
+
+/*http.createServer(app).listen(app.get('port'), function(){
+  console.log('Express server listening on port ' + app.get('port'));
+});*/
 
 /*
 var cas = require('grand_master_cas');
