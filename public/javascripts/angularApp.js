@@ -213,17 +213,18 @@ function($scope, products, $state){
 
   $scope.data2 = {
     availableOptions: [
-      {id: '1', name: 'Apparel', value: 'Apparel'},
-      {id: '2', name: 'Dorm Items', value: "Dorm Items"},
-      {id: '3', name: 'Electronics', value: "Electronics"},
-      {id: '4', name: 'Food and Drinks', value: "Food and Drinks"},
-      {id: '5', name: 'Furniture', value: "Furniture"},
-      {id: '6', name: 'Textbooks', value: "Textbooks"},
-      {id: '7', name: 'Tickets', value: "Tickets"},
-      {id: '8', name: 'Transportation', value: "Transportation"},
-      {id: '9', name: 'Other', value: "Other"}
+      {id: '1', name: 'All', value: ''},
+      {id: '2', name: 'Apparel', value: 'Apparel'},
+      {id: '3', name: 'Dorm Items', value: "Dorm Items"},
+      {id: '4', name: 'Electronics', value: "Electronics"},
+      {id: '5', name: 'Food and Drinks', value: "Food and Drinks"},
+      {id: '6', name: 'Furniture', value: "Furniture"},
+      {id: '7', name: 'Textbooks', value: "Textbooks"},
+      {id: '8', name: 'Tickets', value: "Tickets"},
+      {id: '9', name: 'Transportation', value: "Transportation"},
+      {id: '10', name: 'Other', value: "Other"}
     ],
-    selectedOption: {id: '1', name: 'Apparel', value: "Apparel"}
+    selectedOption: {id: '1', name: 'All', value: ''}
   };
 
   $scope.data3 = {
