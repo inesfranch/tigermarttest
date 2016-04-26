@@ -74,11 +74,6 @@ app.config([
       url: '/editUser/{id}',
       templateUrl: '/editUser.html',
       controller: 'EditUserCtrl',
-      resolve: {
-        user: ['$stateParams', 'products', function($stateParams, products) {
-          return products.getUserInfo($stateParams.id);
-        }]
-      }
     });
     $stateProvider
     .state('index', {
@@ -143,9 +138,10 @@ app.factory('products', ['$http', function($http){
       return res.data;
     });
   };
-  o.editUser = function(id) {
-    return $http.put("/editUser" + user).then(function(res) {
-      sessionStorage.setItem('user', JSON.stringify(res.data));
+  o.editUser = function(user, id) {
+    return $http.put("/user/" + id, user).success(function(data) {
+      console.log(data);
+      sessionStorage.setItem('user', JSON.stringify(data));
     });
   };
   o.editProduct = function(product, id) {
@@ -321,22 +317,20 @@ app.controller('EditUserCtrl', [
 'products',
 '$state',
 
-function($scope, products, user, $state){
+function($scope, products, $state){
   //$scope.product = product;
   if(!sessionStorage.getItem('user')) {
     console.log("hello");
     $state.go('welcome');
   } 
 
-  $scope.user = JSON.parse(sessionStorage.getItem('user'));
+  var user = JSON.parse(sessionStorage.getItem('user'));
+  $scope.user = user;
 
-  $scope.editUser = function(){
-    console.log("hello");
-    products.editUser($scope.user).error(function(error){
+  $scope.editUser = function() {
+    products.editUser(user, user._id).error(function(error){
       $scope.error = error;
-    }).then(function() {
-      $state.go('users');
-    });
+    });//.success(function() { $state.go('users'); });
   };
 }]);
 
@@ -400,7 +394,7 @@ function($scope, $state, products){
     }).then(function() {
       $state.go('home');
     });
-  }
+  };
 
   $scope.register = function() {
     products.register($scope.user).error(function(error) {
