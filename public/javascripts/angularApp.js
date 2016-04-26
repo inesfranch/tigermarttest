@@ -362,7 +362,7 @@ function($scope, products, $state){
   $scope.editUser = function() {
     products.editUser(user, user._id).error(function(error){
       $scope.error = error;
-    });//.success(function() { $state.go('users'); });
+    }).success(function() { $state.go('home'); });
   };
 }]);
 
