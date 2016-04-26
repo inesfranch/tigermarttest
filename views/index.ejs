@@ -348,13 +348,13 @@
               {{product.description}}
             </p>
             <p style="font-size: 16px">
-              Category: {{product.category}}
+              Category: <button ng-click="linkToCat(product.category)" class="btn btn-info" name="cat" ng-model="cat"> {{product.category}}</button>
             </p>
             <p style="font-size: 16px">
               Tags: {{product.tags}}
             </p>
             <p style="font-size: 16px">
-              Posted by: {{product.userid.firstName}} {{product.userid.lastName}}
+              Posted by: <button ng-click="linkToUser(product.userid)" class="btn btn-info" > {{product.userid.firstName}} {{product.userid.lastName}} </button>
             </p>
             <p style="font-size: 16px">
               Posted on: {{product.month}}/{{product.day}}/{{product.year}}

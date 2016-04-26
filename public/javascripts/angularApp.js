@@ -82,6 +82,11 @@ app.factory('products', ['$http', function($http){
       angular.copy(data, o.products);
     });
   };
+  o.getUserProducts = function(userid) {
+    return $http.get('/products?net_id='+userid.net_id).success(function(data){
+      angular.copy(data, userid.posted);
+    });
+  };
   o.create = function(product) {
     var user = JSON.parse(sessionStorage.getItem('user'));
     return $http.post('/products/' + user._id, product).success(function(data){
@@ -169,6 +174,22 @@ function($scope, products, product, $state){
     $state.go('welcome');
   } 
   $scope.product = product;
+
+  $scope.linkToCat = function(cat){
+    console.log("HELLO "+ cat);
+    $state.go('home');
+    products.getAll(cat).error(function(error){
+      $scope.error = error;
+    })
+  };
+
+  $scope.linkToUser = function(userid){
+    console.log("HELLO " + userid.firstName + " " + userid.lastName);
+    $state.go('home');
+    products.getUserProducts(userid).error(function(error){
+      $scope.error = error;
+    })
+  };
 }]);
 
 // USER CONTROLLER
