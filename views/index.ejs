@@ -348,7 +348,7 @@
               {{product.description}}
             </p>
             <p style="font-size: 16px">
-              Category: {{product.category}}
+              Category: <button ng-click="linkToCat(product.category)" class="btn btn-info" name="cat" ng-model="cat"> {{product.category}}</button>
             </p>
             <p style="font-size: 16px">
               Tags: {{product.tags}}
@@ -515,6 +515,9 @@
       <div>
         <a class="btn btn-primary col-md-offset-10" href="#/home">Back to Home</a>
       </div>
+      <div>
+        <a class="btn btn-primary col-md-offset-10" href="https://tigerbook.herokuapp.com/student/{{user.net_id}}">See them on TigerBook</a>
+      </div>
       <div class="text-center">
         <h2>{{user.firstName}} {{user.lastName}}</h2>
       </div>
@@ -597,11 +600,10 @@
           ng-model="user.lastName"></input>
         </div>
         <div class="center-block">
-          <button ng-click="editUser()" onclick="location.href='#/home'" class="text-center btn btn-primary center-block">Make Edits</button>
+          <button ng-click="editUser()" class="text-center btn btn-primary center-block">Make Edits</button>
         </div>
       </form>
     </script>
-
 
     <!-- ________________ WELCOME PAGE ____________________ -->
     <script type="text/ng-template" id="/welcome.html">

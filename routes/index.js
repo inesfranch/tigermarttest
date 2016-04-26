@@ -133,6 +133,21 @@ router.param('user', function(req, res, next, id) {
 	});
 });
 
+router.put('/user/:user', function(req, res, next) {
+	var editedUser = req.user;
+	editedUser.firstName = req.body.firstName;
+	editedUser.lastName = req.body.lastName;
+	editedUser.email = req.body.email;
+	console.log(editedUser);
+
+	editedUser.save(function (err, user){
+		if(err){ 
+			console.log(err);
+			return next(err); }
+		res.json(user);
+	});
+});
+
 router.get('/users/:user', function(req, res, next) {
 	req.user.populate('posted', function(err, user) {
 		if (err) { console.log(err);
