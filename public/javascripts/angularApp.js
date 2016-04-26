@@ -30,9 +30,31 @@ app.config([
       }
     });
     $stateProvider
+    .state('productsEdit', {
+      url: '/products/{id}/edit',
+      templateUrl: '/productsEdit.html',
+      controller: 'ProductsEditCtrl',
+      resolve: {
+        product: ['$stateParams', 'products', function($stateParams, products) {
+          return products.get($stateParams.id);
+        }]
+      }
+    });
+    $stateProvider
     .state('users', {
       url: '/users/{id}',
       templateUrl: '/user.html',
+      controller: 'UsersCtrl',
+      resolve: {
+        user: ['$stateParams', 'products', function($stateParams, products) {
+          return products.getUserInfo($stateParams.id);
+        }]
+      }
+    });
+    $stateProvider
+    .state('usersprofile', {
+      url: '/usersprofile/{id}',
+      templateUrl: '/userprofile.html',
       controller: 'UsersCtrl',
       resolve: {
         user: ['$stateParams', 'products', function($stateParams, products) {
@@ -68,6 +90,18 @@ app.config([
           return products.getUserInfo($stateParams.id);
         }]
       }
+    });
+    $stateProvider
+    .state('index', {
+      url: '/index',
+      templateUrl: '/index.html',
+      controller: 'WelcomeCtrl',
+    });
+    $stateProvider
+    .state('splash', {
+      url: '/splash',
+      templateUrl: '/splash.html',
+      controller: 'WelcomeCtrl',
     });
     $urlRouterProvider.otherwise('welcome');
   }]);
@@ -128,6 +162,29 @@ app.factory('products', ['$http', function($http){
   o.editUser = function(user) {
     console.log(user);
   };
+  o.editProduct = function(product, id) {
+    return $http.put('/products/' + id, product).success(function(data){
+      console.log(data);
+      console.log("Product Edited...");
+      $http.get('/products?cat=All').success(function(data){
+      angular.copy(data, o.products);
+      });
+    });
+  };
+  o.changeProductAvail = function(id) {
+    return $http.put('/products/changeAvail/' + id).success(function(data){
+      console.log(data);
+      console.log("Product Availability changed...");
+      $http.get('/products?cat=All').success(function(data){
+      angular.copy(data, o.products);
+      });
+    });
+  };
+  /*o.filterActive = function(user) {
+    return $http.get("/active?user="+user).success(function(data){
+      angular.copy(data, o.products);
+    });
+  };*/
   return o;
 }])
 
@@ -162,7 +219,7 @@ function($scope, $state, products){
   };
 }]);
 
-// PRODUCT CONTROLLER
+// VIEW PRODUCT CONTROLLER
 app.controller('ProductsCtrl', [
 '$scope',
 'products',
@@ -192,6 +249,48 @@ function($scope, products, product, $state){
   };
 }]);
 
+// EDIT PRODUCT CONTROLLER
+app.controller('ProductsEditCtrl', [
+'$scope',
+'products',
+'product',
+function($scope, products, product){
+  $scope.userid = product.userid;
+  $scope.title = product.title;
+  $scope.category = product.category;
+  $scope.description = product.description;
+  $scope.price = product.price;
+  $scope.tags = product.tags;
+  $scope.pictures = product.pictures;
+  //     pictures: dataUrl1.split("base64,")[1],
+
+$scope.editProduct = function(dataUrl1){
+    if(!$scope.title || $scope.title === '') { return; }
+
+    // ADD VALIDATIONS LATER!
+    products.editProduct({
+      title: $scope.title,
+      category: $scope.category,
+      description: $scope.description,
+      price: $scope.price,
+      pictures: dataUrl1.split("base64,")[1],
+      tags: $scope.tags,
+      date: '',
+      month: '',
+      day: '',
+      year: '',
+      userid: '',
+      active: true
+    }, product._id);
+    $scope.title = '';
+    $scope.category = '';
+    $scope.description = '';
+    $scope.price = '';
+    $scope.picFile1 = '';
+    $scope.tags = '';
+  };
+}]);
+
 // USER CONTROLLER
 app.controller('UsersCtrl', [
 '$scope',
@@ -206,6 +305,44 @@ function($scope, products, $state){
   } 
 
   $scope.user = JSON.parse(sessionStorage.getItem('user'));
+
+  $scope.data = {
+    availableOptions: [
+      {id: '1', name: 'Active Posts', value: true},
+      {id: '2', name: 'Sold Posts', value: false}
+    ],
+    selectedOption: {id: '1', name: 'Active Posts', value: true}
+  };
+
+  $scope.data2 = {
+    availableOptions: [
+      {id: '1', name: 'All', value: ''},
+      {id: '2', name: 'Apparel', value: 'Apparel'},
+      {id: '3', name: 'Dorm Items', value: "Dorm Items"},
+      {id: '4', name: 'Electronics', value: "Electronics"},
+      {id: '5', name: 'Food and Drinks', value: "Food and Drinks"},
+      {id: '6', name: 'Furniture', value: "Furniture"},
+      {id: '7', name: 'Textbooks', value: "Textbooks"},
+      {id: '8', name: 'Tickets', value: "Tickets"},
+      {id: '9', name: 'Transportation', value: "Transportation"},
+      {id: '10', name: 'Other', value: "Other"}
+    ],
+    selectedOption: {id: '1', name: 'All', value: ''}
+  };
+
+  $scope.data3 = {
+    availableOptions: [
+      {id: '1', name: 'Price: low to high', value: "price"},
+      {id: '2', name: 'Price: high to low', value: "-price"},
+      {id: '3', name: 'Date: new to old', value: "-date"},
+      {id: '4', name: 'Date: old to new', value: "date"}
+    ],
+    selectedOption: {id: '4', name: 'Date: old to new', value: "date"}
+  };
+
+  $scope.changeProductAvailability = function(id){
+    products.changeProductAvail(id);
+  };
 
 }]);
 
