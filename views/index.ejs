@@ -8,8 +8,106 @@
     <script src="/javascripts/ng-file-upload-shim.min.js"></script> <!-- for no html5 browsers support -->
     <script src="/javascripts/ng-file-upload.min.js"></script>
     <script src="/javascripts/ng-img-crop.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/tag-it.js" type="text/javascript" charset="utf-8"></script>
     <link rel="stylesheet" type="text/css" href="/stylesheets/ng-img-crop.css">
     <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+    <link href="/stylesheets/jquery.tagit.css" rel="stylesheet" type="text/css">
+    <link href="/stylesheets/tagit.ui-zendesk.css" rel="stylesheet" type="text/css">
+
+    <script>
+        $(function(){
+            var sampleTags = ['c++', 'java', 'php', 'coldfusion', 'javascript', 'asp', 'ruby', 'python', 'c', 'scala', 'groovy', 'haskell', 'perl', 'erlang', 'apl', 'cobol', 'go', 'lua'];
+            //-------------------------------
+            // Minimal
+            //-------------------------------
+            $('#myTags').tagit();
+            //-------------------------------
+            // Single field
+            //-------------------------------
+            $('#singleFieldTags').tagit({
+                availableTags: sampleTags,
+                // This will make Tag-it submit a single form value, as a comma-delimited field.
+                singleField: true,
+                singleFieldNode: $('#mySingleField')
+            });
+            // singleFieldTags2 is an INPUT element, rather than a UL as in the other 
+            // examples, so it automatically defaults to singleField.
+            $('#singleFieldTags2').tagit({
+                availableTags: sampleTags
+            });
+            //-------------------------------
+            // Preloading data in markup
+            //-------------------------------
+            $('#myULTags').tagit({
+                availableTags: sampleTags, // this param is of course optional. it's for autocomplete.
+                // configure the name of the input field (will be submitted with form), default: item[tags]
+                itemName: 'item',
+                fieldName: 'tags'
+            });
+            //-------------------------------
+            // Tag events
+            //-------------------------------
+            var eventTags = $('#eventTags');
+            var addEvent = function(text) {
+                $('#events_container').append(text + '<br>');
+            };
+            eventTags.tagit({
+                availableTags: sampleTags,
+                beforeTagAdded: function(evt, ui) {
+                    if (!ui.duringInitialization) {
+                        addEvent('beforeTagAdded: ' + eventTags.tagit('tagLabel', ui.tag));
+                    }
+                },
+                afterTagAdded: function(evt, ui) {
+                    if (!ui.duringInitialization) {
+                        addEvent('afterTagAdded: ' + eventTags.tagit('tagLabel', ui.tag));
+                    }
+                },
+                beforeTagRemoved: function(evt, ui) {
+                    addEvent('beforeTagRemoved: ' + eventTags.tagit('tagLabel', ui.tag));
+                },
+                afterTagRemoved: function(evt, ui) {
+                    addEvent('afterTagRemoved: ' + eventTags.tagit('tagLabel', ui.tag));
+                },
+                onTagClicked: function(evt, ui) {
+                    addEvent('onTagClicked: ' + eventTags.tagit('tagLabel', ui.tag));
+                },
+                onTagExists: function(evt, ui) {
+                    addEvent('onTagExists: ' + eventTags.tagit('tagLabel', ui.existingTag));
+                }
+            });
+            //-------------------------------
+            // Read-only
+            //-------------------------------
+            $('#readOnlyTags').tagit({
+                readOnly: true
+            });
+            //-------------------------------
+            // Tag-it methods
+            //-------------------------------
+            $('#methodTags').tagit({
+                availableTags: sampleTags
+            });
+            //-------------------------------
+            // Allow spaces without quotes.
+            //-------------------------------
+            $('#allowSpacesTags').tagit({
+                availableTags: sampleTags,
+                allowSpaces: true
+            });
+            //-------------------------------
+            // Remove confirmation
+            //-------------------------------
+            $('#removeConfirmationTags').tagit({
+                availableTags: sampleTags,
+                removeConfirmation: true
+            });
+            
+        });
+    </script>
+
   </head>
 
   <body ng-app="tigerMart">
@@ -22,7 +120,7 @@
     <!-- ________________ HOME PAGE (SEARCH FOR PRODUCTS) ____________________ -->
     <script type="text/ng-template" id="/home.html">
     <div>
-      <a class="btn btn-success col-md-offset-10" href="#/users/{{user._id}}">User Profile</a>
+      <a class="btn btn-primary col-md-offset-10" href="#/users/{{user._id}}">My Profile</a>
     </div>
 
     <div style="margin-top: 20px">
@@ -58,7 +156,7 @@
               <option value="Apparel">Apparel</option>
               <option value="Dorm Items">Dorm Items</option>
               <option value="Electronics">Electronics</option>
-              <option value="Food & Drinks">Food & Drinks</option>
+              <option value="Food and Drinks">Food and Drinks</option>
               <option value="Furniture">Furniture</option>
               <option value="Textbooks">Textbooks</option>
               <option value="Tickets">Tickets</option>
@@ -67,7 +165,7 @@
             </select>
           </div>
           <div class="col-md-1">
-            <button class="btn btn-primary"type="submit">Update</button>
+            <button class="btn btn-info"type="submit">Update</button>
           </div>
         </form>
         <div class="text-left col-md-6 col-md-offset-3">
@@ -78,7 +176,7 @@
             <input type="text" class="form-control" placeholder="Search..." ng-model="q"></input>
           </div>
           <div class="col-md-1">
-            <button class="btn btn-primary" type="submit">Search</button>
+            <button class="btn btn-info" type="submit">Search</button>
           </div>
         </form>
         <div class="text-left col-md-6 col-md-offset-3">
@@ -137,19 +235,32 @@
 
     <!-- ________________ ADD PRODUCT PAGE ____________________ -->
     <script type="text/ng-template" id="/addproduct.html">
+      <div style="margin-top: 20px">
+        <a class="btn btn-primary col-md-offset-10" href="#/home">Back to Home</a>
+      </div>
       <form style="margin-top: 30px;" class="col-md-6 col-md-offset-3">
         <h3>Add a new product</h3>
-        <div class="form-group">
+        <div ng-show="error" class="alert alert-danger row">
+          <span>
+            <center>
+              {{ error.message }}
+            </center>
+          </span>
+        </div>
+
+        <div class="form-group required">
+          <label class=" control-label">Title</label>
           <input type="text" class="form-control" placeholder="Title" ng-model="title"></input>
         </div>
 
-         <div class="form-group">
+         <div class="form-group required">
+          <label class=" control-label">Category</label>
            <select name="category" class="form-control" ng-model="category" placeholder="Category">
               <option value="" selected="selected" disabled>Choose Category...</option>
               <option value="Apparel">Apparel</option>
               <option value="Dorm Items">Dorm Items</option>
               <option value="Electronics">Electronics</option>
-              <option value="Food & Drinks">Food & Drinks</option>
+              <option value="Food and Drinks">Food and Drinks</option>
               <option value="Furniture">Furniture</option>
               <option value="Textbooks">Textbooks</option>
               <option value="Tickets">Tickets</option>
@@ -158,15 +269,18 @@
             </select>
         </div>
 
-        <div class="form-group">
+        <div class="form-group required">
+          <label class=" control-label">Description</label>
           <textarea name="description" rows="5" cols="30" class="form-control" placeholder="Description" ng-model="description"></textarea>
         </div>
 
-        <div class="form-group">
+        <div class="form-group required">
+          <label class=" control-label">Price</label>
           <input type="number" min="0" class="form-control" placeholder="Price" ng-model="price"></input>
         </div>
 
         <div class="center-block">
+          <label class=" control-label">Picture</label>
           <button ngf-select class="btn btn-default center-block" ng-model="picFile1" accept="image/*">Select Picture</button>
           <center>
           <div ngf-drop ng-model="picFile1" ngf-pattern="image/*" class="cropArea center-block" style="margin-top: 20px">
@@ -196,20 +310,27 @@
           <img data-ng-src="uploadedImage" data-ng-if="uploadedImage">
         </div> -->
 
-         <div class="form-group">
+         <!--<div class="form-group">
           <input type="text" class="form-control" style="margin-top: 20px" placeholder="Add Tags" ng-model="tags"></input>
-        </div>
+        </div>-->
 
+        <div class="form-group" style="margin-top: 20px">
+          <label class=" control-label">Tags</label>
+          <h5>Create tags (separate by Enter key)</h5>
+          <input name="tags" id="mySingleField" value="Apple, Orange" disabled="true" ng-model="tags">
+          <ul class="form-control" id="singleFieldTags"></ul>
+        </div>
+        
         <div class="center-block">
-          <button ng-click="addProduct(croppedDataUrl1)" onclick="location.href='#/home'" class="text-center btn btn-primary center-block">Post product</button>
+          <button ng-click="addProduct(croppedDataUrl1, mySingleField)" class="text-center btn btn-primary center-block">Post product</button>
         </div>
       </form>
     </script>
 
-    <!-- ________________ PRODUCT PAGE ____________________ -->
+    <!-- ________________ VIEW PRODUCT PAGE ____________________ -->
     <script type="text/ng-template" id="/products.html">
       <div>
-        <a class="btn btn-success col-md-offset-10" href="#/home">Back to Home</a>
+        <a class="btn btn-primary col-md-offset-10" href="#/home">Back to Home</a>
       </div>
       <div class="page-header col-md-offset-1">
         <h3>{{product.title}}</h3>
@@ -247,14 +368,85 @@
       </div>
     </script>
 
+    <!-- ________________ EDIT PRODUCT PAGE ____________________ -->
+    <script type="text/ng-template" id="/productsEdit.html">
+      <form style="margin-top: 30px;" class="col-md-6 col-md-offset-3">
+        <h3>Edit Your Product</h3>
+        <div class="form-group">
+          <label>Title:</label>
+          <input type="text" class="form-control" ng-model="title"></input>
+        </div>
+
+         <div class="form-group">
+          <label>Category:</label>
+           <select name="category" class="form-control" ng-model="category">
+              <option value="" disabled>Choose Category...</option>
+              <option value="Apparel">Apparel</option>
+              <option value="Dorm Items">Dorm Items</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Food & Drinks">Food & Drinks</option>
+              <option value="Furniture">Furniture</option>
+              <option value="Textbooks">Textbooks</option>
+              <option value="Tickets">Tickets</option>
+              <option value="Transportation">Transportation</option>
+              <option value="Other">Other</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+          <label>Description:</label>
+          <textarea name="description" rows="5" cols="30" class="form-control" ng-model="description"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Price: $</label>
+          <input type="text" min="0" class="form-control" ng-model="price"></input>
+        </div>
+
+        <div class="center-block">
+          <label>Picture:</label>
+        </div>
+        <div class="center-block">
+          <img ng-src="data:image/png;base64,{{product.pictures}}" />
+        </div>
+
+        <div class="center-block">
+          <button ngf-select class="btn btn-default center-block" ng-model="picFile1" accept="image/*">Change Picture</button>
+          <center>
+          <div ngf-drop ng-model="picFile1" ngf-pattern="image/*" class="cropArea center-block" style="margin-top: 20px">
+              <img-crop 
+                image="picFile1  | ngfDataUrl"                 
+                result-image="croppedDataUrl1" 
+                ng-init="croppedDataUrl1=''" 
+                result-image-size="300" 
+                area-type="square">
+              </img-crop>
+          </div>
+          <div ng-show="picFile1">
+              <h5>Preview:</h5>
+              <img ng-src="{{croppedDataUrl1}}" />
+            </div>
+          </center>
+        </div>
+
+         <div class="form-group">
+          <label>Tags:</label>
+          <input type="text" class="form-control" style="margin-top: 20px" ng-model="tags"></input>
+        </div>
+
+        <div class="center-block">
+          <button ng-click="editProduct(croppedDataUrl1)" onclick="location.href='#/home'" class="text-center btn btn-primary center-block">Save product</button>
+        </div>
+      </form>
+    </script>
 
     <!-- ________________ USER PAGE ____________________ -->
     <script type="text/ng-template" id="/user.html">
       <div>
-        <a class="btn btn-success col-md-offset-10" href="#/home">Back to Home</a>
+        <a class="btn btn-primary col-md-offset-10" href="#/home">Back to Home</a>
       </div>
       <div>
-        <a class="btn btn-success col-md-offset-10" style="margin-top: 10px" href="#/editUser/{{user._id}}">Edit My Profile</a>
+        <a class="btn btn-primary col-md-offset-10" style="margin-top: 10px" href="#/editUser/{{user._id}}">Edit My Profile</a>
       </div>
       <div class="text-center">
         <h2>{{user.firstName}} {{user.lastName}}</h2>
@@ -262,83 +454,30 @@
 
       <div class="container col-md-12" style="margin-top: 20px"> <!-- Code modified from: http://bootsnipp.com/snippets/49An-->
 
-        <div class="well well-sm">
+        <div class="well well-sm col-md-12">
           <strong>View My Items: </strong>
-          <div class="btn-group" style="margin-left: 10px">
-            <a href="#" id="active_posts" class="btn btn-default btn-md">Active Items</a>
-            <a href="#" id="active_posts" class="btn btn-default btn-md">Sold Items</a>
+          <div class="btn-group col-md-12" style="margin-left: 10px">
+
+          <div class="form-group col-md-2" style="margin-top: 10px">
+             <select name="filterActive" class="form-control" id="mySelect" ng-options="option.name for option in data.availableOptions track by option.id" ng-model="data.selectedOption">
+              </select>
           </div>
-          <!-- <form ng-submit="filterCat()">
-            <div class="col-md-6 col-md-offset-3">
-             <select name="cat" class="form-control" ng-model="cat" placeholder="Category">
-                <option value="" selected="selected" disabled>Choose Category...</option>
-                <option value="All">All categories</option>
-                <option value="Apparel">Apparel</option>
-                <option value="Dorm Items">Dorm Items</option>
-                <option value="Electronics">Electronics</option>
-                <option value="Food & Drinks">Food & Drinks</option>
-                <option value="Furniture">Furniture</option>
-                <option value="Textbooks">Textbooks</option>
-                <option value="Tickets">Tickets</option>
-                <option value="Transportation">Transportation</option>
-                <option value="Other">Other</option>
+
+          <div class="form-group col-md-2" style="margin-top: 10px">
+             <select name="filterActive" class="form-control" id="mySelect" ng-options="option.name for option in data2.availableOptions track by option.id" ng-model="data2.selectedOption">
               </select>
-            </div>
-            <div class="col-md-1">
-              <button class="btn btn-primary"type="submit">Update</button>
-            </div>
-          </form> --> 
-          <!--<ng-submit="search()"> 
-            <div class="form-group col-sm-3 col-sm-offset-7">
-              <input type="text" class="form-control" placeholder="Search..." ng-model="q"></input>
-            </div>
-            <div class="col-md-1">
-              <button class="btn btn-primary" type="submit">Search</button>
-            </div>
-          </form> -->
-          <!--
-          <strong>Sort by:</strong>
-          <div class="form-group col-sm-3" style="margin-left: 20px">
-             <select name="sorting" class="form-control" ng-model="sorting" placeholder="Sorting order">
-                <option value=price>Price: low to high</option>
-                <option value=-price>Price: high to low</option>
-                <option value=-date selected="selected">Date: new to old</option>
-                <option value=date>Date: old to new</option>
+          </div>
+
+          <div class="form-group col-md-2" style="margin-top: 10px">
+             <select name="filterActive" class="form-control" id="mySelect" ng-options="option.name for option in data3.availableOptions track by option.id" ng-model="data3.selectedOption">
               </select>
-          </div> -->
+          </div>
+
+          </div>
         </div>
 
-        <!--<div class="item  col-md-4">
-          <div class="thumbnail">
-            <img class="group list-group-image" ng-src="data:image/png;base64,{{product.pictures}}" alt="" />
-            <div class="caption">
-              <h4 class="group inner list-group-item-heading">
-                {{product.title}}</h4>
-              <div class="row">
-                <div class="col-md-6">
-                  <p class="lead">
-                    ${{product.price}}
-                  </p>
-                </div>
-                <div class="col-md-6" style="margin-top: 5px">
-                    <a class="btn btn-success" href="#/products/{{product._id}}">View Details</a>
-                </div>
-                <div class="col-md-6" style="margin-top: 5px">
-                    <a class="btn btn-success" href="#/products/{{product._id}}">Mark as Sold</a>
-                </div>
-                <div class="col-md-6" style="margin-top: 5px">
-                    <a class="btn btn-success" href="#/products/{{product._id}}">Edit Post</a>
-                </div>
-                <div class="col-md-6" style="margin-top: 5px">
-                    <a class="btn btn-success" href="#/products/{{product._id}}">Delete Item</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>-->
-
         <div id="products-view" class="row list-group">
-          <div ng-repeat="product in user.posted | orderBy:price">
+          <div ng-repeat="product in user.posted | filter:{active: data.selectedOption.value} | filter:{category: data2.selectedOption.value} | orderBy:data3.selectedOption.value">
             <div class="item  col-md-4">
               <div class="thumbnail">
                 <img class="group list-group-image" ng-src="data:image/png;base64,{{product.pictures}}" alt="" />
@@ -355,10 +494,10 @@
                       <a class="btn btn-success" href="#/products/{{product._id}}">View Details</a>
                     </div>
                     <div class="col-md-6" style="margin-top: 5px">
-                      <a class="btn btn-success" href="#/products/{{product._id}}">Mark as Sold</a>
+                      <a class="btn btn-success" ng-click="changeProductAvailability(product._id)">Mark as Sold</a>
                     </div>
                     <div class="col-md-6" style="margin-top: 5px">
-                      <a class="btn btn-success" href="#/products/{{product._id}}">Edit Post</a>
+                      <a class="btn btn-success" href="#/products/{{product._id}}/edit">Edit Post</a>
                     </div>
                     <div class="col-md-6" style="margin-top: 5px">
                       <a class="btn btn-success" href="#/products/{{product._id}}">Delete Item</a>
@@ -371,6 +510,7 @@
         </div>  
     </script>
 
+    <!-- ________________ EDIT USER PAGE ____________________ -->
     <script type="text/ng-template" id="/editUser.html">
       <div class="text-center">
         <h2>Edit My Profile</h2>
@@ -410,6 +550,13 @@
       <div class="text-center">
         <h2>Welcome to TigerMart</h2>
       </div>
+      <div ng-show="error" class="alert alert-danger row col-md-4 col-md-offset-4">
+        <span>
+          <center>
+            {{ error.message }}
+          </center>
+        </span>
+      </div>  
       <div class="panel panel-default col-md-3 col-md-offset-2" style="margin-top: 30px">
         <h3 class="text-center">Are you a new user?</h3>
         <h4 class="text-center" style="margin-top: 20px">Register now to start using TigerMart</h4>
@@ -430,36 +577,44 @@
       </div>
     </script>
 
+    <!-- ________________ REGISTRATION PAGE ____________________ -->
     <script type="text/ng-template" id="/register.html">
       <div class="page-header col-md-6 col-md-offset-3 text-center">
         <h1>TigerMart</h1>
       </div>
 
-      <div ng-show="error" class="alert alert-danger row">
-        <span>{{ error.message }}</span>
-      </div>
-
       <form ng-submit="register()" class="col-md-4 col-md-offset-4">
         <h3 class="text-center" style="margin-bottom:20px;">Register by filling out the following form</h3>
-        <div class="form-group">
+        <div ng-show="error" class="alert alert-danger row">
+          <span>
+            <center>
+              {{ error.message }}
+            </center>
+          </span>
+        </div>
+        <div class="form-group required">
+          <label class=" control-label">NetID</label>
           <input type="text"
           class="form-control"
           placeholder="NetID"
           ng-model="user.net_id"></input>
         </div>
-        <div class="form-group">
+        <div class="form-group required">
+          <label class=" control-label">Email</label>
           <input type="text"
           class="form-control"
           placeholder="Email"
           ng-model="user.email"></input>
         </div>
-        <div class="form-group">
+        <div class="form-group required">
+          <label class=" control-label">First Name</label>
           <input type="text"
           class="form-control"
           placeholder="First Name"
           ng-model="user.firstName"></input>
         </div>
-        <div class="form-group">
+        <div class="form-group required">
+          <label class=" control-label">Last Name</label>
           <input type="text"
           class="form-control"
           placeholder="Last Name"
