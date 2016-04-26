@@ -101,6 +101,27 @@ router.param('user', function(req, res, next, id) {
 	});
 });
 
+router.put('/editUser/', function(req, res, next, id) {
+	var query = User.findBiId(req.body._id);
+	query.exec(function(err, user) {
+		if(err) {
+			console.log(err);
+			return next(err);
+		}
+		if (!user) {return next(new Error('can\'t find user')); }
+		user.email = req.body.email;
+  		user.firstName = req.body.firstName;
+ 		user.lastName = req.body.lastName;
+
+ 		user.save(function (err){
+    	if(err){ 
+    		console.log(err);
+    		return next(err); }
+    	res.json(user);
+    	});
+	});
+});
+
 router.get('/users/:user', function(req, res, next) {
 	req.user.populate('posted', function(err, user) {
 		if (err) { console.log(err);

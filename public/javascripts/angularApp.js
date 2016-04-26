@@ -120,8 +120,10 @@ app.factory('products', ['$http', function($http){
       return res.data;
     });
   };
-  o.editUser = function(user) {
-    console.log(user);
+  o.editUser = function(id) {
+    return $http.put("/editUser" + user).then(function(res) {
+      sessionStorage.setItem('user', JSON.stringify(res.data));
+    });
   };
   return o;
 }])
