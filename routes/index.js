@@ -208,7 +208,6 @@ app.app.get('/', app.cas.blocker, function(req, res){
   res.render('index', {name: req.session.cas_user});
 });*/
 
-
 /*exports.index = function(req, res){
 	res.render('index', {name: req.session.cas_user});
 };
