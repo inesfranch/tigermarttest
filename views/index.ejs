@@ -354,7 +354,7 @@
               Tags: {{product.tags}}
             </p>
             <p style="font-size: 16px">
-              Posted by: {{product.userid.firstName}} {{product.userid.lastName}}
+              Posted by: <a href="#/usersprofile/{{product.userid._id}}">{{product.userid.firstName}} {{product.userid.lastName}}</a>
             </p>
             <p style="font-size: 16px">
               Posted on: {{product.month}}/{{product.day}}/{{product.year}}
@@ -501,6 +501,64 @@
                     </div>
                     <div class="col-md-6" style="margin-top: 5px">
                       <a class="btn btn-success" href="#/products/{{product._id}}">Delete Item</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>  
+    </script>
+
+    <!-- ________________ USER PAGE FOR OTHER USERS ____________________ -->
+    <script type="text/ng-template" id="/userprofile.html">
+      <div>
+        <a class="btn btn-primary col-md-offset-10" href="#/home">Back to Home</a>
+      </div>
+      <div class="text-center">
+        <h2>{{user.firstName}} {{user.lastName}}</h2>
+      </div>
+
+      <div class="container col-md-12" style="margin-top: 20px"> <!-- Code modified from: http://bootsnipp.com/snippets/49An-->
+
+        <div class="well well-sm col-md-12">
+          <strong>View {{user.firstName}}'s' Items: </strong>
+          <div class="btn-group col-md-12" style="margin-left: 10px">
+
+          <div class="form-group col-md-2" style="margin-top: 10px">
+             <select name="filterActive" class="form-control" id="mySelect" ng-options="option.name for option in data.availableOptions track by option.id" ng-model="data.selectedOption">
+              </select>
+          </div>
+
+          <div class="form-group col-md-2" style="margin-top: 10px">
+             <select name="filterActive" class="form-control" id="mySelect" ng-options="option.name for option in data2.availableOptions track by option.id" ng-model="data2.selectedOption">
+              </select>
+          </div>
+
+          <div class="form-group col-md-2" style="margin-top: 10px">
+             <select name="filterActive" class="form-control" id="mySelect" ng-options="option.name for option in data3.availableOptions track by option.id" ng-model="data3.selectedOption">
+              </select>
+          </div>
+
+          </div>
+        </div>
+
+        <div id="products-view" class="row list-group">
+          <div ng-repeat="product in user.posted | filter:{active: data.selectedOption.value} | filter:{category: data2.selectedOption.value} | orderBy:data3.selectedOption.value">
+            <div class="item  col-md-4">
+              <div class="thumbnail">
+                <img class="group list-group-image" ng-src="data:image/png;base64,{{product.pictures}}" alt="" />
+                <div class="caption">
+                  <h4 class="group inner list-group-item-heading">
+                    {{product.title}}</h4>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <p class="lead">
+                        ${{product.price}}
+                      </p>
+                    </div>
+                    <div class="col-md-6" style="margin-top: 5px">
+                      <a class="btn btn-success" href="#/products/{{product._id}}">View Details</a>
                     </div>
                   </div>
                 </div>

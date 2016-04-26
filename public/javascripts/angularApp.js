@@ -52,6 +52,17 @@ app.config([
       }
     });
     $stateProvider
+    .state('usersprofile', {
+      url: '/usersprofile/{id}',
+      templateUrl: '/userprofile.html',
+      controller: 'UsersCtrl',
+      resolve: {
+        user: ['$stateParams', 'products', function($stateParams, products) {
+          return products.getUserInfo($stateParams.id);
+        }]
+      }
+    });
+    $stateProvider
     .state('form', {
       url: '/addproduct',
       templateUrl: '/addproduct.html',
