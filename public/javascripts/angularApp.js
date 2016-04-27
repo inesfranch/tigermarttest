@@ -57,8 +57,8 @@ app.config([
       templateUrl: '/userprofile.html',
       controller: 'UsersCtrl',
       resolve: {
-        user: ['$stateParams', 'products', function($stateParams, products) {
-          return products.getUserInfo($stateParams.id);
+        user2: ['$stateParams', 'products', function($stateParams, products) {
+          return products.getOtherUserInfo($stateParams.id);
         }]
       }
     });
@@ -104,7 +104,8 @@ app.config([
 app.factory('products', ['$http', function($http){
   var o = {
     products: [],
-    user: ""
+    user: "",
+    user2: ""
   };
   o.getAll = function(cat) {
     return $http.get('/products?cat='+cat).success(function(data){
@@ -151,6 +152,12 @@ app.factory('products', ['$http', function($http){
   o.getUserInfo = function(id) {
     return $http.get("/users/" + id).then(function(res){
       sessionStorage.setItem('user', JSON.stringify(res.data));
+      return res.data;
+    });
+  };
+  o.getOtherUserInfo = function(id) {
+    return $http.get("/users/" + id).then(function(res){
+      sessionStorage.setItem('user2', JSON.stringify(res.data));
       return res.data;
     });
   };
@@ -303,6 +310,7 @@ function($scope, products, $state){
   } 
 
   $scope.user = JSON.parse(sessionStorage.getItem('user'));
+  $scope.user2 = JSON.parse(sessionStorage.getItem('user2'));
 
   $scope.data = {
     availableOptions: [
