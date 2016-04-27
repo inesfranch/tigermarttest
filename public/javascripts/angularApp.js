@@ -203,6 +203,22 @@ function($scope, $state, products){
 
   $scope.products = products.products;
 
+  $scope.data = {
+    availableOptions: [
+      {id: '1', name: 'All', value: ''},
+      {id: '2', name: 'Apparel', value: 'Apparel'},
+      {id: '3', name: 'Dorm Items', value: "Dorm Items"},
+      {id: '4', name: 'Electronics', value: "Electronics"},
+      {id: '5', name: 'Food and Drinks', value: "Food and Drinks"},
+      {id: '6', name: 'Furniture', value: "Furniture"},
+      {id: '7', name: 'Textbooks', value: "Textbooks"},
+      {id: '8', name: 'Tickets', value: "Tickets"},
+      {id: '9', name: 'Transportation', value: "Transportation"},
+      {id: '10', name: 'Other', value: "Other"}
+    ],
+    selectedOption: {id: '1', name: 'All', value: ''}
+  };
+
   if(!sessionStorage.getItem('user')){
     $state.go('welcome');
   }
@@ -245,13 +261,6 @@ function($scope, products, product, $state){
     })
   };
 
-  $scope.linkToUser = function(userid){
-    console.log("HELLO " + userid.firstName + " " + userid.lastName);
-    $state.go('home');
-    products.getUserProducts(userid).error(function(error){
-      $scope.error = error;
-    })
-  };
 }]);
 
 // EDIT PRODUCT CONTROLLER

@@ -148,7 +148,13 @@
         <div class="text-left col-md-6 col-md-offset-3">
           <h5>Filter by category</h5>
         </div>
-        <form ng-submit="filterCat()">
+
+        <div class="form-group col-md-6 col-md-offset-3" style="margin-top: 10px">
+             <select name="cat" class="form-control" id="mySelect" ng-options="option.name for option in data.availableOptions track by option.id" ng-model="data.selectedOption">
+              </select>
+          </div>
+
+        <!--<form ng-submit="filterCat()">
           <div class="col-md-6 col-md-offset-3">
            <select name="cat" class="form-control" ng-model="cat" placeholder="Category">
               <option value="" selected="selected" disabled>Choose Category...</option>
@@ -167,7 +173,7 @@
           <div class="col-md-1">
             <button class="btn btn-info"type="submit">Update</button>
           </div>
-        </form>
+        </form>-->
         <div class="text-left col-md-6 col-md-offset-3">
           <h5>Search</h5>
         </div>
@@ -207,7 +213,7 @@
         </div> -->
 
         <div id="products-view" class="row list-group">
-          <div ng-repeat="product in products | orderBy:sorting">
+          <div ng-repeat="product in products | orderBy:sorting | filter:{category: data.selectedOption.value}">
             <div class="item  col-md-4">
               <div class="thumbnail">
                 <img class="group list-group-image" ng-src="data:image/png;base64,{{product.pictures}}" alt="" />
@@ -348,7 +354,8 @@
               {{product.description}}
             </p>
             <p style="font-size: 16px">
-              Category: <button ng-click="linkToCat(product.category)" class="btn btn-info" name="cat" ng-model="cat"> {{product.category}}</button>
+              Category: <a href="">{{product.category}}</a>
+              <button ng-click="linkToCat(product.category)" class="btn btn-info" name="cat" ng-model="cat"> {{product.category}}</button>
             </p>
             <p style="font-size: 16px">
               Tags: {{product.tags}}
