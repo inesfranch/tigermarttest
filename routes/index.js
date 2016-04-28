@@ -253,6 +253,7 @@ router.post('/register', function(req, res, next){
 
 router.post('/getUser', function(req, res, next){
 	if(!req.body.net_id || !req.body.password) {return res.status(400).json({message: 'Please fill out all the fields'});}
+	console.log(req.body);
 
 	passport.authenticate('local', function(err, user, info){
 		if (err) {return next(err);}

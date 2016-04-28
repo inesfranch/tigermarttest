@@ -236,7 +236,7 @@ app.factory('auth', ['$http', '$window', function($http, $window) {
       var token = auth.getToken();
       var payload = JSON.parse($window.atob(token.split('.')[1]));
 
-      return payload.net_id;
+      return payload;
     }
   };
 
@@ -296,6 +296,7 @@ function($scope, $state, products, auth){
   //$scope.user = JSON.parse(sessionStorage.getItem('user'));
 
   $scope.user = auth.currentUser();
+  console.log($scope.user);
 
   /*$scope.logOut = function(){
     sessionStorage.removeItem('user');
@@ -303,10 +304,15 @@ function($scope, $state, products, auth){
   };*/
 
   $scope.search = function(){
-      console.log(auth.currentUser());
+    console.log(auth.currentUser());
     /*if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}*/
-      products.search($scope.q)
-    };
+    products.search($scope.q)
+  };
+
+  $scope.logOut = function(){
+    auth.logOut();
+    $state.go('welcome');
+  }
 
 }]);
 
@@ -391,7 +397,7 @@ function($scope, products, $state){
     console.log("hello");
     $state.go('welcome');
   } 
-  var user = JSON.parse(sessionStorage.getItem('user'));
+  var user = auth.getToken();
   
   if($state.params.id != user._id) {
     console.log("hello2");
