@@ -10,9 +10,7 @@ passport.use(new LocalStrategy({
 	function(username, password, done) {
 		console.log(username + "1");
 		User.findOne({ 'net_id': username}, function(err, user) {
-			console.log()
 			if (err) {
-				console.log(err)
 				return done(err); 
 			}
 			if (!user) {
