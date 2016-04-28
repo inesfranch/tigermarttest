@@ -45,8 +45,8 @@ app.config([
       templateUrl: '/user.html',
       controller: 'UsersCtrl',
       resolve: {
-        user: ['$stateParams', 'products', function($stateParams, products) {
-          return products.getUserInfo($stateParams.id);
+        user_id: ['$stateParams', 'products', function($stateParams, products) {
+          return $stateParams.id;
         }]
       }
     });
@@ -145,12 +145,6 @@ app.factory('products', ['$http', function($http){
   };
   o.get = function(id) {
     return $http.get("/products/" + id).then(function(res){
-      return res.data;
-    });
-  };
-  o.getUserInfo = function(id) {
-    return $http.get("/users/" + id).then(function(res){
-      sessionStorage.setItem('user', JSON.stringify(res.data));
       return res.data;
     });
   };
@@ -325,9 +319,13 @@ function($scope, products, $state){
     console.log("hello");
     $state.go('welcome');
   } 
-
-  $scope.user = JSON.parse(sessionStorage.getItem('user'));
-  $scope.user2 = JSON.parse(sessionStorage.getItem('user2'));
+  var user = JSON.parse(sessionStorage.getItem('user'));
+  
+  if($state.params.id != user._id) {
+    console.log("hello2");
+    $state.go('home');
+  } 
+  $scope.user = user;
 
   $scope.data = {
     availableOptions: [
