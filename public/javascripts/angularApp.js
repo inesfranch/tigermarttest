@@ -360,9 +360,13 @@ function($scope, products, $state){
   $scope.user = user;
 
   $scope.editUser = function() {
+    console.log("hello");
     products.editUser(user, user._id).error(function(error){
       $scope.error = error;
-    }).success(function() { $state.go('home'); });
+    }).success(function() { 
+      console.log("hello2");
+      $state.go('home'); 
+    });
   };
 }]);
 
