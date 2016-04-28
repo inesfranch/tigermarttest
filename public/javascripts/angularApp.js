@@ -6,7 +6,6 @@ app.config([
 
   function($stateProvider, $urlRouterProvider) {
 
-
     $stateProvider
     .state('home', {
       url: '/home',
@@ -174,7 +173,16 @@ app.factory('products', ['$http', function($http){
       console.log(data);
       console.log("Product Availability changed...");
       $http.get('/products?cat=All').success(function(data){
-      angular.copy(data, o.products);
+        angular.copy(data, o.products);
+      });
+    });
+  };
+  o.delProduct = function(productID, userID) {
+    return $http.delete('/products/' + productID + '/' + userID).success(function(data){
+      console.log(data);
+      console.log("Product Deleted...");
+      $http.get('/products?cat=All').success(function(data){
+        angular.copy(data, o.products);
       });
     });
   };
@@ -340,6 +348,12 @@ function($scope, products, $state){
 
   $scope.changeProductAvailability = function(id){
     products.changeProductAvail(id);
+    $state.go($state.current, {}, {reload: true}); //second parameter is for $stateParams
+  };
+
+  $scope.deleteProduct = function(productID, userID){
+    products.delProduct(productID, userID);
+    $state.go($state.current, {}, {reload: true}); //second parameter is for $stateParams
   };
 
 }]);
@@ -386,13 +400,17 @@ function($scope, products, $state){
     console.log(document.getElementById("mySingleField").value);
     console.log($scope.tags);
 
+    var picURL = dataUrl1.split("base64,")[1];
+    if (!$scope.picFile1)
+      picURL = "";
+
     // ADD VALIDATIONS LATER!
     products.create({
       title: $scope.title,
       category: $scope.category,
       description: $scope.description,
       price: $scope.price,
-      pictures: dataUrl1.split("base64,")[1],
+      pictures: picURL,
       tags: "tags",
       date: new Date(),
       month: ((new Date()).getMonth() + 1),
