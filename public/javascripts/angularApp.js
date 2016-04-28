@@ -6,7 +6,6 @@ app.config([
 
   function($stateProvider, $urlRouterProvider) {
 
-
     $stateProvider
     .state('home', {
       url: '/home',
@@ -46,8 +45,8 @@ app.config([
       templateUrl: '/user.html',
       controller: 'UsersCtrl',
       resolve: {
-        user: ['$stateParams', 'products', function($stateParams, products) {
-          return products.getUserInfo($stateParams.id);
+        user_id: ['$stateParams', 'products', function($stateParams, products) {
+          return $stateParams.id;
         }]
       }
     });
@@ -165,12 +164,6 @@ app.factory('products', ['$http', 'auth', function($http, auth){
       return res.data;
     });
   };
-  o.getUserInfo = function(id) {
-    return $http.get("/users/" + id).then(function(res){
-      sessionStorage.setItem('user', JSON.stringify(res.data));
-      return res.data;
-    });
-  };
   o.getOtherUserInfo = function(id) {
     return $http.get("/users/" + id).then(function(res){
       sessionStorage.setItem('user2', JSON.stringify(res.data));
@@ -197,7 +190,16 @@ app.factory('products', ['$http', 'auth', function($http, auth){
       console.log(data);
       console.log("Product Availability changed...");
       $http.get('/products?cat=All').success(function(data){
-      angular.copy(data, o.products);
+        angular.copy(data, o.products);
+      });
+    });
+  };
+  o.delProduct = function(productID, userID) {
+    return $http.delete('/products/' + productID + '/' + userID).success(function(data){
+      console.log(data);
+      console.log("Product Deleted...");
+      $http.get('/products?cat=All').success(function(data){
+        angular.copy(data, o.products);
       });
     });
   };
@@ -389,9 +391,13 @@ function($scope, products, $state){
     console.log("hello");
     $state.go('welcome');
   } 
-
-  $scope.user = JSON.parse(sessionStorage.getItem('user'));
-  $scope.user2 = JSON.parse(sessionStorage.getItem('user2'));
+  var user = JSON.parse(sessionStorage.getItem('user'));
+  
+  if($state.params.id != user._id) {
+    console.log("hello2");
+    $state.go('home');
+  } 
+  $scope.user = user;
 
   $scope.data = {
     availableOptions: [
@@ -429,6 +435,12 @@ function($scope, products, $state){
 
   $scope.changeProductAvailability = function(id){
     products.changeProductAvail(id);
+    $state.go($state.current, {}, {reload: true}); //second parameter is for $stateParams
+  };
+
+  $scope.deleteProduct = function(productID, userID){
+    products.delProduct(productID, userID);
+    $state.go($state.current, {}, {reload: true}); //second parameter is for $stateParams
   };
 
 }]);
@@ -449,9 +461,13 @@ function($scope, products, $state){
   $scope.user = user;
 
   $scope.editUser = function() {
+    console.log("hello");
     products.editUser(user, user._id).error(function(error){
       $scope.error = error;
-    }).success(function() { $state.go('home'); });
+    }).success(function() { 
+      console.log("hello2");
+      $state.go('home'); 
+    });
   };
 }]);
 
@@ -475,13 +491,17 @@ function($scope, products, $state){
     console.log(document.getElementById("mySingleField").value);
     //console.log($scope.tags);
 
+    var picURL = dataUrl1.split("base64,")[1];
+    if (!$scope.picFile1)
+      picURL = "";
+
     // ADD VALIDATIONS LATER!
     products.create({
       title: $scope.title,
       category: $scope.category,
       description: $scope.description,
       price: $scope.price,
-      pictures: dataUrl1.split("base64,")[1],
+      pictures: picURL,
       //tags: "tags",
       date: new Date(),
       month: ((new Date()).getMonth() + 1),

@@ -146,6 +146,34 @@ router.put('/products/:product', function(req, res, next) {
 	});
 });
 
+router.delete('/products/:product/:user', function(req, res, next) {
+	Product.remove({
+            _id: req.product._id
+        }, function(err, product) {
+            if (err)
+                res.send(err);
+            else
+				var curUser = req.user;
+            	console.log("User whose product is being deleted: " + curUser.net_id);
+            	for(var i = 0; i < curUser.posted.length; i++) 
+            	{
+			    	if(curUser.posted[i].equals(req.product._id)) {
+			       		var del = curUser.posted.splice(i, 1);
+			       		console.log("Deleting: " + del);
+			       		break;
+			    	}
+				}
+
+				curUser.save(function(err, user) {
+					if(err){ console.log(err);
+						return next(err); }
+					console.log("User Posted Array Edited and Saved: " + curUser.net_id);
+				});
+
+            	res.json({ message: 'Successfully deleted' });
+        });
+});
+
 router.put('/products/changeAvail/:product', function(req, res, next) {
 	var editedProduct = req.product;
 	editedProduct.active = !editedProduct.active;
