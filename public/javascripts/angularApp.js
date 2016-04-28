@@ -6,7 +6,6 @@ app.config([
 
   function($stateProvider, $urlRouterProvider) {
 
-
     $stateProvider
     .state('home', {
       url: '/home',
@@ -57,8 +56,8 @@ app.config([
       templateUrl: '/userprofile.html',
       controller: 'UsersCtrl',
       resolve: {
-        user: ['$stateParams', 'products', function($stateParams, products) {
-          return products.getUserInfo($stateParams.id);
+        user2: ['$stateParams', 'products', function($stateParams, products) {
+          return products.getOtherUserInfo($stateParams.id);
         }]
       }
     });
@@ -104,7 +103,8 @@ app.config([
 app.factory('products', ['$http', function($http){
   var o = {
     products: [],
-    user: ""
+    user: "",
+    user2: ""
   };
   o.getAll = function(cat) {
     return $http.get('/products?cat='+cat).success(function(data){
@@ -154,6 +154,12 @@ app.factory('products', ['$http', function($http){
       return res.data;
     });
   };
+  o.getOtherUserInfo = function(id) {
+    return $http.get("/users/" + id).then(function(res){
+      sessionStorage.setItem('user2', JSON.stringify(res.data));
+      return res.data;
+    });
+  };
   o.editUser = function(user, id) {
     return $http.put("/user/" + id, user).success(function(data) {
       console.log(data);
@@ -174,7 +180,16 @@ app.factory('products', ['$http', function($http){
       console.log(data);
       console.log("Product Availability changed...");
       $http.get('/products?cat=All').success(function(data){
-      angular.copy(data, o.products);
+        angular.copy(data, o.products);
+      });
+    });
+  };
+  o.delProduct = function(productID, userID) {
+    return $http.delete('/products/' + productID + '/' + userID).success(function(data){
+      console.log(data);
+      console.log("Product Deleted...");
+      $http.get('/products?cat=All').success(function(data){
+        angular.copy(data, o.products);
       });
     });
   };
@@ -195,6 +210,22 @@ app.controller('MainCtrl', [
 function($scope, $state, products){
 
   $scope.products = products.products;
+
+  $scope.data = {
+    availableOptions: [
+      {id: '1', name: 'All', value: ''},
+      {id: '2', name: 'Apparel', value: 'Apparel'},
+      {id: '3', name: 'Dorm Items', value: "Dorm Items"},
+      {id: '4', name: 'Electronics', value: "Electronics"},
+      {id: '5', name: 'Food and Drinks', value: "Food and Drinks"},
+      {id: '6', name: 'Furniture', value: "Furniture"},
+      {id: '7', name: 'Textbooks', value: "Textbooks"},
+      {id: '8', name: 'Tickets', value: "Tickets"},
+      {id: '9', name: 'Transportation', value: "Transportation"},
+      {id: '10', name: 'Other', value: "Other"}
+    ],
+    selectedOption: {id: '1', name: 'All', value: ''}
+  };
 
   if(!sessionStorage.getItem('user')){
     $state.go('welcome');
@@ -238,13 +269,6 @@ function($scope, products, product, $state){
     })
   };
 
-  $scope.linkToUser = function(userid){
-    console.log("HELLO " + userid.firstName + " " + userid.lastName);
-    $state.go('home');
-    products.getUserProducts(userid).error(function(error){
-      $scope.error = error;
-    })
-  };
 }]);
 
 // EDIT PRODUCT CONTROLLER
@@ -303,6 +327,7 @@ function($scope, products, $state){
   } 
 
   $scope.user = JSON.parse(sessionStorage.getItem('user'));
+  $scope.user2 = JSON.parse(sessionStorage.getItem('user2'));
 
   $scope.data = {
     availableOptions: [
@@ -340,6 +365,12 @@ function($scope, products, $state){
 
   $scope.changeProductAvailability = function(id){
     products.changeProductAvail(id);
+    $state.go($state.current, {}, {reload: true}); //second parameter is for $stateParams
+  };
+
+  $scope.deleteProduct = function(productID, userID){
+    products.delProduct(productID, userID);
+    $state.go($state.current, {}, {reload: true}); //second parameter is for $stateParams
   };
 
 }]);
@@ -390,13 +421,17 @@ function($scope, products, $state){
     console.log(document.getElementById("mySingleField").value);
     console.log($scope.tags);
 
+    var picURL = dataUrl1.split("base64,")[1];
+    if (!$scope.picFile1)
+      picURL = "";
+
     // ADD VALIDATIONS LATER!
     products.create({
       title: $scope.title,
       category: $scope.category,
       description: $scope.description,
       price: $scope.price,
-      pictures: dataUrl1.split("base64,")[1],
+      pictures: picURL,
       tags: "tags",
       date: new Date(),
       month: ((new Date()).getMonth() + 1),
