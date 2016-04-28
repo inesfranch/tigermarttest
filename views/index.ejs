@@ -10,22 +10,18 @@
     <script src="/javascripts/ng-img-crop.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/javascripts/tag-it.js" type="text/javascript" charset="utf-8"></script>
+    <!--<script src="/javascripts/tag-it.js" type="text/javascript" charset="utf-8"></script>-->
     <link rel="stylesheet" type="text/css" href="/stylesheets/ng-img-crop.css">
     <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
-    <link href="/stylesheets/jquery.tagit.css" rel="stylesheet" type="text/css">
-    <link href="/stylesheets/tagit.ui-zendesk.css" rel="stylesheet" type="text/css">
+    <!--<link href="/stylesheets/jquery.tagit.css" rel="stylesheet" type="text/css">
+    <link href="/stylesheets/tagit.ui-zendesk.css" rel="stylesheet" type="text/css">-->
 
-    <script>
+    <!--<script>
         $(function(){
             var sampleTags = ['c++', 'java', 'php', 'coldfusion', 'javascript', 'asp', 'ruby', 'python', 'c', 'scala', 'groovy', 'haskell', 'perl', 'erlang', 'apl', 'cobol', 'go', 'lua'];
-            //-------------------------------
             // Minimal
-            //-------------------------------
             $('#myTags').tagit();
-            //-------------------------------
             // Single field
-            //-------------------------------
             $('#singleFieldTags').tagit({
                 availableTags: sampleTags,
                 // This will make Tag-it submit a single form value, as a comma-delimited field.
@@ -37,18 +33,14 @@
             $('#singleFieldTags2').tagit({
                 availableTags: sampleTags
             });
-            //-------------------------------
             // Preloading data in markup
-            //-------------------------------
             $('#myULTags').tagit({
                 availableTags: sampleTags, // this param is of course optional. it's for autocomplete.
                 // configure the name of the input field (will be submitted with form), default: item[tags]
                 itemName: 'item',
                 fieldName: 'tags'
             });
-            //-------------------------------
             // Tag events
-            //-------------------------------
             var eventTags = $('#eventTags');
             var addEvent = function(text) {
                 $('#events_container').append(text + '<br>');
@@ -78,39 +70,39 @@
                     addEvent('onTagExists: ' + eventTags.tagit('tagLabel', ui.existingTag));
                 }
             });
-            //-------------------------------
             // Read-only
-            //-------------------------------
             $('#readOnlyTags').tagit({
                 readOnly: true
             });
-            //-------------------------------
             // Tag-it methods
-            //-------------------------------
             $('#methodTags').tagit({
                 availableTags: sampleTags
             });
-            //-------------------------------
             // Allow spaces without quotes.
-            //-------------------------------
             $('#allowSpacesTags').tagit({
                 availableTags: sampleTags,
                 allowSpaces: true
             });
-            //-------------------------------
             // Remove confirmation
-            //-------------------------------
             $('#removeConfirmationTags').tagit({
                 availableTags: sampleTags,
                 removeConfirmation: true
             });
             
         });
-    </script>
+    </script>-->
 
   </head>
 
   <body ng-app="tigerMart">
+    <nav class="navbar navbar-default pull-right" ng-controller="NavCtrl">
+      <ul class="nav navbar-nav">
+        <li ng-show="isLoggedIn()"><a>{{ currentUser() }}</a></li>
+        <li ng-show="isLoggedIn()"><a href="" ng-click="logOut()">Log Out</a></li>
+        <li ng-hide="isLoggedIn()"><a href="/#/welcome">Log In</a></li>
+        <li ng-hide="isLoggedIn()"><a href="/#/register">Register</a></li>
+      </ul>
+    </nav>
     <div class="row">
       <div>
         <ui-view></ui-view>
@@ -320,12 +312,12 @@
           <input type="text" class="form-control" style="margin-top: 20px" placeholder="Add Tags" ng-model="tags"></input>
         </div>-->
 
-        <div class="form-group" style="margin-top: 20px">
+        <!--<div class="form-group" style="margin-top: 20px">
           <label class=" control-label">Tags</label>
           <h5>Create tags (separate by Enter key)</h5>
           <input name="tags" id="mySingleField" value="Apple, Orange" disabled="true" ng-model="tags">
           <ul class="form-control" id="singleFieldTags"></ul>
-        </div>
+        </div>-->
         
         <div class="center-block">
           <button ng-click="addProduct(croppedDataUrl1, mySingleField)" class="text-center btn btn-primary center-block">Post product</button>
@@ -354,12 +346,11 @@
               {{product.description}}
             </p>
             <p style="font-size: 16px">
-              Category: <a href="">{{product.category}}</a>
-              <button ng-click="linkToCat(product.category)" class="btn btn-info" name="cat" ng-model="cat"> {{product.category}}</button>
+              Category: {{product.category}}
             </p>
-            <p style="font-size: 16px">
+            <!--<p style="font-size: 16px">
               Tags: {{product.tags}}
-            </p>
+            </p>-->
             <p style="font-size: 16px">
               Posted by: <a href="#/usersprofile/{{product.userid._id}}">{{product.userid.firstName}} {{product.userid.lastName}}</a>
             </p>
@@ -436,10 +427,10 @@
           </center>
         </div>
 
-         <div class="form-group">
+         <!--<div class="form-group">
           <label>Tags:</label>
           <input type="text" class="form-control" style="margin-top: 20px" ng-model="tags"></input>
-        </div>
+        </div>-->
 
         <div class="center-block">
           <button ng-click="editProduct(croppedDataUrl1)" onclick="location.href='#/home'" class="text-center btn btn-primary center-block">Save product</button>
@@ -632,12 +623,18 @@
       <div class="panel panel-default form-group col-md-3 col-md-offset-2" style="margin-top: 30px">
         <h3 class="text-center">Are you a returning user?</h3>
         <h4 class="text-center">Enter your NetID</h4>
-        <form ng-submit= "getUser()">
+        <form ng-submit= "logIn()">
           <div class="form-group">
             <input type="text"
             class="form-control"
             placeholder="NetID"
             ng-model="user.net_id"></input>
+          </div>
+          <div class="form-group">
+            <input type="text"
+            class="form-control"
+            placeholder="Password"
+            ng-model="user.password"></input>
           </div>
           <button type="submit" class="btn btn-primary center-block">Log In</button>
         </form>
@@ -665,6 +662,13 @@
           class="form-control"
           placeholder="NetID"
           ng-model="user.net_id"></input>
+        </div>
+        <div class="form-group required">
+          <label class=" control-label">Password</label>
+          <input type="text"
+          class="form-control"
+          placeholder="Password"
+          ng-model="user.password"></input>
         </div>
         <div class="form-group required">
           <label class=" control-label">Email</label>

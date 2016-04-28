@@ -14,7 +14,7 @@ app.config([
       controller: 'MainCtrl',
       resolve: {
         postPromise: ['products', function(products){
-          return products.getAll('All');
+          return products.getAll();
         }]
       }
     });
@@ -72,13 +72,23 @@ app.config([
     .state('welcome', {
       url: '/welcome',
       templateUrl: '/welcome.html',
-      controller: 'WelcomeCtrl',
+      controller: 'AuthCtrl',
+      onEnter: ['$state', 'auth', function($state, auth){
+        if(auth.isLoggedIn()){
+          $state.go('home');
+        }
+      }]
     });
     $stateProvider
     .state('register', {
       url: '/register',
       templateUrl: '/register.html',
-      controller: 'WelcomeCtrl',
+      controller: 'AuthCtrl',
+      onEnter: ['$state', 'auth', function($state, auth){
+        if(auth.isLoggedIn()){
+          $state.go('home');
+        }
+      }]
     });
     $stateProvider
     .state('editUser', {
@@ -101,14 +111,19 @@ app.config([
     $urlRouterProvider.otherwise('welcome');
   }]);
 
-app.factory('products', ['$http', function($http){
+app.factory('products', ['$http', 'auth', function($http, auth){
   var o = {
     products: [],
     user: "",
     user2: ""
   };
-  o.getAll = function(cat) {
-    return $http.get('/products?cat='+cat).success(function(data){
+  o.getAll = function() {
+    return $http.get('/products').success(function(data){
+      angular.copy(data, o.products);
+    });
+  };
+  o.getCat = function(cat) {
+    return $http.get('/productscat?cat='+cat).success(function(data){
       angular.copy(data, o.products);
     });
   };
@@ -119,7 +134,9 @@ app.factory('products', ['$http', function($http){
   };
   o.create = function(product) {
     var user = JSON.parse(sessionStorage.getItem('user'));
-    return $http.post('/products/' + user._id, product).success(function(data){
+    return $http.post('/products/' + user._id, product, {
+      headers: {Authorization: 'Bearer '+auth.getToken()}
+    }).success(function(data){
       o.products.push(data);
       user.posted.push(data);
       sessionStorage.setItem('user', JSON.stringify(user));
@@ -137,10 +154,9 @@ app.factory('products', ['$http', function($http){
       sessionStorage.setItem('user', JSON.stringify(data));
     });
   };
-  o.search = function(q, cat) {
+  o.search = function(q) {
     q = q.toString();
-    cat = cat.toString();
-    return $http.get("/search?q="+q+"&cat="+cat).success(function(data) {
+    return $http.get("/search?q="+q).success(function(data) {
       angular.copy(data, o.products);
     });
   };
@@ -191,6 +207,55 @@ app.factory('products', ['$http', function($http){
     });
   };*/
   return o;
+}]);
+app.factory('auth', ['$http', '$window', function($http, $window) {
+  var auth = {};
+
+  auth.saveToken = function(token) {
+    $window.localStorage['tigermart-token'] = token;
+  };
+
+  auth.getToken = function() {
+    return $window.localStorage['tigermart-token'];
+  };
+
+  auth.isLoggedIn = function(){
+    var token = auth.getToken();
+    if (token){
+      var payload = JSON.parse($window.atob(token.split('.')[1]));
+      return payload.exp > Date.now() / 1000;
+    } else {
+      return false;
+    }
+  };
+
+  auth.currentUser = function() {
+    if (auth.isLoggedIn()) {
+      var token = auth.getToken();
+      var payload = JSON.parse($window.atob(token.split('.')[1]));
+
+      return payload.net_id;
+    }
+  };
+
+  auth.register = function(user){
+    return $http.post('/register', user).success(function(data){
+      auth.saveToken(data.token);
+    });
+  };
+
+  auth.logIn = function(user){
+    return $http.post('/getUser', user).success(function(data){
+      auth.saveToken(data.token);
+    });
+  };
+
+  auth.logOut = function(){
+    $window.localStorage.removeItem('tigermart-token');
+  };
+
+
+  return auth;
 }])
 
 
@@ -199,9 +264,12 @@ app.controller('MainCtrl', [
 '$scope',
 '$state',
 'products',
-function($scope, $state, products){
+'auth',
+function($scope, $state, products, auth){
 
   $scope.products = products.products;
+
+  $scope.isLoggedIn = auth.isLoggedIn;
 
   $scope.data = {
     availableOptions: [
@@ -219,25 +287,25 @@ function($scope, $state, products){
     selectedOption: {id: '1', name: 'All', value: ''}
   };
 
-  if(!sessionStorage.getItem('user')){
+  /*if(!sessionStorage.getItem('user')){
     $state.go('welcome');
-  }
+  }*/
 
-  $scope.user = JSON.parse(sessionStorage.getItem('user'));
+  //$scope.user = JSON.parse(sessionStorage.getItem('user'));
 
-  $scope.logOut = function(){
+  $scope.user = auth.currentUser();
+
+  /*$scope.logOut = function(){
     sessionStorage.removeItem('user');
     $state.go('welcome');
-  };
+  };*/
 
   $scope.search = function(){
-    if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
-      products.search($scope.q, $scope.cat)
+      console.log(auth.currentUser());
+    /*if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}*/
+      products.search($scope.q)
     };
 
-  $scope.filterCat = function(){
-    products.getAll($scope.cat)
-  };
 }]);
 
 // VIEW PRODUCT CONTROLLER
@@ -246,20 +314,24 @@ app.controller('ProductsCtrl', [
 'products',
 'product',
 '$state',
-
-function($scope, products, product, $state){
+'auth',
+function($scope, products, product, $state, auth){
   if(!sessionStorage.getItem('user')) {
     $state.go('welcome');
   } 
   $scope.product = product;
 
-  $scope.linkToCat = function(cat){
-    console.log("HELLO "+ cat);
-    $state.go('home');
+  $scope.isLoggedIn = auth.isLoggedIn;
+
+  $scope.changeCat = function(cat){
+    products.getCat(cat);
+  };
+
+  /*$scope.linkToCat = function(cat){
     products.getAll(cat).error(function(error){
       $scope.error = error;
     })
-  };
+  };*/
 
 }]);
 
@@ -274,7 +346,7 @@ function($scope, products, product){
   $scope.category = product.category;
   $scope.description = product.description;
   $scope.price = product.price;
-  $scope.tags = product.tags;
+  //$scope.tags = product.tags;
   $scope.pictures = product.pictures;
   //     pictures: dataUrl1.split("base64,")[1],
 
@@ -288,7 +360,7 @@ $scope.editProduct = function(dataUrl1){
       description: $scope.description,
       price: $scope.price,
       pictures: dataUrl1.split("base64,")[1],
-      tags: $scope.tags,
+      //tags: $scope.tags,
       date: '',
       month: '',
       day: '',
@@ -301,7 +373,7 @@ $scope.editProduct = function(dataUrl1){
     $scope.description = '';
     $scope.price = '';
     $scope.picFile1 = '';
-    $scope.tags = '';
+    //$scope.tags = '';
   };
 }]);
 
@@ -401,7 +473,7 @@ function($scope, products, $state){
 
     console.log($scope.title);
     console.log(document.getElementById("mySingleField").value);
-    console.log($scope.tags);
+    //console.log($scope.tags);
 
     // ADD VALIDATIONS LATER!
     products.create({
@@ -410,7 +482,7 @@ function($scope, products, $state){
       description: $scope.description,
       price: $scope.price,
       pictures: dataUrl1.split("base64,")[1],
-      tags: "tags",
+      //tags: "tags",
       date: new Date(),
       month: ((new Date()).getMonth() + 1),
       day: (new Date()).getDate(),
@@ -427,11 +499,11 @@ function($scope, products, $state){
     $scope.description = '';
     $scope.price = '';
     $scope.picFile1 = '';
-    $scope.tags = '';
+    //$scope.tags = '';
   };
 }]);
 
-app.controller('WelcomeCtrl', [
+/*app.controller('WelcomeCtrl', [
 '$scope',
 '$state',
 'products',
@@ -453,4 +525,37 @@ function($scope, $state, products){
     });
 
   };
+}]);*/
+
+app.controller('AuthCtrl', [
+'$scope',
+'$state',
+'auth',
+function($scope, $state, auth){
+  $scope.user = {};
+
+  $scope.register = function(){
+    auth.register($scope.user).error(function(error){
+      $scope.error = error;
+    }).then(function(){
+      $state.go('home');
+    });
+  };
+
+  $scope.logIn = function(){
+    auth.logIn($scope.user).error(function(error){
+      $scope.error = error;
+    }).then(function(){
+      $state.go('home');
+    });
+  };
+}]);
+
+app.controller('NavCtrl', [
+'$scope',
+'auth',
+function($scope, auth){
+  $scope.isLoggedIn = auth.isLoggedIn;
+  $scope.currentUser = auth.currentUser;
+  $scope.logOut = auth.logOut;
 }]);
