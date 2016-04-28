@@ -197,7 +197,7 @@ router.post('/register', function(req, res, next){
   	}
   	else {
 
-  		var user = new User();
+  	var user = new User();
 
 	  user.net_id = req.body.net_id;
 
