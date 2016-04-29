@@ -98,6 +98,12 @@ app.config([
       templateUrl: '/splash.html',
       controller: 'WelcomeCtrl',
     });
+    $stateProvider
+    .state('setNotifications', {
+     url: '/setNotifications/{id}',
+     templateUrl: '/setNotifications.html',
+     controller: 'SetNotificationsCtrl',
+    });
     $urlRouterProvider.otherwise('welcome');
   }]);
 
@@ -144,6 +150,20 @@ app.factory('products', ['$http', function($http){
       angular.copy(data, o.products);
     });
   };
+  o.matchNotifications = function(title, description, price) {
+    return $http.get("/matchNotifications").success(function(data) {
+      for (var i = 0; i < data.length; i++) {
+        for (var j = 0; j < data[i].notifications.length; j++) {
+          var lctitle = title.toLowerCase();
+          var lcdescription = description.toLowerCase();
+          var lcnotification = data[i].notifications[j].toLowerCase();
+          if ((lctitle.indexOf(lcnotification) > -1) || (lcdescription.indexOf(lcnotification) > -1)){
+            o.send(data[i], title, description, price);
+          }   
+        }
+      } 
+    });
+  };
   o.get = function(id) {
     return $http.get("/products/" + id).then(function(res){
       return res.data;
@@ -176,9 +196,38 @@ app.factory('products', ['$http', function($http){
       });
     });
   };
+  o.setNotifications= function(notification, id) {
+    var user = JSON.parse(sessionStorage.getItem('user'));
+    id = id.toString();
+    notification = notification.toString();
+    console.log(id);
+    console.log(notification);
+    return $http.put("/setNotifications/"+id+"?notification="+notification).success(function(data){
+      user.notifications.push(data);
+      sessionStorage.setItem('user', JSON.stringify(user));
+      console.log(data);
+      });
+  };
+
+  o.delNotification = function(notification) {
+    var user = JSON.parse(sessionStorage.getItem('user'));
+    return $http.delete("/notifications/"+user._id+"?notification="+notification).success(function(data){
+      console.log("Notification deleted...");
+    });
+  };
+
+  o.send = function(user, title, description, price) {
+    console.log("Send function called");
+    var to = user.email;
+    to = to.toString();
+    subject = "A product you were looking for is now available!";
+    body = "Hey "+user.firstName+",%0A%0AA new product recently posted for sale on Tiger Mart matched one of your alert notifications: %0A%0A Title: "+title+"%0A Description: "+description+"%0A Price: $"+price+" %0A%0ACheers, %0AThe TigerMart Team %0A%0ANote: Remember to update your alert notifications if you found what you were looking for!";
+    return $http.get("/send?to="+to+"&subject="+subject+"&body="+body);
+ };
+
   o.changeProductAvail = function(id) {
     return $http.put('/products/changeAvail/' + id).success(function(data){
-      console.log(data);
+      console.log(data); 
       console.log("Product Availability changed...");
       $http.get('/products?cat=All').success(function(data){
       angular.copy(data, o.products);
@@ -383,6 +432,37 @@ function($scope, products, $state){
   };
 }]);
 
+app.controller('SetNotificationsCtrl', [
+  '$scope',
+  'products',
+  '$state',
+
+  function($scope, products, $state){
+    //$scope.product = product;
+    if(!sessionStorage.getItem('user')) {
+      $state.go('welcome');
+    }
+    var user = JSON.parse(sessionStorage.getItem('user'));
+    $scope.user = user;
+
+    $scope.deleteNotification = function(notification) {
+      products.delNotification(notification).then(function(){
+      $state.go($state.current, {}, {reload:true});
+    });
+    };
+
+    $scope.setNotifications = function(){
+      console.log($scope.notification);
+      products.setNotifications($scope.notification, user._id).error(function(error) {
+        $scope.error = error;
+      }).then(function() {
+        $state.go('home');
+      });
+      $scope.notification = '';
+    };
+  }]);
+
+
 
 // FORM CONTROL
 app.controller('FormCtrl', [
@@ -401,7 +481,13 @@ function($scope, products, $state){
 
     console.log($scope.title);
     console.log(document.getElementById("mySingleField").value);
-    console.log($scope.tags);
+    //console.log($scope.tags);
+
+    var picURL = dataUrl1.split("base64,")[1];
+    if (!$scope.picFile1)
+      picURL = "";
+
+    products.matchNotifications($scope.title, $scope.description, $scope.price);
 
     // ADD VALIDATIONS LATER!
     products.create({
@@ -409,8 +495,8 @@ function($scope, products, $state){
       category: $scope.category,
       description: $scope.description,
       price: $scope.price,
-      pictures: dataUrl1.split("base64,")[1],
-      tags: "tags",
+      pictures: picURL,
+      //tags: "tags",
       date: new Date(),
       month: ((new Date()).getMonth() + 1),
       day: (new Date()).getDate(),
@@ -427,7 +513,7 @@ function($scope, products, $state){
     $scope.description = '';
     $scope.price = '';
     $scope.picFile1 = '';
-    $scope.tags = '';
+    //$scope.tags = '';
   };
 }]);
 

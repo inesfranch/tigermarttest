@@ -1,5 +1,7 @@
 var express = require('express');
 var router = express.Router();
+var nodemailer = require("nodemailer");
+var smtpTransport = require("nodemailer-smtp-transport")
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -10,6 +12,13 @@ var mongoose = require('mongoose');
 var Product = mongoose.model('Product');
 var User = mongoose.model('User');
 
+var options = {
+    service: "Gmail",
+    auth: {
+        user: "tigermartnotifications@gmail.com",
+        pass: "cos333tigermart"
+    }
+};
 
 /*router.get('/products', function(req, res, next) {
 	Product.find(function(err, products){
@@ -17,6 +26,25 @@ var User = mongoose.model('User');
 		res.json(products);
 	});
 });*/
+
+router.get('/send', function(req,res, next){
+	var transporter = nodemailer.createTransport(smtpTransport(options));
+	var mailOptions = {
+		to : req.query.to,
+		subject : req.query.subject,
+		text : req.query.body
+	}
+	transporter.sendMail(mailOptions, function(error, response){
+		if (error) {
+			console.log(error);
+			res.end("error");
+		} else {
+			console.log("Message sent: " + response.message);
+			res.end("sent");
+		}
+	});
+});
+
 
 router.get('/products', function(req, res, next) {
 	var cat = req.query.cat;
@@ -59,6 +87,14 @@ router.get('/search', function(req, res, next) {
             res.json(products);
         });
     }
+});
+
+router.get('/matchNotifications', function(req, res, next) {
+	var qu = User.find({});
+		qu.exec(function(err, users) {
+			if(err){return next(err);}
+			res.json(users);
+		});
 });
 
 router.post('/products/:user', function(req, res, next) {
@@ -147,6 +183,36 @@ router.put('/user/:user', function(req, res, next) {
 		res.json(user);
 	});
 });
+
+router.put('/setNotifications/:user', function(req, res, next) {
+	var editedUser = req.user;
+	console.log(editedUser);
+	console.log(req.query.notification)
+	if(!req.query.notification || req.query.notification === '') { 
+		return res.status(400).json({message: 'Can not set an empty alert'});
+	}
+	editedUser.notifications.push(req.query.notification);
+	editedUser.save(function(err, user) {
+			if (err) {return next(err);}
+			res.json(user);
+	});
+});
+
+router.delete('/notifications/:user', function(req, res, next) {
+	var curUser = req.user;
+	for (var i = 0; i < curUser.notifications.length; i++) {
+		if (curUser.notifications[i] == req.query.notification) {
+			var del = curUser.notifications.splice(i,1);
+			break;
+		}
+	}
+
+	curUser.save(function(err, user) {
+		if (err) {return next(err);}
+		res.json(user);
+	});
+});
+
 
 router.get('/users/:user', function(req, res, next) {
 	req.user.populate('posted', function(err, user) {

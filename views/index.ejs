@@ -367,7 +367,7 @@
               Posted on: {{product.month}}/{{product.day}}/{{product.year}}
             </p>
             <br>
-<a class="btn btn-success col-md-offset-7" href="mailto: {{product.userid.email}}?subject=Hey! I am interested in your {{product.title}} on TigerMart&body=Hey {{product.userid.firstName}}! %0A%0AI saw your {{product.title}} on TigerMart and I am interested in buying it. Let me know if it is still available. %0A%0AThanks! %0A%0A{{user.firstName}}" target="_blank">Contact {{product.userid.firstName}}</a>
+              <a class="btn btn-success col-md-offset-7" href="mailto: {{product.userid.email}}?subject=Hey! I am interested in your {{product.title}} on TigerMart&body=Hey {{product.userid.firstName}}! %0A%0AI saw your {{product.title}} on TigerMart and I am interested in buying it. Let me know if it is still available. %0A%0AThanks! %0A%0A{{user.firstName}}" target="_blank">Contact {{product.userid.firstName}}</a>
             <br>
             <br>
           </div>
@@ -454,6 +454,9 @@
       </div>
       <div>
         <a class="btn btn-primary col-md-offset-10" style="margin-top: 10px" href="#/editUser/{{user._id}}">Edit My Profile</a>
+      </div>
+      <div>
+        <a class="btn btn-success col-md-offset-10" style="margin-top: 10px" href="#/setNotifications/{{user._id}}">Set My Notifications</a>
       </div>
       <div class="text-center">
         <h2>{{user.firstName}} {{user.lastName}}</h2>
@@ -608,6 +611,35 @@
         </div>
         <div class="center-block">
           <button ng-click="editUser()" class="text-center btn btn-primary center-block">Make Edits</button>
+        </div>
+      </form>
+    </script>
+
+<!-- ________________ SET NOTIFICATIONS PAGE ____________________ -->
+
+    <script type="text/ng-template" id="/setNotifications.html">
+      <div class="text-center">
+        <h2>Set My Notifications</h2>
+      </div>
+      <div ng-show="error" class="alert alert-danger row">
+        <span>{{ error.message }}</span>
+      </div>
+      <form class="col-md-4 col-md-offset-4">
+      <h2 class="text" style="margin-bottom:20px;"> Netid: {{user.net_id}} </h3>
+          <div ng-repeat="notification in user.notifications | orderBy:date">
+            {{notification}}
+           <span class="glyphicon glyphicon-remove"
+            ng-click="deleteNotification(notification)"></span> 
+          </div>
+        </div>  
+        <div class="form-group">
+          <input type="text"
+          class="form-control"
+          placeholder= "Enter product name..."
+          ng-model="notification"></input>
+        </div>
+        <div class="center-block">
+          <button ng-click="setNotifications()" href='#/setNotifications/{{user._id}}'class="text-center btn btn-primary center-block">Save!</button>
         </div>
       </form>
     </script>
