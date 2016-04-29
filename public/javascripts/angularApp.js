@@ -131,26 +131,13 @@ app.factory('products', ['$http', 'auth', function($http, auth){
       angular.copy(data, userid.posted);
     });
   };
-  o.create = function(product) {
-    var user = JSON.parse(sessionStorage.getItem('user'));
+  o.create = function(product, user) {
+    
     return $http.post('/products/' + user._id, product, {
       headers: {Authorization: 'Bearer '+auth.getToken()}
     }).success(function(data){
       o.products.push(data);
       user.posted.push(data);
-      sessionStorage.setItem('user', JSON.stringify(user));
-    });
-  };
-  o.register = function(user){
-    return $http.post('/register', user).success(function(data){
-      o.user = data;
-      sessionStorage.setItem('user', JSON.stringify(data));  
-    });
-  };
-  o.getUser = function(user){
-    return $http.post('/getUser', user).success(function(data){
-      o.user = data;
-      sessionStorage.setItem('user', JSON.stringify(data));
     });
   };
   o.search = function(q) {
@@ -326,11 +313,19 @@ function($scope, products, product, $state, auth){
     if (!auth.isLoggedIn()) {$state.go('welcome');}
   $scope.user = auth.currentUser();
 
-  $scope.isLoggedIn = auth.isLoggedIn;
-
+  $scope.product = product;
   $scope.changeCat = function(cat){
     products.getCat(cat);
   };
+
+  $scope.loadUserPage = function(productuserid) {
+    if (productuserid == auth.currentUser()._id) {
+      /users/
+    }
+    else {
+      /usersprofile/
+    }
+  }
 
   /*$scope.linkToCat = function(cat){
     products.getAll(cat).error(function(error){
@@ -403,7 +398,8 @@ function($scope, products, $state, auth){
     console.log("hello2");
     $state.go('home');
   } 
-  $scope.user = user;
+
+  console.log(user.posted[0].title);
 
   $scope.data = {
     availableOptions: [
@@ -445,8 +441,14 @@ function($scope, products, $state, auth){
   };
 
   $scope.deleteProduct = function(productID, userID){
-    products.delProduct(productID, userID);
-    $state.go($state.current, {}, {reload: true}); //second parameter is for $stateParams
+    var c = confirm('Are you sure you want to delete this product? This action is irreversible');
+    if (c == true) {
+      products.delProduct(productID, userID);
+      $state.go($state.current, {}, {reload: true}); //second parameter is for $stateParams
+    } else {
+      $state.go($state.current, {}, {reload: false});
+    }
+    
   };
 
 }]);
@@ -486,12 +488,12 @@ function($scope, products, $state, auth){
   if (!auth.isLoggedIn()) {$state.go('welcome');}
   $scope.user = auth.currentUser();
 
-  $scope.addProduct = function(dataUrl1, mySingleField){
+  $scope.addProduct = function(dataUrl1){
 
-    var user = JSON.parse(sessionStorage.getItem('user'));
+    var user = $scope.user;
 
     console.log($scope.title);
-    console.log(document.getElementById("mySingleField").value);
+    //console.log(document.getElementById("mySingleField").value);
     //console.log($scope.tags);
 
     var picURL = dataUrl1.split("base64,")[1];
@@ -512,7 +514,7 @@ function($scope, products, $state, auth){
       year: (new Date()).getYear() - 100,
       userid: user._id,
       active: true
-    }).error(function(error) {
+    }, user).error(function(error) {
       $scope.error = error;
     }).then(function() {
       $state.go('home');

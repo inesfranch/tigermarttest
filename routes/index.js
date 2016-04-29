@@ -99,7 +99,7 @@ router.post('/products/:user', auth, function(req, res, next) {
 	if(!req.body.title || req.body.title === '' || !req.body.description || req.body.description === '' || 
       !req.body.price || req.body.price === '' || !req.body.category || req.body.category === '') { 
 		return res.status(400).json({message: 'Please fill out all the required fields in the form'});
-     }
+    }
 	var product = new Product(req.body);
 	product.user = req.user;
 	product.save(function(err, product) {
@@ -214,7 +214,7 @@ router.get('/users/:user', function(req, res, next) {
 	req.user.populate('posted', function(err, user) {
 		if (err) { console.log(err);
 			return next(err);}
-		res.json(user);
+		res.json({token: user.generateJWT()});
 	});
 });
 
