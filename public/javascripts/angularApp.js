@@ -804,12 +804,18 @@ app.controller('AuthCtrl', [
 '$state',
 'auth',
 function($scope, $state, auth){
-  $scope.user = {};
-
+  if (sessionStorage.getItem('userinfo')){
+    $scope.user = JSON.parse(sessionStorage.getItem('userinfo'));
+  }
+  else{
+    $scope.user = {};
+  }
   $scope.register = function(){
+    sessionStorage.setItem('userinfo', JSON.stringify($scope.user));
     auth.register($scope.user).error(function(error){
       $scope.error = error;
-    }).then(function(){
+    }).success(function(){
+      sessionStorage.removeItem('userinfo');
       $state.go('home');
     });
   };
