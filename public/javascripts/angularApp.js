@@ -329,6 +329,15 @@ function($scope, products, product, $state, auth){
     products.getCat(cat);
   };
 
+  $scope.loadUserPage = function(productuserid) {
+    if (productuserid == auth.currentUser()._id) {
+      /users/
+    }
+    else {
+      /usersprofile/
+    }
+  }
+
   /*$scope.linkToCat = function(cat){
     products.getAll(cat).error(function(error){
       $scope.error = error;
@@ -439,8 +448,14 @@ function($scope, products, $state){
   };
 
   $scope.deleteProduct = function(productID, userID){
-    products.delProduct(productID, userID);
-    $state.go($state.current, {}, {reload: true}); //second parameter is for $stateParams
+    var c = confirm('Are you sure you want to delete this product? This action is irreversible');
+    if (c == true) {
+      products.delProduct(productID, userID);
+      $state.go($state.current, {}, {reload: true}); //second parameter is for $stateParams
+    } else {
+      $state.go($state.current, {}, {reload: false});
+    }
+    
   };
 
 }]);
@@ -483,7 +498,7 @@ function($scope, products, $state){
     $state.go('welcome');
   } 
 
-  $scope.addProduct = function(dataUrl1, mySingleField){
+  $scope.addProduct = function(dataUrl1){
 
     var user = JSON.parse(sessionStorage.getItem('user'));
 
