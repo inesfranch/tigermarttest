@@ -131,8 +131,8 @@ app.factory('products', ['$http', 'auth', function($http, auth){
       angular.copy(data, userid.posted);
     });
   };
-  o.create = function(product) {
-    var user = JSON.parse(sessionStorage.getItem('user'));
+  o.create = function(product, user) {
+    
     return $http.post('/products/' + user._id, product, {
       headers: {Authorization: 'Bearer '+auth.getToken()}
     }).success(function(data){
@@ -403,8 +403,8 @@ function($scope, products, $state, auth){
     console.log("hello2");
     $state.go('home');
   } 
-  $scope.user = user;
 
+  console.log(user.posted);
   $scope.data = {
     availableOptions: [
       {id: '1', name: 'Active Posts', value: true},
@@ -486,12 +486,12 @@ function($scope, products, $state, auth){
   if (!auth.isLoggedIn()) {$state.go('welcome');}
   $scope.user = auth.currentUser();
 
-  $scope.addProduct = function(dataUrl1, mySingleField){
+  $scope.addProduct = function(dataUrl1){
 
-    var user = JSON.parse(sessionStorage.getItem('user'));
+    var user = $scope.user;
 
     console.log($scope.title);
-    console.log(document.getElementById("mySingleField").value);
+    //console.log(document.getElementById("mySingleField").value);
     //console.log($scope.tags);
 
     var picURL = dataUrl1.split("base64,")[1];
@@ -512,7 +512,7 @@ function($scope, products, $state, auth){
       year: (new Date()).getYear() - 100,
       userid: user._id,
       active: true
-    }).error(function(error) {
+    }, user).error(function(error) {
       $scope.error = error;
     }).then(function() {
       $state.go('home');

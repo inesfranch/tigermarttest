@@ -33,6 +33,7 @@ UserSchema.methods.generateJWT = function(){
 		email: this.email,
 		firstName: this.firstName,
 		lastName: this.lastName,
+		posted: this.posted,
 		exp: parseInt(exp.getTime() / 1000),
 	}, 'SECRET');
 };
