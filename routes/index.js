@@ -9,6 +9,7 @@ router.get('/', function(req, res, next) {
 });
 
 var mongoose = require('mongoose');
+var passport = require('passport');
 var Product = mongoose.model('Product');
 var User = mongoose.model('User');
 
@@ -19,6 +20,9 @@ var options = {
         pass: "cos333tigermart"
     }
 };
+var jwt = require('express-jwt');
+var auth = jwt({secret: 'SECRET', userProperty: 'payload'});
+
 
 /*router.get('/products', function(req, res, next) {
 	Product.find(function(err, products){
@@ -47,6 +51,30 @@ router.get('/send', function(req,res, next){
 
 
 router.get('/products', function(req, res, next) {
+	Product.find(function(err, products){
+		if(err){return next(err);}
+		res.json(products);
+	});
+	/*var cat = req.query.cat;
+	if (cat == "All") {
+		Product.find(function(err, products){
+			if(err){return next(err);}
+			res.json(products);
+		});
+	}
+	else {
+		var qu = Product.find({
+			'category': cat
+		});
+		qu.exec(function(err, products){
+			if(err){return next(err);}
+			res.json(products);
+		});
+	}*/
+
+});
+
+router.get('/productscat', function(req, res, next) {
 	var cat = req.query.cat;
 	if (cat == "All") {
 		Product.find(function(err, products){
@@ -63,12 +91,18 @@ router.get('/products', function(req, res, next) {
 			res.json(products);
 		});
 	}
-
 });
 
 router.get('/search', function(req, res, next) {
 	var q = req.query.q;
-	var cat = req.query.cat;
+	var qu = Product.find({'$or': [
+			{'title': {$regex: q, $options: "i"}},
+			{'description': {$regex: q, $options: "i"}}]});
+	qu.exec(function(err, products) {
+		if(err){return next(err);}
+		res.json(products);
+	});
+	/*var cat = req.query.cat;
 	if (cat == "All") {
 		var qu = Product.find({'$or': [
 			{'title': {$regex: q, $options: "i"}},
@@ -86,7 +120,7 @@ router.get('/search', function(req, res, next) {
             if(err){return next(err);}
             res.json(products);
         });
-    }
+    }*/
 });
 
 router.get('/matchNotifications', function(req, res, next) {
@@ -97,11 +131,11 @@ router.get('/matchNotifications', function(req, res, next) {
 		});
 });
 
-router.post('/products/:user', function(req, res, next) {
+router.post('/products/:user', auth, function(req, res, next) {
 	if(!req.body.title || req.body.title === '' || !req.body.description || req.body.description === '' || 
       !req.body.price || req.body.price === '' || !req.body.category || req.body.category === '') { 
 		return res.status(400).json({message: 'Please fill out all the required fields in the form'});
-     }
+    }
 	var product = new Product(req.body);
 	product.user = req.user;
 	product.save(function(err, product) {
@@ -139,13 +173,41 @@ router.put('/products/:product', function(req, res, next) {
 	editedProduct.description = req.body.description;
 	editedProduct.price = req.body.price;
 	editedProduct.pictures = req.body.pictures;
-	editedProduct.tags = req.body.tags;
+	//editedProduct.tags = req.body.tags;
 
 	editedProduct.save(function(err, product) {
 		if(err){ console.log(err);
 			return next(err); }
 		res.json(product);
 	});
+});
+
+router.delete('/products/:product/:user', function(req, res, next) {
+	Product.remove({
+            _id: req.product._id
+        }, function(err, product) {
+            if (err)
+                res.send(err);
+            else
+				var curUser = req.user;
+            	console.log("User whose product is being deleted: " + curUser.net_id);
+            	for(var i = 0; i < curUser.posted.length; i++) 
+            	{
+			    	if(curUser.posted[i].equals(req.product._id)) {
+			       		var del = curUser.posted.splice(i, 1);
+			       		console.log("Deleting: " + del);
+			       		break;
+			    	}
+				}
+
+				curUser.save(function(err, user) {
+					if(err){ console.log(err);
+						return next(err); }
+					console.log("User Posted Array Edited and Saved: " + curUser.net_id);
+				});
+
+            	res.json({ message: 'Successfully deleted' });
+        });
 });
 
 router.put('/products/changeAvail/:product', function(req, res, next) {
@@ -180,7 +242,7 @@ router.put('/user/:user', function(req, res, next) {
 		if(err){ 
 			console.log(err);
 			return next(err); }
-		res.json(user);
+		res.json({token: user.generateJWT()});
 	});
 });
 
@@ -218,13 +280,13 @@ router.get('/users/:user', function(req, res, next) {
 	req.user.populate('posted', function(err, user) {
 		if (err) { console.log(err);
 			return next(err);}
-		res.json(user);
+		res.json({token: user.generateJWT()});
 	});
 });
 
 
 router.post('/register', function(req, res, next){
-  if(!req.body.net_id || !req.body.email || !req.body.firstName || !req.body.lastName){
+  if(!req.body.net_id || !req.body.email || !req.body.firstName || !req.body.lastName || !req.body.password){
   	return res.status(400).json({message: 'Please fill out all the fields in the form'});
   }
   var repeateduser = false;
@@ -235,7 +297,7 @@ router.post('/register', function(req, res, next){
   	}
   	else {
 
-  		var user = new User();
+		var user = new User();
 
 	  user.net_id = req.body.net_id;
 
@@ -243,11 +305,12 @@ router.post('/register', function(req, res, next){
 	  user.firstName = req.body.firstName;
 	  user.lastName = req.body.lastName;
 	  user.posted = [];
+	  user.setPassword(req.body.password);
 	  user.save(function (err){
 	    if(err){ 
 	    	console.log(err);
 	    	return next(err); }
-	    res.json(user);
+	    res.json({token: user.generateJWT()});
 	  });
 
   	}
@@ -255,8 +318,20 @@ router.post('/register', function(req, res, next){
 });
 
 router.post('/getUser', function(req, res, next){
-	if(!req.body.net_id) {return res.status(400).json({message: 'Please enter a NetID'});}
-	var net_id = req.body.net_id;
+	if(!req.body.net_id || !req.body.password) {return res.status(400).json({message: 'Please fill out all the fields'});}
+	console.log(req.body);
+
+
+	passport.authenticate('local', function(err, user, info){
+		if (err) {return next(err);}
+		if (user) {
+			return res.json({token: user.generateJWT()});
+		} else {
+			return res.status(401).json(info);
+		}
+	})(req, res, next);
+
+	/*var net_id = req.body.net_id;
 	var uqu = User.findOne({'net_id': net_id});
 	uqu.exec(function(err, user){
 		if (err) {
@@ -264,7 +339,7 @@ router.post('/getUser', function(req, res, next){
 		}
 		if(!user) {return res.status(400).json({message: 'Unregistered NetID, plase create an account'});}
 		res.json(user);
-	});
+	});*/
 });
 
 router.get('/addproduct', function(req, res) {
