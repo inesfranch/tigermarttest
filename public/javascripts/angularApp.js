@@ -334,10 +334,10 @@ function($scope, products, product, $state, auth){
 
   $scope.loadUserPage = function(productuserid) {
     if (productuserid == auth.currentUser()._id) {
-      /users/
+      $state.go('users', { id: productuserid});
     }
     else {
-      /usersprofile/
+      $state.go('usersprofile', { id: productuserid });
     }
   }
 
