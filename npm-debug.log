@@ -1,7 +1,7 @@
 0 info it worked if it ends with ok
 1 verbose cli [ '/usr/local/bin/node', '/usr/local/bin/npm', 'start' ]
-2 info using npm@2.14.20
-3 info using node@v4.4.1
+2 info using npm@2.15.0
+3 info using node@v4.4.2
 4 verbose run-script [ 'prestart', 'start', 'poststart' ]
 5 info prestart tigermart@0.0.0
 6 info start tigermart@0.0.0
@@ -9,7 +9,7 @@
 8 info tigermart@0.0.0 Failed to exec start script
 9 verbose stack Error: tigermart@0.0.0 start: `node ./bin/www`
 9 verbose stack Exit status 1
-9 verbose stack     at EventEmitter.<anonymous> (/usr/local/lib/node_modules/npm/lib/utils/lifecycle.js:214:16)
+9 verbose stack     at EventEmitter.<anonymous> (/usr/local/lib/node_modules/npm/lib/utils/lifecycle.js:217:16)
 9 verbose stack     at emitTwo (events.js:87:13)
 9 verbose stack     at EventEmitter.emit (events.js:172:7)
 9 verbose stack     at ChildProcess.<anonymous> (/usr/local/lib/node_modules/npm/lib/utils/spawn.js:24:14)
@@ -18,11 +18,11 @@
 9 verbose stack     at maybeClose (internal/child_process.js:827:16)
 9 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:211:5)
 10 verbose pkgid tigermart@0.0.0
-11 verbose cwd /Users/devanshgupta/Documents/Princeton/Semester 6/COS 333/COS 333 Project/tigermarttest
-12 error Darwin 15.0.0
+11 verbose cwd /Users/pablogutierrez/cos333/TigerMart/tigermarttest
+12 error Darwin 14.3.0
 13 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "start"
-14 error node v4.4.1
-15 error npm  v2.14.20
+14 error node v4.4.2
+15 error npm  v2.15.0
 16 error code ELIFECYCLE
 17 error tigermart@0.0.0 start: `node ./bin/www`
 17 error Exit status 1

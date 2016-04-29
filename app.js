@@ -7,8 +7,10 @@ var bodyParser = require('body-parser');
 
 var mongoose = require('mongoose');
 mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/products');
+var passport = require('passport');
 require('./models/Products');
 require('./models/Users');
+require('./config/passport');
 
 var routes = require('./routes/index.js');
 var users = require('./routes/users');
@@ -29,6 +31,8 @@ app.use(bodyParser.json({limit: "10mb"}));
 app.use(bodyParser.urlencoded({limit: "10mb", extended: true, parameterLimit:50000}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(passport.initialize());
 
 app.use('/', routes);
 app.use('/users', users);
