@@ -46,7 +46,7 @@ app.config([
       controller: 'UsersCtrl',
       resolve: {
         user_id: ['$stateParams', 'products', function($stateParams, products) {
-          return $stateParams.id;
+          return products.getUserInfo($stateParams.id);
         }]
       }
     });
@@ -54,7 +54,7 @@ app.config([
     .state('usersprofile', {
       url: '/usersprofile/{id}',
       templateUrl: '/userprofile.html',
-      controller: 'UsersCtrl',
+      controller: 'OtherUsersCtrl',
       resolve: {
         user2: ['$stateParams', 'products', function($stateParams, products) {
           return products.getOtherUserInfo($stateParams.id);
@@ -110,7 +110,7 @@ app.config([
     $urlRouterProvider.otherwise('welcome');
   }]);
 
-app.factory('products', ['$http', 'auth', function($http, auth){
+app.factory('products', ['$http', 'auth', '$window', function($http, auth, $window){
   var o = {
     products: [],
     user: "",
@@ -151,9 +151,22 @@ app.factory('products', ['$http', 'auth', function($http, auth){
       return res.data;
     });
   };
+  o.getUserInfo = function(id) {
+    return $http.get("/users/" + id).then(function(res){
+      var token = res.data.token;
+      window.localStorage['tigermart-token'] = token;
+      var user = JSON.parse($window.atob(token.split('.')[1]));
+      sessionStorage.setItem('user', JSON.stringify(res.data));
+      return res.data;
+    });
+  };
   o.getOtherUserInfo = function(id) {
     return $http.get("/users/" + id).then(function(res){
-      sessionStorage.setItem('user2', JSON.stringify(res.data));
+      var token = res.data.token;
+      window.localStorage['tigermart-token2'] = token;
+      var user2 = JSON.parse($window.atob(token.split('.')[1]));
+      sessionStorage.setItem('user2', JSON.stringify(user2));
+      console.log(user2);
       return res.data;
     });
   };
@@ -341,9 +354,12 @@ app.controller('ProductsEditCtrl', [
 'products',
 'product',
 'auth',
-function($scope, products, product){
+'$state',
+function($scope, products, product, auth, $state){
   if (!auth.isLoggedIn()) {$state.go('welcome');}
   $scope.user = auth.currentUser();
+  console.log($scope.user);
+  console.log(product);
 
   $scope.userid = product.userid;
   $scope.title = product.title;
@@ -371,14 +387,23 @@ $scope.editProduct = function(dataUrl1){
       year: '',
       userid: '',
       active: true
-    }, product._id);
-    $scope.title = '';
-    $scope.category = '';
-    $scope.description = '';
-    $scope.price = '';
-    $scope.picFile1 = '';
-    //$scope.tags = '';
+    }, product._id).then(function() {
+      $scope.title = '';
+      $scope.category = '';
+      $scope.description = '';
+      $scope.price = '';
+      $scope.picFile1 = '';
+      //$scope.tags = '';
+      $state.go('users', { id: $scope.user._id});
+
+    });
+    
   };
+
+  $scope.backbutton = function(){
+    $state.go('users', {id: $scope.user._id});
+  };
+
 }]);
 
 // USER CONTROLLER
@@ -399,7 +424,100 @@ function($scope, products, $state, auth){
     $state.go('home');
   } 
 
-  console.log(user.posted[0].title);
+  //console.log(user.posted[0].title);
+
+  /*var statepref = JSON.parse(sessionStorage.getItem('state'));
+  var categorypref = JSON.parse(sessionStorage.getItem('category'));
+  var sortpref = JSON.parse(sessionStorage.getItem('sortorder'));*/
+
+
+  /*if (!statepref) {*/
+    $scope.data = {
+      availableOptions: [
+        {id: '1', name: 'Active Posts', value: true},
+        {id: '2', name: 'Sold Posts', value: false}
+      ],
+      selectedOption: {id: '1', name: 'Active Posts', value: true}
+    };
+  /*}
+  else {
+    $scope.data = {
+      availableOptions: [
+        {id: '1', name: 'Active Posts', value: true},
+        {id: '2', name: 'Sold Posts', value: false}
+      ],
+      selectedOption: {id: '1', name: 'Active Posts', value: true}
+    };
+  }*/
+
+  $scope.data2 = {
+    availableOptions: [
+      {id: '1', name: 'All', value: ''},
+      {id: '2', name: 'Apparel', value: 'Apparel'},
+      {id: '3', name: 'Dorm Items', value: "Dorm Items"},
+      {id: '4', name: 'Electronics', value: "Electronics"},
+      {id: '5', name: 'Food and Drinks', value: "Food and Drinks"},
+      {id: '6', name: 'Furniture', value: "Furniture"},
+      {id: '7', name: 'Textbooks', value: "Textbooks"},
+      {id: '8', name: 'Tickets', value: "Tickets"},
+      {id: '9', name: 'Transportation', value: "Transportation"},
+      {id: '10', name: 'Other', value: "Other"}
+    ],
+    selectedOption: {id: '1', name: 'All', value: ''}
+  };
+
+  $scope.data3 = {
+    availableOptions: [
+      {id: '1', name: 'Price: low to high', value: "price"},
+      {id: '2', name: 'Price: high to low', value: "-price"},
+      {id: '3', name: 'Date: new to old', value: "-date"},
+      {id: '4', name: 'Date: old to new', value: "date"}
+    ],
+    selectedOption: {id: '4', name: 'Date: old to new', value: "date"}
+  };
+
+  $scope.changeProductAvailability = function(id){
+    /*sessionStorage.setItem('state', $scope.data.selectedOption);
+    sessionStorage.setItem('category', $scope.data2.selectedOption);
+    sessionStorage.setItem('sortorder', $scope.data3.selectedOption);*/
+    products.changeProductAvail(id).then(function(){
+      $state.go($state.current, {}, {reload: true}); //second parameter is for $stateParams
+    });
+  };
+
+  $scope.deleteProduct = function(productID, userID){
+    /*sessionStorage.setItem('state', $scope.data.selectedOption);
+    sessionStorage.setItem('category', $scope.data2.selectedOption);
+    sessionStorage.setItem('sortorder', $scope.data3.selectedOption);*/
+    var c = confirm('Are you sure you want to delete this product? This action is irreversible');
+    if (c == true) {
+      products.delProduct(productID, userID).then(function(){
+        $state.go($state.current, {}, {reload: true});
+      });
+    } else {
+      $state.go($state.current, {}, {reload: false});
+    }
+    
+  };
+
+}]);
+
+// OTHER USER CONTROLLER
+app.controller('OtherUsersCtrl', [
+'$scope',
+'products',
+'$state',
+'auth',
+'user2',
+function($scope, products, $state, auth, user2){
+
+  $scope.user2 = JSON.parse(sessionStorage.getItem('user2'));
+
+  if (!auth.isLoggedIn()) {$state.go('welcome');}
+  /*$scope.user = auth.currentUser();
+  user = $scope.user;
+
+  console.log(user.posted[0].title);*/
 
   $scope.data = {
     availableOptions: [
@@ -435,22 +553,6 @@ function($scope, products, $state, auth){
     selectedOption: {id: '4', name: 'Date: old to new', value: "date"}
   };
 
-  $scope.changeProductAvailability = function(id){
-    products.changeProductAvail(id);
-    $state.go($state.current, {}, {reload: true}); //second parameter is for $stateParams
-  };
-
-  $scope.deleteProduct = function(productID, userID){
-    var c = confirm('Are you sure you want to delete this product? This action is irreversible');
-    if (c == true) {
-      products.delProduct(productID, userID);
-      $state.go($state.current, {}, {reload: true}); //second parameter is for $stateParams
-    } else {
-      $state.go($state.current, {}, {reload: false});
-    }
-    
-  };
-
 }]);
 
 app.controller('EditUserCtrl', [
@@ -471,9 +573,14 @@ function($scope, products, $state, auth){
       $scope.error = error;
     }).success(function() { 
       console.log("hello2");
-      $state.go('home'); 
+      $state.go('users', {id: $scope.user._id}); 
     });
   };
+
+  $scope.backbutton = function(){
+    $state.go('users', {id: $scope.user._id});
+  };
+
 }]);
 
 

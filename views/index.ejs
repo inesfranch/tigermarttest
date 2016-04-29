@@ -371,7 +371,7 @@
     <!-- ________________ EDIT PRODUCT PAGE ____________________ -->
     <script type="text/ng-template" id="/productsEdit.html">
       <div>
-        <a class="btn btn-primary col-md-offset-10" href="#/users/{{product.userid._id}}">Back to User Page</a>
+        <a class="btn btn-primary col-md-offset-10" ng-click="backbutton()">Back to User Page</a>
       </div>
       <form style="margin-top: 30px;" class="col-md-6 col-md-offset-3">
         <h3>Edit Your Product</h3>
@@ -438,7 +438,7 @@
         </div>-->
 
         <div class="center-block">
-          <button ng-click="editProduct(croppedDataUrl1)" onclick="location.href='#/users/{{product.userid._id}}'" class="text-center btn btn-primary center-block">Save product</button>
+          <button ng-click="editProduct(croppedDataUrl1)" class="text-center btn btn-primary center-block">Save product</button>
         </div>
       </form>
     </script>
@@ -582,7 +582,7 @@
     <!-- ________________ EDIT USER PAGE ____________________ -->
     <script type="text/ng-template" id="/editUser.html">
       <div>
-        <a class="btn btn-primary col-md-offset-10" href="#/users/{{user._id}}">Back to User Page</a>
+        <a class="btn btn-primary col-md-offset-10" ng-click="backbutton()">Back to User Page</a>
       </div>
       <div class="text-center">
         <h2>Edit My Profile</h2>
