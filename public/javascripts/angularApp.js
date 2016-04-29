@@ -277,7 +277,7 @@ function($scope, $state, products, auth){
   console.log($scope.user);
   $scope.data = {
     availableOptions: [
-      {id: '1', name: 'All', value: ''},
+      {id: '1', name: 'All Categories', value: ''},
       {id: '2', name: 'Apparel', value: 'Apparel'},
       {id: '3', name: 'Dorm Items', value: "Dorm Items"},
       {id: '4', name: 'Electronics', value: "Electronics"},
@@ -581,4 +581,5 @@ function($scope, auth){
   $scope.isLoggedIn = auth.isLoggedIn;
   $scope.currentUser = auth.currentUser;
   $scope.logOut = auth.logOut;
+
 }]);

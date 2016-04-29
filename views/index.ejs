@@ -95,14 +95,7 @@
   </head>
 
   <body ng-app="tigerMart">
-    <nav class="navbar navbar-default pull-right" ng-controller="NavCtrl">
-      <ul class="nav navbar-nav">
-        <li ng-show="isLoggedIn()"><a>{{ currentUser() }}</a></li>
-        <li ng-show="isLoggedIn()"><a href="" ng-click="logOut()">Log Out</a></li>
-        <li ng-hide="isLoggedIn()"><a href="/#/welcome">Log In</a></li>
-        <li ng-hide="isLoggedIn()"><a href="/#/register">Register</a></li>
-      </ul>
-    </nav>
+    
     <div class="row">
       <div>
         <ui-view></ui-view>
@@ -111,6 +104,63 @@
 
     <!-- ________________ HOME PAGE (SEARCH FOR PRODUCTS) ____________________ -->
     <script type="text/ng-template" id="/home.html">
+    
+    <!-- NAV BAR -->
+    <!-- code source: https: //getbootstrap.com/components/#navbar-forms -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-form navbar-left btn-group" role="group" aria-label="...">
+          <a class="btn btn-info navbar-btn" href="#/home">Home</a>
+        </div>
+        
+        
+        <!-- Category dropdown button -->
+        <div class="navbar-form navbar-left" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-left">
+            <div class="navbar-form">
+               <select name="cat" class="form-control" id="mySelect" ng-options="option.name for option in data.availableOptions track by option.id" ng-model="data.selectedOption">
+                </select>
+            </div>
+          </ul>
+        </div>
+
+        <!-- Search bar and search button -->
+        <form ng-submit="search()" class="navbar-form navbar-left" role="search">
+          <div class="navbar-form navbar-left">
+            <input type="text" class="form-control" placeholder="Search for ..." ng-model="q"></input>
+          </div>
+          <button type="submit" class="btn btn-info navbar-btn">Search</button>
+        </form>
+
+        <!-- Sort the products -->
+        <div class="navbar-form navbar-left">
+         <select name="sorting" class="navbar-form form-control" ng-model="sorting" placeholder="Sorting order">
+            <option value="" selected="selected" disabled>Sort by ...</option>
+            <option value=price>Price: low to high</option>
+            <option value=-price>Price: high to low</option>
+            <option value=-date>Date: new to old</option>
+            <option value=date>Date: old to new</option>
+          </select>
+        </div>
+
+        <!-- Button-group -->
+        <div class="navbar-form navbar-right btn-group" role="group" aria-label="...">
+          <a class="btn btn-info navbar-btn" href="#/users/{{user._id}}">My Profile</a>
+          <a class="btn btn-info navbar-btn" href="#/addproduct">Add Product</a>
+          <button ng-click="logOut()" class="btn btn-info navbar-btn">Log Out</button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="text-center" style="margin-top: 50px">
+      <h1>Welcome to TigerMart, {{user.firstName}}!</h1>
+    </div>
+    <!--
+    <div class="text-center">
+      <h4>Hello, {{user.firstName}}!</h4>
+    </div> -->
+
+    <!--
     <div>
       <a class="btn btn-primary col-md-offset-10" href="#/users/{{user._id}}">My Profile</a>
     </div>
@@ -123,34 +173,22 @@
       <form ng-submit="logOut()">
         <button type = "submit" class="btn btn-primary col-md-offset-10" >Log Out</button>
       </form>
-    </div> 
-    <!--<nav>
-      <ul>
-        <li><strong>Home</strong></li>
-        <li><a href="about.html">Add New Product</a></li>
-      </ul>
-    </nav>-->
-      <div>
-        <div class="text-center">
-          <h1>TigerMart</h1>
-        </div>
-        <div class="text-center">
-          <h4>Hello {{user.firstName}}</h4>
-        </div>
+    </div>
+
         <div class="text-left col-md-6 col-md-offset-3">
           <h5>Filter by category</h5>
         </div>
-
         <div class="form-group col-md-6 col-md-offset-3" style="margin-top: 10px">
              <select name="cat" class="form-control" id="mySelect" ng-options="option.name for option in data.availableOptions track by option.id" ng-model="data.selectedOption">
               </select>
           </div>
+          -->
 
         <!--<form ng-submit="filterCat()">
           <div class="col-md-6 col-md-offset-3">
            <select name="cat" class="form-control" ng-model="cat" placeholder="Category">
               <option value="" selected="selected" disabled>Choose Category...</option>
-              <option value="All">All categories</option>
+              <option value="All">All Categories</option>
               <option value="Apparel">Apparel</option>
               <option value="Dorm Items">Dorm Items</option>
               <option value="Electronics">Electronics</option>
@@ -165,7 +203,7 @@
           <div class="col-md-1">
             <button class="btn btn-info"type="submit">Update</button>
           </div>
-        </form>-->
+        </form>
         <div class="text-left col-md-6 col-md-offset-3">
           <h5>Search</h5>
         </div>
@@ -182,15 +220,15 @@
         </div>
         <div class="form-group col-md-6 col-md-offset-3">
            <select name="sorting" class="form-control" ng-model="sorting" placeholder="Sorting order">
-              <option value="" selected="selected" disabled>Choose sorting order</option>
+              <option value="" selected="selected" disabled>Sort by ...</option>
+              <option value= -date>Date: new to old</option>
+              <option value=date>Date: old to new</option>
               <option value=price>Price: low to high</option>
               <option value=-price>Price: high to low</option>
-              <option value=-date>Date: new to old</option>
-              <option value=date>Date: old to new</option>
+              
             </select>
         </div>
-
-      </div>
+        -->
 
       <div class="container col-md-12" style="margin-top: 50px"> <!-- Code modified from: http://bootsnipp.com/snippets/49An-->
 
