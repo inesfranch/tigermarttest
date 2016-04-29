@@ -138,19 +138,6 @@ app.factory('products', ['$http', 'auth', function($http, auth){
     }).success(function(data){
       o.products.push(data);
       user.posted.push(data);
-      sessionStorage.setItem('user', JSON.stringify(user));
-    });
-  };
-  o.register = function(user){
-    return $http.post('/register', user).success(function(data){
-      o.user = data;
-      sessionStorage.setItem('user', JSON.stringify(data));  
-    });
-  };
-  o.getUser = function(user){
-    return $http.post('/getUser', user).success(function(data){
-      o.user = data;
-      sessionStorage.setItem('user', JSON.stringify(data));
     });
   };
   o.search = function(q) {
@@ -326,8 +313,7 @@ function($scope, products, product, $state, auth){
     if (!auth.isLoggedIn()) {$state.go('welcome');}
   $scope.user = auth.currentUser();
 
-  $scope.isLoggedIn = auth.isLoggedIn;
-
+  $scope.product = product;
   $scope.changeCat = function(cat){
     products.getCat(cat);
   };
@@ -404,7 +390,8 @@ function($scope, products, $state, auth){
     $state.go('home');
   } 
 
-  console.log(user.posted);
+  console.log(user.posted[0].title);
+
   $scope.data = {
     availableOptions: [
       {id: '1', name: 'Active Posts', value: true},
