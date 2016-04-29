@@ -819,22 +819,14 @@ function($scope, $state, auth){
       $state.go('home');
     });
   };
-  /*if (sessionStorage.getItem('userinfo')){
-    $scope.user = {};
-    $scope.user.net_id = sessionStorage.getItem('userNet_id');
-  }
-  else{
-    $scope.user = {};
-  }*/
   $scope.logIn = function(){
-    //sessionStorage.setItem('userNet_id', $scope.user.net_id);
     auth.logIn($scope.user).error(function(error){
       $scope.error = error;
+      $scope.user.password = "";
     }).then(function(){
-      //sessionStorage.removeItem('userNet_id');
       $state.go('home');
     });
-    $scope.user.password = "";
+    
   };
 }]);
 
