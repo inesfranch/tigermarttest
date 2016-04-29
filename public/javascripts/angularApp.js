@@ -289,13 +289,17 @@ function($scope, products, product){
 $scope.editProduct = function(dataUrl1){
     if(!$scope.title || $scope.title === '') { return; }
 
+    var picURL = dataUrl1.split("base64,")[1];
+    if (!$scope.picFile1)
+      picURL = product.pictures;
+
     // ADD VALIDATIONS LATER!
     products.editProduct({
       title: $scope.title,
       category: $scope.category,
       description: $scope.description,
       price: $scope.price,
-      pictures: dataUrl1.split("base64,")[1],
+      pictures: picURL,
       tags: $scope.tags,
       date: '',
       month: '',

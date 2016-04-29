@@ -216,8 +216,10 @@
           <div ng-repeat="product in products | orderBy:sorting | filter:{category: data.selectedOption.value}">
             <div class="item  col-md-4">
               <div class="thumbnail">
-                <img class="group list-group-image" ng-show=product.pictures ng-src="data:image/png;base64,{{product.pictures}}" alt="" />
-                <img ng-show=!product.pictures src="/images/default.jpg" />
+              <a href="#/products/{{product._id}}">
+                <img class="group list-group-image" ng-show=product.pictures ng-src="data:image/png;base64,{{product.pictures}}" alt=""/>
+                <img ng-show=!product.pictures src="/images/default.jpg"/>
+              </a>
                 <div class="caption">
                   <h4 class="group inner list-group-item-heading">
                     {{product.title}}</h4>
@@ -416,7 +418,8 @@
           <label>Picture:</label>
         </div>
         <div class="center-block">
-          <img ng-src="data:image/png;base64,{{product.pictures}}" />
+          <img ng-show=pictures ng-src="data:image/png;base64,{{pictures}}" />
+          <p ng-show=!pictures>No Picture Uploaded</p>
         </div>
 
         <div class="center-block">
