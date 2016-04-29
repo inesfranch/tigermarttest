@@ -131,7 +131,7 @@ router.get('/matchNotifications', function(req, res, next) {
 		});
 });
 
-router.post('/products/:user', auth, function(req, res, next) {
+router.post('/products/:user', /*auth,*/ function(req, res, next) {
 	if(!req.body.title || req.body.title === '' || !req.body.description || req.body.description === '' || 
       !req.body.price || req.body.price === '' || !req.body.category || req.body.category === '') { 
 		return res.status(400).json({message: 'Please fill out all the required fields in the form'});

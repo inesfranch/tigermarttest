@@ -139,11 +139,12 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
   };
   o.create = function(product, user) {
     
-    return $http.post('/products/' + user._id, product, {
+    return $http.post('/products/' + user._id, product/*, {
       headers: {Authorization: 'Bearer '+auth.getToken()}
-    }).success(function(data){
+    }*/).success(function(data){
       o.products.push(data);
       user.posted.push(data);
+      sessionStorage.removeItem('newProd');
     });
   };
   o.search = function(q) {
@@ -195,8 +196,9 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
       console.log(data);
       console.log("Product Edited...");
       $http.get('/products?cat=All').success(function(data){
-      angular.copy(data, o.products);
+        angular.copy(data, o.products);
       });
+      sessionStorage.removeItem('newProd');
     });
   };
   o.setNotifications= function(notification, id) {
@@ -410,14 +412,28 @@ function($scope, products, product, auth, $state){
   console.log($scope.user);
   console.log(product);
 
-  $scope.userid = product.userid;
-  $scope.title = product.title;
-  $scope.category = product.category;
-  $scope.description = product.description;
-  $scope.price = product.price;
-  //$scope.tags = product.tags;
-  $scope.pictures = product.pictures;
-  //     pictures: dataUrl1.split("base64,")[1],
+  if(sessionStorage.getItem('newProd')){
+    var newproduct = JSON.parse(sessionStorage.getItem('newProd'));
+    $scope.userid = newproduct.userid;
+    $scope.title = newproduct.title;
+    $scope.category = newproduct.category;
+    $scope.description = newproduct.description;
+    $scope.price = newproduct.price;
+    //$scope.tags = product.tags;
+    $scope.pictures = newproduct.pictures;
+    //     pictures: dataUrl1.split("base64,")[1],
+  }
+  else {
+    $scope.userid = product.userid;
+    $scope.title = product.title;
+    $scope.category = product.category;
+    $scope.description = product.description;
+    $scope.price = product.price;
+    //$scope.tags = product.tags;
+    $scope.pictures = product.pictures;
+    //     pictures: dataUrl1.split("base64,")[1],
+  }
+  
 
 $scope.editProduct = function(dataUrl1){
     if(!$scope.title || $scope.title === '') { return; }
@@ -427,7 +443,7 @@ $scope.editProduct = function(dataUrl1){
       picURL = product.pictures;
 
     // ADD VALIDATIONS LATER!
-    products.editProduct({
+    var newProd = {
       title: $scope.title,
       category: $scope.category,
       description: $scope.description,
@@ -440,7 +456,9 @@ $scope.editProduct = function(dataUrl1){
       year: '',
       userid: '',
       active: true
-    }, product._id).then(function() {
+    };
+    sessionStorage.setItem('newProd', JSON.stringify(newProd));
+    products.editProduct(newProd, product._id).then(function() {
       $scope.title = '';
       $scope.category = '';
       $scope.description = '';
@@ -679,6 +697,28 @@ function($scope, products, $state, auth){
   if (!auth.isLoggedIn()) {$state.go('welcome');}
   $scope.user = auth.currentUser();
 
+  if(sessionStorage.getItem('newProd')){
+    var newproduct = JSON.parse(sessionStorage.getItem('newProd'));
+    $scope.userid = $scope.user._id;
+    $scope.title = newproduct.title;
+    $scope.category = newproduct.category;
+    $scope.description = newproduct.description;
+    $scope.price = newproduct.price;
+    //$scope.tags = product.tags;
+    $scope.pictures = newproduct.pictures;
+    //     pictures: dataUrl1.split("base64,")[1],
+  }
+  /*else {
+    $scope.userid = product.userid;
+    $scope.title = product.title;
+    $scope.category = product.category;
+    $scope.description = product.description;
+    $scope.price = product.price;
+    //$scope.tags = product.tags;
+    $scope.pictures = product.pictures;
+    //     pictures: dataUrl1.split("base64,")[1],
+  }*/
+
   $scope.addProduct = function(dataUrl1){
 
     var user = $scope.user;
@@ -695,8 +735,8 @@ function($scope, products, $state, auth){
 
     products.matchNotifications($scope.title, $scope.description, $scope.price);
 
-    // ADD VALIDATIONS LATER!
-    products.create({
+
+    var newProd = {
       title: $scope.title,
       category: $scope.category,
       description: $scope.description,
@@ -709,6 +749,17 @@ function($scope, products, $state, auth){
       year: (new Date()).getYear() - 100,
       userid: user._id,
       active: true
+    };
+    sessionStorage.setItem('newProd', JSON.stringify(newProd));
+    products.create(newProd, user).error(function(error) {
+      $scope.error = error;
+    }).then(function() {
+      $state.go('home');
+
+    });
+    // ADD VALIDATIONS LATER!
+    /*products.create({
+      
     }, user).error(function(error) {
       $scope.error = error;
     }).then(function() {
@@ -720,6 +771,7 @@ function($scope, products, $state, auth){
     $scope.price = '';
     $scope.picFile1 = '';
     //$scope.tags = '';
+    */
   };
 }]);
 
