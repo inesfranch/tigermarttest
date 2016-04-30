@@ -201,9 +201,8 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
       sessionStorage.removeItem('newProd');
     });
   };
-  o.setNotifications= function(notification, id) {
-    var user = JSON.parse(sessionStorage.getItem('user'));
-    id = id.toString();
+  o.setNotifications= function(notification, user) {
+    id = user._id.toString();
     notification = notification.toString();
     console.log(id);
     console.log(notification);
@@ -658,14 +657,11 @@ app.controller('SetNotificationsCtrl', [
   '$scope',
   'products',
   '$state',
-
-  function($scope, products, $state){
+  'auth',
+  function($scope, products, $state, auth){
     //$scope.product = product;
-    if(!sessionStorage.getItem('user')) {
-      $state.go('welcome');
-    }
-    var user = JSON.parse(sessionStorage.getItem('user'));
-    $scope.user = user;
+    if (!auth.isLoggedIn()) {$state.go('welcome');}
+    $scope.user = auth.currentUser();
 
     $scope.deleteNotification = function(notification) {
       products.delNotification(notification).then(function(){
@@ -675,7 +671,8 @@ app.controller('SetNotificationsCtrl', [
 
     $scope.setNotifications = function(){
       console.log($scope.notification);
-      products.setNotifications($scope.notification, user._id).error(function(error) {
+      var user = $scope.user;
+      products.setNotifications($scope.notification, user).error(function(error) {
         $scope.error = error;
       }).then(function() {
         $state.go('home');

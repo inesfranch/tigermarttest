@@ -305,6 +305,7 @@ router.post('/register', function(req, res, next){
 	  user.firstName = req.body.firstName;
 	  user.lastName = req.body.lastName;
 	  user.posted = [];
+	  user.notifications = [];
 	  user.setPassword(req.body.password);
 	  user.save(function (err){
 	    if(err){ 

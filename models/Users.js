@@ -35,6 +35,7 @@ UserSchema.methods.generateJWT = function(){
 		firstName: this.firstName,
 		lastName: this.lastName,
 		posted: this.posted,
+		notifications: this.notifications,
 		exp: parseInt(exp.getTime() / 1000),
 	}, 'SECRET');
 };
