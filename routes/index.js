@@ -168,6 +168,10 @@ router.get('/products/:product', function(req, res, next) {
 
 router.put('/products/:product', function(req, res, next) {
 	var editedProduct = req.product;
+	var user = req.user;
+	if (editedProduct.user != user) {
+		return res.status(400).json({message: 'You cannot edit Products that are not yours'});
+	}
 	editedProduct.title = req.body.title;
 	editedProduct.category = req.body.category;
 	editedProduct.description = req.body.description;

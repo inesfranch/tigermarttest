@@ -191,8 +191,8 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
       return res.data;
     });
   };
-  o.editProduct = function(product, id) {
-    return $http.put('/products/' + id, product).success(function(data){
+  o.editProduct = function(product, id, user) {
+    return $http.put('/products/' + id, product, user).success(function(data){
       console.log(data);
       console.log("Product Edited...");
       $http.get('/products?cat=All').success(function(data){
@@ -389,8 +389,13 @@ function($scope, products, product, $state, auth){
     else {
       $state.go('usersprofile', { id: productuserid });
     }
+  };
+  $scope.sameUser = function() {
+    console.log("hello friend");
+    var b = ($scope.user.net_id == product.userid.net_id);
+    console.log(b);
+    return b;
   }
-
   /*$scope.linkToCat = function(cat){
     products.getAll(cat).error(function(error){
       $scope.error = error;
@@ -458,7 +463,7 @@ $scope.editProduct = function(dataUrl1){
       active: true
     };
     sessionStorage.setItem('newProd', JSON.stringify(newProd));
-    products.editProduct(newProd, product._id).then(function() {
+    products.editProduct(newProd, product._id, $scope.user).then(function() {
       $scope.title = '';
       $scope.category = '';
       $scope.description = '';
