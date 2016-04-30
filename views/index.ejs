@@ -315,7 +315,10 @@
 
         <div class="form-group required">
           <label class=" control-label">Price</label>
-          <input type="number" min="0" class="form-control" placeholder="Price" ng-model="price"></input>
+            <div class="input-group">
+              <span class="input-group-addon">$</span>
+              <input type="number" min="0" class="form-control" placeholder="Price" ng-model="price"></input>
+            </div>
         </div>
 
         <div class="center-block">
