@@ -260,7 +260,7 @@ router.put('/setNotifications/:user', function(req, res, next) {
 	editedUser.notifications.push(req.query.notification);
 	editedUser.save(function(err, user) {
 			if (err) {return next(err);}
-			res.json(user);
+			res.json({token: user.generateJWT()});
 	});
 });
 
@@ -275,7 +275,7 @@ router.delete('/notifications/:user', function(req, res, next) {
 
 	curUser.save(function(err, user) {
 		if (err) {return next(err);}
-		res.json(user);
+		res.json({token: user.generateJWT()});
 	});
 });
 

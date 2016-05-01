@@ -80,92 +80,9 @@
     <div class="text-center" style="margin-top: 50px">
       <h1>Welcome to TigerMart, {{user.firstName}}!</h1>
     </div>
-    <!--
-    <div class="text-center">
-      <h4>Hello, {{user.firstName}}!</h4>
-    </div> -->
-
-    <!--
-    <div>
-      <a class="btn btn-primary col-md-offset-10" href="#/users/{{user._id}}">My Profile</a>
-    </div>
-
-    <div style="margin-top: 20px">
-        <a class="btn btn-primary col-md-offset-10" href="#/addproduct">Add Product</a>
-    </div>
-
-    <div style="margin-top: 20px">
-      <form ng-submit="logOut()">
-        <button type = "submit" class="btn btn-primary col-md-offset-10" >Log Out</button>
-      </form>
-    </div>
-
-        <div class="text-left col-md-6 col-md-offset-3">
-          <h5>Filter by category</h5>
-        </div>
-        <div class="form-group col-md-6 col-md-offset-3" style="margin-top: 10px">
-             <select name="cat" class="form-control" id="mySelect" ng-options="option.name for option in data.availableOptions track by option.id" ng-model="data.selectedOption">
-              </select>
-          </div>
-          -->
-
-        <!--<form ng-submit="filterCat()">
-          <div class="col-md-6 col-md-offset-3">
-           <select name="cat" class="form-control" ng-model="cat" placeholder="Category">
-              <option value="" selected="selected" disabled>Choose Category...</option>
-              <option value="All">All Categories</option>
-              <option value="Apparel">Apparel</option>
-              <option value="Dorm Items">Dorm Items</option>
-              <option value="Electronics">Electronics</option>
-              <option value="Food and Drinks">Food and Drinks</option>
-              <option value="Furniture">Furniture</option>
-              <option value="Textbooks">Textbooks</option>
-              <option value="Tickets">Tickets</option>
-              <option value="Transportation">Transportation</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-          <div class="col-md-1">
-            <button class="btn btn-info"type="submit">Update</button>
-          </div>
-        </form>
-        <div class="text-left col-md-6 col-md-offset-3">
-          <h5>Search</h5>
-        </div>
-        <form ng-submit="search()"> 
-          <div class="form-group col-md-6 col-md-offset-3">
-            <input type="text" class="form-control" placeholder="Search..." ng-model="q"></input>
-          </div>
-          <div class="col-md-1">
-            <button class="btn btn-info" type="submit">Search</button>
-          </div>
-        </form>
-        <div class="text-left col-md-6 col-md-offset-3">
-          <h5>Sort the products</h5>
-        </div>
-        <div class="form-group col-md-6 col-md-offset-3">
-           <select name="sorting" class="form-control" ng-model="sorting" placeholder="Sorting order">
-              <option value="" selected="selected" disabled>Sort by ...</option>
-              <option value= -date>Date: new to old</option>
-              <option value=date>Date: old to new</option>
-              <option value=price>Price: low to high</option>
-              <option value=-price>Price: high to low</option>
-              
-            </select>
-        </div>
-        -->
 
       <div class="container col-md-12" style="margin-top: 50px"> <!-- Code modified from: http://bootsnipp.com/snippets/49An-->
 
-        <!-- <div class="well well-sm">
-          <strong>View Type: </strong>
-          <div class="btn-group">
-            <a href="#" id="list" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-th-list">
-            </span>List</a> 
-            <a href="#" id="grid" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-th">
-            </span>Grid</a>
-          </div>
-        </div> -->
 
         <div id="products-view" class="row list-group">
           <div ng-repeat="product in products | orderBy:sorting | filter:{category: data.selectedOption.value}">
@@ -193,6 +110,14 @@
             </div>
           </div>  
         </div>
+        <center>
+        <div ng-show="q">
+          <h3>Didn't find what you were looking for?</h3>
+          <p>Set a notification for {{q}} and we'll alert you when another {{q}} is posted</p>
+          <a ng-click="notification()">Set Notification For This Search</h3>
+        </div>
+        </center>
+
       </div>
 
     </script>

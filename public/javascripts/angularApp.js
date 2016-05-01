@@ -209,9 +209,10 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
     return $http.put("/setNotifications/"+id+"?notification="+notification).success(function(data){
       console.log(user.notifications);
       user.notifications.push(notification);
+      auth.saveToken(data.token);
       console.log(user.notifications);
       //sessionStorage.setItem('user', JSON.stringify(user));
-      console.log(data);
+      
       });
   };
 
@@ -219,6 +220,8 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
     //var user = JSON.parse(sessionStorage.getItem('user'));
     return $http.delete("/notifications/"+user._id+"?notification="+notification).success(function(data){
       console.log("Notification deleted...");
+      auth.saveToken(data.token);
+
     });
   };
 
@@ -363,6 +366,11 @@ function($scope, $state, products, auth){
   $scope.logOut = function(){
     auth.logOut();
     $state.go('welcome');
+  };
+
+  $scope.notification = function() {
+    sessionStorage.setItem('notification', $scope.q);
+    $state.go('setNotifications', { id: $scope.user._id});
   }
 
 }]);
@@ -670,6 +678,11 @@ app.controller('SetNotificationsCtrl', [
     if (!auth.isLoggedIn()) {$state.go('welcome');}
     $scope.user = auth.currentUser();
 
+    if (sessionStorage.getItem('notification')) {
+      $scope.notification = sessionStorage.getItem('notification');
+      sessionStorage.removeItem('notification');
+    }
+
     $scope.deleteNotification = function(notification) {
       products.delNotification(notification, $scope.user).then(function(){
       $state.go($state.current, {}, {reload:true});
@@ -678,10 +691,10 @@ app.controller('SetNotificationsCtrl', [
 
     $scope.setNotifications = function(){
       console.log($scope.notification);
-      var user = $scope.user;
-      products.setNotifications($scope.notification, user).error(function(error) {
+      products.setNotifications($scope.notification, $scope.user).error(function(error) {
         $scope.error = error;
       }).then(function() {
+        console.log($scope.user);
         $state.go($state.current, {}, {reload:true});
       });
       $scope.notification = '';
