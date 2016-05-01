@@ -255,7 +255,7 @@ router.put('/setNotifications/:user', function(req, res, next) {
 	console.log(editedUser);
 	console.log(req.query.notification)
 	if(!req.query.notification || req.query.notification === '') { 
-		return res.status(400).json({message: 'Can not set an empty alert'});
+		return res.status(400).json({message: 'Cannot set an empty alert'});
 	}
 	editedUser.notifications.push(req.query.notification);
 	editedUser.save(function(err, user) {

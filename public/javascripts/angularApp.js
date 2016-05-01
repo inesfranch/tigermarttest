@@ -207,14 +207,16 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
     console.log(id);
     console.log(notification);
     return $http.put("/setNotifications/"+id+"?notification="+notification).success(function(data){
-      user.notifications.push(data);
-      sessionStorage.setItem('user', JSON.stringify(user));
+      console.log(user.notifications);
+      user.notifications.push(notification);
+      console.log(user.notifications);
+      //sessionStorage.setItem('user', JSON.stringify(user));
       console.log(data);
       });
   };
 
-  o.delNotification = function(notification) {
-    var user = JSON.parse(sessionStorage.getItem('user'));
+  o.delNotification = function(notification, user) {
+    //var user = JSON.parse(sessionStorage.getItem('user'));
     return $http.delete("/notifications/"+user._id+"?notification="+notification).success(function(data){
       console.log("Notification deleted...");
     });
@@ -669,7 +671,7 @@ app.controller('SetNotificationsCtrl', [
     $scope.user = auth.currentUser();
 
     $scope.deleteNotification = function(notification) {
-      products.delNotification(notification).then(function(){
+      products.delNotification(notification, $scope.user).then(function(){
       $state.go($state.current, {}, {reload:true});
     });
     };
@@ -680,10 +682,15 @@ app.controller('SetNotificationsCtrl', [
       products.setNotifications($scope.notification, user).error(function(error) {
         $scope.error = error;
       }).then(function() {
-        $state.go('home');
+        $state.go($state.current, {}, {reload:true});
       });
       $scope.notification = '';
     };
+
+    $scope.backbutton = function(){
+      $state.go('users', {id: $scope.user._id});
+    };
+
   }]);
 
 
