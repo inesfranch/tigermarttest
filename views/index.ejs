@@ -107,8 +107,13 @@
     
     <!-- NAV BAR -->
     <!-- code source: https: //getbootstrap.com/components/#navbar-forms -->
+
+
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#/home">TigerMart</a>
+        </div>
         <div class="navbar-form navbar-left btn-group" role="group" aria-label="...">
           <a class="btn btn-info navbar-btn" href="#/home">Home</a>
         </div>
@@ -678,9 +683,11 @@
       <form class="col-md-4 col-md-offset-4">
       <h2 class="text" style="margin-bottom:20px;"> Netid: {{user.net_id}} </h3>
           <div ng-repeat="notification in user.notifications">
-            {{notification}}
-           <span class="glyphicon glyphicon-remove"
+            <p style="margin-top: 5px">{{notification}}
+            <span class="glyphicon glyphicon-remove"
             ng-click="deleteNotification(notification)"></span> 
+            </p>
+           
           </div>
         </div>  
         <div class="form-group">
