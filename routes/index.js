@@ -168,6 +168,10 @@ router.get('/products/:product', function(req, res, next) {
 
 router.put('/products/:product', function(req, res, next) {
 	var editedProduct = req.product;
+	var user = req.user;
+	if (editedProduct.user != user) {
+		return res.status(400).json({message: 'You cannot edit Products that are not yours'});
+	}
 	editedProduct.title = req.body.title;
 	editedProduct.category = req.body.category;
 	editedProduct.description = req.body.description;
@@ -251,12 +255,12 @@ router.put('/setNotifications/:user', function(req, res, next) {
 	console.log(editedUser);
 	console.log(req.query.notification)
 	if(!req.query.notification || req.query.notification === '') { 
-		return res.status(400).json({message: 'Can not set an empty alert'});
+		return res.status(400).json({message: 'Cannot set an empty alert'});
 	}
 	editedUser.notifications.push(req.query.notification);
 	editedUser.save(function(err, user) {
 			if (err) {return next(err);}
-			res.json(user);
+			res.json({token: user.generateJWT()});
 	});
 });
 
@@ -271,7 +275,7 @@ router.delete('/notifications/:user', function(req, res, next) {
 
 	curUser.save(function(err, user) {
 		if (err) {return next(err);}
-		res.json(user);
+		res.json({token: user.generateJWT()});
 	});
 });
 
@@ -305,6 +309,7 @@ router.post('/register', function(req, res, next){
 	  user.firstName = req.body.firstName;
 	  user.lastName = req.body.lastName;
 	  user.posted = [];
+	  user.notifications = [];
 	  user.setPassword(req.body.password);
 	  user.save(function (err){
 	    if(err){ 

@@ -147,6 +147,7 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
     }*/).success(function(data){
       o.products.push(data);
       user.posted.push(data);
+      o.matchNotifications(data);
       sessionStorage.removeItem('newProd');
     });
   };
@@ -160,15 +161,15 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
       console.log("HTTP Search req Returns");
     });
   };
-  o.matchNotifications = function(title, description, price) {
+  o.matchNotifications = function(product) {
     return $http.get("/matchNotifications").success(function(data) {
       for (var i = 0; i < data.length; i++) {
         for (var j = 0; j < data[i].notifications.length; j++) {
-          var lctitle = title.toLowerCase();
-          var lcdescription = description.toLowerCase();
+          var lctitle = product.title.toLowerCase();
+          var lcdescription = product.description.toLowerCase();
           var lcnotification = data[i].notifications[j].toLowerCase();
           if ((lctitle.indexOf(lcnotification) > -1) || (lcdescription.indexOf(lcnotification) > -1)){
-            o.send(data[i], title, description, price);
+            o.send(data[i], product);
           }   
         }
       } 
@@ -198,8 +199,8 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
       return res.data;
     });
   };
-  o.editProduct = function(product, id) {
-    return $http.put('/products/' + id, product).success(function(data){
+  o.editProduct = function(product, id, user) {
+    return $http.put('/products/' + id, product, user).success(function(data){
       console.log(data);
       console.log("Product Edited...");
       $http.get('/products?cat=All').success(function(data){
@@ -208,32 +209,40 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
       sessionStorage.removeItem('newProd');
     });
   };
-  o.setNotifications= function(notification, id) {
-    var user = JSON.parse(sessionStorage.getItem('user'));
-    id = id.toString();
+  o.setNotifications= function(notification, user) {
+    id = user._id.toString();
     notification = notification.toString();
     console.log(id);
     console.log(notification);
     return $http.put("/setNotifications/"+id+"?notification="+notification).success(function(data){
-      user.notifications.push(data);
-      sessionStorage.setItem('user', JSON.stringify(user));
-      console.log(data);
+      console.log(user.notifications);
+      user.notifications.push(notification);
+      auth.saveToken(data.token);
+      console.log(user.notifications);
+      //sessionStorage.setItem('user', JSON.stringify(user));
+      
       });
   };
 
-  o.delNotification = function(notification) {
-    var user = JSON.parse(sessionStorage.getItem('user'));
+  o.delNotification = function(notification, user) {
+    //var user = JSON.parse(sessionStorage.getItem('user'));
     return $http.delete("/notifications/"+user._id+"?notification="+notification).success(function(data){
       console.log("Notification deleted...");
+      auth.saveToken(data.token);
+
     });
   };
 
-  o.send = function(user, title, description, price) {
+  o.send = function(user, product) {
+    var title = product.title;
+    var description = product.description;
+    var price = product.price;
+    var id = product._id;
     console.log("Send function called");
     var to = user.email;
     to = to.toString();
     subject = "A product you were looking for is now available!";
-    body = "Hey "+user.firstName+",%0A%0AA new product recently posted for sale on Tiger Mart matched one of your alert notifications: %0A%0A Title: "+title+"%0A Description: "+description+"%0A Price: $"+price+" %0A%0ACheers, %0AThe TigerMart Team %0A%0ANote: Remember to update your alert notifications if you found what you were looking for!";
+    body = "Hey "+user.firstName+",%0A%0AA new product recently posted for sale on Tiger Mart matched one of your alert notifications: %0A%0A Title: "+title+"%0A Description: "+description+"%0A Price: $"+price+"%0Ahttp://tigermart.herokuapp.com/%23/products/"+id+"  %0A%0ACheers, %0AThe TigerMart Team %0A%0ANote: Remember to update your alert notifications if you found what you were looking for!";
     return $http.get("/send?to="+to+"&subject="+subject+"&body="+body);
  };
 
@@ -370,6 +379,11 @@ function($scope, $state, products, auth){
   $scope.logOut = function(){
     auth.logOut();
     $state.go('welcome');
+  };
+
+  $scope.notification = function() {
+    sessionStorage.setItem('notification', $scope.q);
+    $state.go('setNotifications', { id: $scope.user._id});
   }
 
 }]);
@@ -397,8 +411,13 @@ function($scope, products, product, $state, auth){
     else {
       $state.go('usersprofile', { id: productuserid });
     }
+  };
+  $scope.sameUser = function() {
+    console.log("hello friend");
+    var b = ($scope.user.net_id == product.userid.net_id);
+    console.log(b);
+    return b;
   }
-
   /*$scope.linkToCat = function(cat){
     products.getAll(cat).error(function(error){
       $scope.error = error;
@@ -466,7 +485,7 @@ $scope.editProduct = function(dataUrl1){
       active: true
     };
     sessionStorage.setItem('newProd', JSON.stringify(newProd));
-    products.editProduct(newProd, product._id).then(function() {
+    products.editProduct(newProd, product._id, $scope.user).then(function() {
       $scope.title = '';
       $scope.category = '';
       $scope.description = '';
@@ -700,30 +719,38 @@ app.controller('SetNotificationsCtrl', [
   '$scope',
   'products',
   '$state',
-
-  function($scope, products, $state){
+  'auth',
+  function($scope, products, $state, auth){
     //$scope.product = product;
-    if(!sessionStorage.getItem('user')) {
-      $state.go('welcome');
+    if (!auth.isLoggedIn()) {$state.go('welcome');}
+    $scope.user = auth.currentUser();
+
+    if (sessionStorage.getItem('notification')) {
+      $scope.notification = sessionStorage.getItem('notification');
+      sessionStorage.removeItem('notification');
     }
-    var user = JSON.parse(sessionStorage.getItem('user'));
-    $scope.user = user;
 
     $scope.deleteNotification = function(notification) {
-      products.delNotification(notification).then(function(){
+      products.delNotification(notification, $scope.user).then(function(){
       $state.go($state.current, {}, {reload:true});
     });
     };
 
     $scope.setNotifications = function(){
       console.log($scope.notification);
-      products.setNotifications($scope.notification, user._id).error(function(error) {
+      products.setNotifications($scope.notification, $scope.user).error(function(error) {
         $scope.error = error;
       }).then(function() {
-        $state.go('home', {category: "All", query: ""});
+        console.log($scope.user);
+        $state.go($state.current, {}, {reload:true});
       });
       $scope.notification = '';
     };
+
+    $scope.backbutton = function(){
+      $state.go('users', {id: $scope.user._id});
+    };
+
   }]);
 
 
@@ -774,8 +801,6 @@ function($scope, products, $state, auth){
     if (!$scope.picFile1)
       picURL = "";
 
-
-    products.matchNotifications($scope.title, $scope.description, $scope.price);
 
 
     var newProd = {

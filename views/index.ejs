@@ -10,88 +10,8 @@
     <script src="/javascripts/ng-img-crop.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>
-    <!--<script src="/javascripts/tag-it.js" type="text/javascript" charset="utf-8"></script>-->
     <link rel="stylesheet" type="text/css" href="/stylesheets/ng-img-crop.css">
     <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
-    <!--<link href="/stylesheets/jquery.tagit.css" rel="stylesheet" type="text/css">
-    <link href="/stylesheets/tagit.ui-zendesk.css" rel="stylesheet" type="text/css">-->
-
-    <!--<script>
-        $(function(){
-            var sampleTags = ['c++', 'java', 'php', 'coldfusion', 'javascript', 'asp', 'ruby', 'python', 'c', 'scala', 'groovy', 'haskell', 'perl', 'erlang', 'apl', 'cobol', 'go', 'lua'];
-            // Minimal
-            $('#myTags').tagit();
-            // Single field
-            $('#singleFieldTags').tagit({
-                availableTags: sampleTags,
-                // This will make Tag-it submit a single form value, as a comma-delimited field.
-                singleField: true,
-                singleFieldNode: $('#mySingleField')
-            });
-            // singleFieldTags2 is an INPUT element, rather than a UL as in the other 
-            // examples, so it automatically defaults to singleField.
-            $('#singleFieldTags2').tagit({
-                availableTags: sampleTags
-            });
-            // Preloading data in markup
-            $('#myULTags').tagit({
-                availableTags: sampleTags, // this param is of course optional. it's for autocomplete.
-                // configure the name of the input field (will be submitted with form), default: item[tags]
-                itemName: 'item',
-                fieldName: 'tags'
-            });
-            // Tag events
-            var eventTags = $('#eventTags');
-            var addEvent = function(text) {
-                $('#events_container').append(text + '<br>');
-            };
-            eventTags.tagit({
-                availableTags: sampleTags,
-                beforeTagAdded: function(evt, ui) {
-                    if (!ui.duringInitialization) {
-                        addEvent('beforeTagAdded: ' + eventTags.tagit('tagLabel', ui.tag));
-                    }
-                },
-                afterTagAdded: function(evt, ui) {
-                    if (!ui.duringInitialization) {
-                        addEvent('afterTagAdded: ' + eventTags.tagit('tagLabel', ui.tag));
-                    }
-                },
-                beforeTagRemoved: function(evt, ui) {
-                    addEvent('beforeTagRemoved: ' + eventTags.tagit('tagLabel', ui.tag));
-                },
-                afterTagRemoved: function(evt, ui) {
-                    addEvent('afterTagRemoved: ' + eventTags.tagit('tagLabel', ui.tag));
-                },
-                onTagClicked: function(evt, ui) {
-                    addEvent('onTagClicked: ' + eventTags.tagit('tagLabel', ui.tag));
-                },
-                onTagExists: function(evt, ui) {
-                    addEvent('onTagExists: ' + eventTags.tagit('tagLabel', ui.existingTag));
-                }
-            });
-            // Read-only
-            $('#readOnlyTags').tagit({
-                readOnly: true
-            });
-            // Tag-it methods
-            $('#methodTags').tagit({
-                availableTags: sampleTags
-            });
-            // Allow spaces without quotes.
-            $('#allowSpacesTags').tagit({
-                availableTags: sampleTags,
-                allowSpaces: true
-            });
-            // Remove confirmation
-            $('#removeConfirmationTags').tagit({
-                availableTags: sampleTags,
-                removeConfirmation: true
-            });
-            
-        });
-    </script>-->
-
   </head>
 
   <body ng-app="tigerMart">
@@ -106,8 +26,11 @@
     
     <!-- NAV BAR -->
     <!-- code source: https: //getbootstrap.com/components/#navbar-forms -->
+
+
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container-fluid">
+
         <!-- <ul class="nav navbar-nav">
           <li><a href="#/home/">Home</a></li>
           <li class="dropdown">
@@ -119,6 +42,7 @@
             </ul>
           </li>
         </ul> -->
+
         <div class="navbar-form navbar-left btn-group" role="group" aria-label="...">
           <a class="btn btn-info navbar-btn" href="#/home">Home</a>
         </div>
@@ -137,18 +61,18 @@
         <form ng-submit="search()" class="navbar-form navbar-left" role="search">
           <ul class="nav navbar-left">
             <div class="navbar-form">
-               <select name="cat" class="form-control" ng-model="cat">
-                  <option value="All">All Categories</option>
-                  <option value="Apparel">Apparel</option>
-                  <option value="Dorm Items">Dorm Items</option>
-                  <option value="Electronics">Electronics</option>
-                  <option value="Food and Drinks">Food and Drinks</option>
-                  <option value="Furniture">Furniture</option>
-                  <option value="Textbooks">Textbooks</option>
-                  <option value="Tickets">Tickets</option>
-                  <option value="Transportation">Transportation</option>
-                  <option value="Other">Other</option>
-                </select>
+              <select name="cat" class="form-control" ng-model="cat">
+                <option value="All">All Categories</option>
+                <option value="Apparel">Apparel</option>
+                <option value="Dorm Items">Dorm Items</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Food and Drinks">Food and Drinks</option>
+                <option value="Furniture">Furniture</option>
+                <option value="Textbooks">Textbooks</option>
+                <option value="Tickets">Tickets</option>
+                <option value="Transportation">Transportation</option>
+                <option value="Other">Other</option>
+              </select>
             </div>
           </ul>
           <div class="navbar-form navbar-left">
@@ -168,14 +92,13 @@
           </select>
         </div>
 
-        <!--
+        
         <!-- Button-group -->
         <div class="navbar-form navbar-right btn-group" role="group" aria-label="...">
           <a class="btn btn-info navbar-btn" href="#/users/{{user._id}}">My Profile</a>
           <a class="btn btn-info navbar-btn" href="#/addproduct">Add Product</a>
           <button ng-click="logOut()" class="btn btn-info navbar-btn">Log Out</button>
         </div>
-        -->
       </div>
 
       <!-- Category Buttons -->
@@ -198,92 +121,9 @@
     <div class="text-center" style="margin-top: 50px">
       <h1>Welcome to TigerMart, {{user.firstName}}!</h1>
     </div>
-    <!--
-    <div class="text-center">
-      <h4>Hello, {{user.firstName}}!</h4>
-    </div> -->
-
-    <!--
-    <div>
-      <a class="btn btn-primary col-md-offset-10" href="#/users/{{user._id}}">My Profile</a>
-    </div>
-
-    <div style="margin-top: 20px">
-        <a class="btn btn-primary col-md-offset-10" href="#/addproduct">Add Product</a>
-    </div>
-
-    <div style="margin-top: 20px">
-      <form ng-submit="logOut()">
-        <button type = "submit" class="btn btn-primary col-md-offset-10" >Log Out</button>
-      </form>
-    </div>
-
-        <div class="text-left col-md-6 col-md-offset-3">
-          <h5>Filter by category</h5>
-        </div>
-        <div class="form-group col-md-6 col-md-offset-3" style="margin-top: 10px">
-             <select name="cat" class="form-control" id="mySelect" ng-options="option.name for option in data.availableOptions track by option.id" ng-model="data.selectedOption">
-              </select>
-          </div>
-          -->
-
-        <!--<form ng-submit="filterCat()">
-          <div class="col-md-6 col-md-offset-3">
-           <select name="cat" class="form-control" ng-model="cat" placeholder="Category">
-              <option value="" selected="selected" disabled>Choose Category...</option>
-              <option value="All">All Categories</option>
-              <option value="Apparel">Apparel</option>
-              <option value="Dorm Items">Dorm Items</option>
-              <option value="Electronics">Electronics</option>
-              <option value="Food and Drinks">Food and Drinks</option>
-              <option value="Furniture">Furniture</option>
-              <option value="Textbooks">Textbooks</option>
-              <option value="Tickets">Tickets</option>
-              <option value="Transportation">Transportation</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-          <div class="col-md-1">
-            <button class="btn btn-info"type="submit">Update</button>
-          </div>
-        </form>
-        <div class="text-left col-md-6 col-md-offset-3">
-          <h5>Search</h5>
-        </div>
-        <form ng-submit="search()"> 
-          <div class="form-group col-md-6 col-md-offset-3">
-            <input type="text" class="form-control" placeholder="Search..." ng-model="q"></input>
-          </div>
-          <div class="col-md-1">
-            <button class="btn btn-info" type="submit">Search</button>
-          </div>
-        </form>
-        <div class="text-left col-md-6 col-md-offset-3">
-          <h5>Sort the products</h5>
-        </div>
-        <div class="form-group col-md-6 col-md-offset-3">
-           <select name="sorting" class="form-control" ng-model="sorting" placeholder="Sorting order">
-              <option value="" selected="selected" disabled>Sort by ...</option>
-              <option value= -date>Date: new to old</option>
-              <option value=date>Date: old to new</option>
-              <option value=price>Price: low to high</option>
-              <option value=-price>Price: high to low</option>
-              
-            </select>
-        </div>
-        -->
 
       <div class="container col-md-12" style="margin-top: 50px"> <!-- Code modified from: http://bootsnipp.com/snippets/49An-->
 
-        <!-- <div class="well well-sm">
-          <strong>View Type: </strong>
-          <div class="btn-group">
-            <a href="#" id="list" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-th-list">
-            </span>List</a> 
-            <a href="#" id="grid" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-th">
-            </span>Grid</a>
-          </div>
-        </div> -->
 
         <div id="products-view" class="row list-group">
           <div ng-repeat="product in products | orderBy:sorting | filter:{category: data.selectedOption.value}">
@@ -311,6 +151,14 @@
             </div>
           </div>  
         </div>
+        <center>
+        <div ng-show="q">
+          <h3>Didn't find what you were looking for?</h3>
+          <p>Set a notification for {{q}} and we'll alert you when another {{q}} is posted</p>
+          <a ng-click="notification()">Set Notification For This Search</h3>
+        </div>
+        </center>
+
       </div>
 
     </script>
@@ -454,7 +302,7 @@
         </div>-->
         
         <div class="center-block">
-          <button ng-click="addProduct(croppedDataUrl1)" class="text-center btn btn-primary center-block">Post product</button>
+          <button ng-click="addProduct(croppedDataUrl1)" style="margin-top: 10px" class="text-center btn btn-primary center-block">Post product</button>
         </div>
       </form>
     </script>
@@ -540,7 +388,7 @@
               Posted on: {{product.month}}/{{product.day}}/{{product.year}}
             </p>
             <br>
-              <a class="btn btn-success col-md-offset-7" href="mailto: {{product.userid.email}}?subject=Hey! I am interested in your {{product.title}} on TigerMart&body=Hey {{product.userid.firstName}}! %0A%0AI saw your {{product.title}} on TigerMart and I am interested in buying it. Let me know if it is still available. %0A%0AThanks! %0A%0A{{user.firstName}}" target="_blank">Contact {{product.userid.firstName}}</a>
+              <a class="btn btn-success col-md-offset-7" href="mailto: {{product.userid.email}}?subject=Hey! I am interested in your {{product.title}} on TigerMart&body=Hey {{product.userid.firstName}}! %0A%0AI saw your {{product.title}} on TigerMart and I am interested in buying it. Let me know if it is still available. %0A%0AThanks! %0A%0A{{user.firstName}}" target="_blank" ng-hide="sameUser()">Contact {{product.userid.firstName}}</a>
             <br>
             <br>
           </div>
@@ -1044,6 +892,7 @@
         </div>
       </nav>
 
+
       <div class="text-center">
         <h2>Set My Notifications</h2>
       </div>
@@ -1052,10 +901,12 @@
       </div>
       <form class="col-md-4 col-md-offset-4">
       <h2 class="text" style="margin-bottom:20px;"> NetID: {{user.net_id}} </h3>
-          <div ng-repeat="notification in user.notifications | orderBy:date">
-            {{notification}}
-           <span class="glyphicon glyphicon-remove"
+          <div ng-repeat="notification in user.notifications">
+            <p style="margin-top: 5px">{{notification}}
+            <span class="glyphicon glyphicon-remove"
             ng-click="deleteNotification(notification)"></span> 
+            </p>
+           
           </div>
         </div>  
         <div class="form-group">
@@ -1098,7 +949,7 @@
             ng-model="user.net_id"></input>
           </div>
           <div class="form-group">
-            <input type="text"
+            <input type="password"
             class="form-control"
             placeholder="Password"
             ng-model="user.password"></input>
@@ -1132,7 +983,7 @@
         </div>
         <div class="form-group required">
           <label class=" control-label">Password</label>
-          <input type="text"
+          <input type="password"
           class="form-control"
           placeholder="Password"
           ng-model="user.password"></input>
