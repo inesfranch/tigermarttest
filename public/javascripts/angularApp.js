@@ -65,6 +65,17 @@ app.config([
       }
     });
     $stateProvider
+    .state('verify', {
+      url: '/verify/{id}',
+      templateUrl: '/verify.html',
+      controller: 'VerifyCtrl',
+      /*resolve: {
+        user: ['$stateParams', 'products', function($stateParams, products) {
+          return products.getUserInfo($stateParams.id);
+        }]
+      }*/
+    });
+    $stateProvider
     .state('form', {
       url: '/addproduct',
       templateUrl: '/addproduct.html',
@@ -242,7 +253,7 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
     var to = user.email;
     to = to.toString();
     subject = "A product you were looking for is now available!";
-    body = "Hey "+user.firstName+",%0A%0AA new product recently posted for sale on Tiger Mart matched one of your alert notifications: %0A%0A Title: "+title+"%0A Description: "+description+"%0A Price: $"+price+"%0Ahttp://tigermart.herokuapp.com/%23/products/"+id+"  %0A%0ACheers, %0AThe TigerMart Team %0A%0ANote: Remember to update your alert notifications if you found what you were looking for!";
+    body = "Hey "+user.firstName+",%0A%0AA new product recently posted for sale on Tiger Mart matched one of your alert notifications: %0A%0ATitle: "+title+"%0ADescription: "+description+"%0APrice: $"+price+"%0Ahttp://tigermart.herokuapp.com/%23/products/"+id+"  %0A%0ACheers, %0AThe TigerMart Team %0A%0ANote: Remember to update your alert notifications if you found what you were looking for!";
     return $http.get("/send?to="+to+"&subject="+subject+"&body="+body);
  };
 
@@ -291,7 +302,10 @@ app.factory('auth', ['$http', '$window', function($http, $window) {
       return false;
     }
   };
-
+  auth.isVerified = function(){
+    var token = auth.getToken();
+    return token.verified;
+  }
   auth.currentUser = function() {
     if (auth.isLoggedIn()) {
       var token = auth.getToken();
@@ -304,6 +318,7 @@ app.factory('auth', ['$http', '$window', function($http, $window) {
   auth.register = function(user){
     return $http.post('/register', user).success(function(data){
       auth.saveToken(data.token);
+
     });
   };
 
@@ -323,7 +338,12 @@ app.factory('auth', ['$http', '$window', function($http, $window) {
       auth.saveToken(data.token);
     });
   };
-
+  auth.verify =function(code, user){
+    return $http.put("/verify/" + user._id +"?code="+code).success(function(data) {
+      console.log(data);
+      auth.saveToken(data.token);
+    });
+  };
   return auth;
 }])
 
@@ -340,6 +360,7 @@ function($scope, $state, products, auth){
   $scope.cat = "All";
 
   if (!auth.isLoggedIn()) {$state.go('welcome');}
+  if (!auth.isVerified()) {$state.go('verify');}
   $scope.user = auth.currentUser();
 
   console.log($scope.user);
@@ -397,6 +418,7 @@ app.controller('ProductsCtrl', [
 'auth',
 function($scope, products, product, $state, auth){
     if (!auth.isLoggedIn()) {$state.go('welcome');}
+  if (!auth.isVerified()) {$state.go('verify');}
   $scope.user = auth.currentUser();
   $scope.cat = "All";
 
@@ -443,6 +465,7 @@ app.controller('ProductsEditCtrl', [
 '$state',
 function($scope, products, product, auth, $state){
   if (!auth.isLoggedIn()) {$state.go('welcome');}
+  if (!auth.isVerified()) {$state.go('verify');}
   $scope.user = auth.currentUser();
   $scope.cat = "All";
   console.log($scope.user);
@@ -532,6 +555,7 @@ function($scope, products, $state, auth){
   $scope.cat = "All";
   
   if (!auth.isLoggedIn()) {$state.go('welcome');}
+  if (!auth.isVerified()) {$state.go('verify');}
   $scope.user = auth.currentUser();
   user = $scope.user;
   
@@ -662,6 +686,7 @@ function($scope, products, $state, auth, user2){
   $scope.cat = "All";
 
   if (!auth.isLoggedIn()) {$state.go('welcome');}
+  if (!auth.isVerified()) {$state.go('verify');}
   /*$scope.user = auth.currentUser();
   user = $scope.user;
 
@@ -719,6 +744,7 @@ app.controller('EditUserCtrl', [
 function($scope, products, $state, auth){
   //$scope.product = product;
   if (!auth.isLoggedIn()) {$state.go('welcome');}
+  if (!auth.isVerified()) {$state.go('verify');}
   $scope.user = auth.currentUser();
   user = $scope.user;
   $scope.cat = "All";
@@ -754,6 +780,7 @@ app.controller('SetNotificationsCtrl', [
   function($scope, products, $state, auth){
     //$scope.product = product;
     if (!auth.isLoggedIn()) {$state.go('welcome');}
+  if (!auth.isVerified()) {$state.go('verify');}
     $scope.user = auth.currentUser();
     $scope.cat = "All";
 
@@ -803,6 +830,7 @@ app.controller('FormCtrl', [
 
 function($scope, products, $state, auth){
   if (!auth.isLoggedIn()) {$state.go('welcome');}
+  if (!auth.isVerified()) {$state.go('verify');}
   $scope.user = auth.currentUser();
   $scope.cat = "All";
 
@@ -929,7 +957,7 @@ function($scope, $state, auth){
       $scope.error = error;
     }).success(function(){
       sessionStorage.removeItem('userinfo');
-      $state.go('home', {category: "All", query: ""});
+      $state.go('verify');
     });
   };
   $scope.logIn = function(){
@@ -943,7 +971,23 @@ function($scope, $state, auth){
     
   };
 }]);
+app.controller('VerifyCtrl', [
+  '$scope',
+  'auth',
+  '$state',
+  function($scope, auth, $state) {
+    if (!auth.isLoggedIn()) {$state.go('welcome');}
+    $scope.user = auth.currentUser();
+    if (auth.verified){$state.go('home');}
 
+    $scope.verify = function(){
+      auth.verify($scope.code, $scope.user).error(function(error){
+        $scope.error = error;
+      }).then(function(){
+        $state.go('home');
+      });
+    }
+  }]);
 app.controller('NavCtrl', [
 '$scope',
 'auth',

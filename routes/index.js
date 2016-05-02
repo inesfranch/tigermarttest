@@ -253,7 +253,7 @@ router.put('/user/:user', function(req, res, next) {
 router.put('/setNotifications/:user', function(req, res, next) {
 	var editedUser = req.user;
 	console.log(editedUser);
-	console.log(req.query.notification)
+	console.log(req.query.notification);
 	if(!req.query.notification || req.query.notification === '') { 
 		return res.status(400).json({message: 'Cannot set an empty alert'});
 	}
@@ -263,7 +263,27 @@ router.put('/setNotifications/:user', function(req, res, next) {
 			res.json({token: user.generateJWT()});
 	});
 });
+router.put('/verify/:user', function(req, res, next) {
+	var code = req.query.code;
+	var user = req.user;
+	if(!code || code < 1000 || code > 9999) { 
+		return res.status(400).json({message: 'Enter a valid code'});
+	}
+	var correctCode = user.code;
+	if (code == correctCode) {
+		user.verified = true;
 
+		user.save(function(err, user) {
+			if (err) {return next(err);}
+			res.json({token: user.generateJWT()});
+	});
+
+	}
+	else {
+		return res.status(400).json({message: 'The code is not correct'});
+	}
+	
+});
 router.delete('/notifications/:user', function(req, res, next) {
 	var curUser = req.user;
 	for (var i = 0; i < curUser.notifications.length; i++) {
@@ -310,7 +330,27 @@ router.post('/register', function(req, res, next){
 	  user.lastName = req.body.lastName;
 	  user.posted = [];
 	  user.notifications = [];
+	  user.verified = false;
+	  user.code = Math.floor((Math.random() * 9000) + 1000);
 	  user.setPassword(req.body.password);
+
+	  var transporter = nodemailer.createTransport(smtpTransport(options));
+		var mailOptions = {
+			to : user.email,
+			subject : "TigerMart Verification",
+			text : "Hey "+user.firstName+",\n\nYour verification code is "+user.code+"\n\nThanks for registering with us.\nHappy shopping!"
+		}
+		transporter.sendMail(mailOptions, function(error, response){
+			if (error) {
+				console.log(error);
+				res.end("error");
+			} else {
+				console.log("Message sent: " + response.message);
+				res.end("sent");
+			}
+		});
+
+
 	  user.save(function (err){
 	    if(err){ 
 	    	console.log(err);
