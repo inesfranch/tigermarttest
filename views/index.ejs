@@ -1172,6 +1172,7 @@
         <h1>TigerMart</h1>
       </div>
 
+
       <form ng-submit="verify()" class="col-md-4 col-md-offset-4">
         <h3 class="text-center" style="margin-bottom:20px;">Please enter the verification code sent to your email it should be a four digit number</h3>
         <div ng-show="error" class="alert alert-danger row">
@@ -1190,6 +1191,7 @@
         </div>
         <button type="submit" class="btn btn-primary center-block">Verify</button>
       </form>
+      <button type="submit" class="btn btn-primary center-block" ng-click="logOut()">Logout</button>
     </script>    
 
   </body>

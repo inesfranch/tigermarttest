@@ -978,7 +978,7 @@ app.controller('VerifyCtrl', [
   function($scope, auth, $state) {
     if (!auth.isLoggedIn()) {$state.go('welcome');}
     $scope.user = auth.currentUser();
-    if (auth.verified){ $state.go('home', {category: "All", query: ""}); }
+    if (auth.isVerified()){ $state.go('home', {category: "All", query: ""}); }
 
     $scope.verify = function(){
       auth.verify($scope.code, $scope.user).error(function(error){
@@ -986,6 +986,10 @@ app.controller('VerifyCtrl', [
       }).then(function(){
         $state.go('home', {category: "All", query: ""});
       });
+    };
+    $scope.logOut = function(){
+      auth.logOut();
+      $state.go('welcome');
     }
   }]);
 app.controller('NavCtrl', [
