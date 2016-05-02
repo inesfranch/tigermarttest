@@ -978,13 +978,13 @@ app.controller('VerifyCtrl', [
   function($scope, auth, $state) {
     if (!auth.isLoggedIn()) {$state.go('welcome');}
     $scope.user = auth.currentUser();
-    if (auth.verified){$state.go('home');}
+    if (auth.verified){ $state.go('home', {category: "All", query: ""}); }
 
     $scope.verify = function(){
       auth.verify($scope.code, $scope.user).error(function(error){
         $scope.error = error;
       }).then(function(){
-        $state.go('home');
+            $state.go('home', {category: "All", query: ""});
       });
     }
   }]);
