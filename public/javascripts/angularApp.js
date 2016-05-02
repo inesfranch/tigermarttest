@@ -398,6 +398,7 @@ app.controller('ProductsCtrl', [
 function($scope, products, product, $state, auth){
     if (!auth.isLoggedIn()) {$state.go('welcome');}
   $scope.user = auth.currentUser();
+  $scope.cat = "All";
 
   $scope.product = product;
   $scope.changeCat = function(cat){
@@ -418,6 +419,13 @@ function($scope, products, product, $state, auth){
     console.log(b);
     return b;
   }
+
+  $scope.search = function(){
+    console.log(auth.currentUser());
+    if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
+    $state.go('home', {category: $scope.cat, query: $scope.q});
+    console.log("x");
+  }
   /*$scope.linkToCat = function(cat){
     products.getAll(cat).error(function(error){
       $scope.error = error;
@@ -436,6 +444,7 @@ app.controller('ProductsEditCtrl', [
 function($scope, products, product, auth, $state){
   if (!auth.isLoggedIn()) {$state.go('welcome');}
   $scope.user = auth.currentUser();
+  $scope.cat = "All";
   console.log($scope.user);
   console.log(product);
 
@@ -461,6 +470,12 @@ function($scope, products, product, auth, $state){
     //     pictures: dataUrl1.split("base64,")[1],
   }
   
+$scope.search = function(){
+  console.log(auth.currentUser());
+  if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
+  $state.go('home', {category: $scope.cat, query: $scope.q});
+  console.log("x");
+}
 
 $scope.editProduct = function(dataUrl1){
     if(!$scope.title || $scope.title === '') { return; }
@@ -644,6 +659,7 @@ app.controller('OtherUsersCtrl', [
 function($scope, products, $state, auth, user2){
 
   $scope.user2 = JSON.parse(sessionStorage.getItem('user2'));
+  $scope.cat = "All";
 
   if (!auth.isLoggedIn()) {$state.go('welcome');}
   /*$scope.user = auth.currentUser();
@@ -685,6 +701,13 @@ function($scope, products, $state, auth, user2){
     selectedOption: {id: '4', name: 'Date: old to new', value: "date"}
   };
 
+  $scope.search = function(){
+    console.log(auth.currentUser());
+    if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
+    $state.go('home', {category: $scope.cat, query: $scope.q});
+    console.log("x");
+  }
+
 }]);
 
 app.controller('EditUserCtrl', [
@@ -698,6 +721,7 @@ function($scope, products, $state, auth){
   if (!auth.isLoggedIn()) {$state.go('welcome');}
   $scope.user = auth.currentUser();
   user = $scope.user;
+  $scope.cat = "All";
 
   $scope.editUser = function() {
     console.log("hello");
@@ -713,6 +737,13 @@ function($scope, products, $state, auth){
     $state.go('users', {id: $scope.user._id});
   };
 
+  $scope.search = function(){
+    console.log(auth.currentUser());
+    if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
+    $state.go('home', {category: $scope.cat, query: $scope.q});
+    console.log("x");
+  }
+
 }]);
 
 app.controller('SetNotificationsCtrl', [
@@ -724,6 +755,7 @@ app.controller('SetNotificationsCtrl', [
     //$scope.product = product;
     if (!auth.isLoggedIn()) {$state.go('welcome');}
     $scope.user = auth.currentUser();
+    $scope.cat = "All";
 
     if (sessionStorage.getItem('notification')) {
       $scope.notification = sessionStorage.getItem('notification');
@@ -751,6 +783,13 @@ app.controller('SetNotificationsCtrl', [
       $state.go('users', {id: $scope.user._id});
     };
 
+    $scope.search = function(){
+      console.log(auth.currentUser());
+      if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
+      $state.go('home', {category: $scope.cat, query: $scope.q});
+      console.log("x");
+    }
+
   }]);
 
 
@@ -765,6 +804,7 @@ app.controller('FormCtrl', [
 function($scope, products, $state, auth){
   if (!auth.isLoggedIn()) {$state.go('welcome');}
   $scope.user = auth.currentUser();
+  $scope.cat = "All";
 
   if(sessionStorage.getItem('newProd')){
     var newproduct = JSON.parse(sessionStorage.getItem('newProd'));
@@ -787,6 +827,12 @@ function($scope, products, $state, auth){
     $scope.pictures = product.pictures;
     //     pictures: dataUrl1.split("base64,")[1],
   }*/
+  $scope.search = function(){
+    console.log(auth.currentUser());
+    if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
+    $state.go('home', {category: $scope.cat, query: $scope.q});
+    console.log("x");
+  }
 
   $scope.addProduct = function(dataUrl1){
 
