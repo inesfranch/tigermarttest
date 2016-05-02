@@ -144,6 +144,7 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
     }*/).success(function(data){
       o.products.push(data);
       user.posted.push(data);
+      o.matchNotifications(data);
       sessionStorage.removeItem('newProd');
     });
   };
@@ -153,15 +154,15 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
       angular.copy(data, o.products);
     });
   };
-  o.matchNotifications = function(title, description, price) {
+  o.matchNotifications = function(product) {
     return $http.get("/matchNotifications").success(function(data) {
       for (var i = 0; i < data.length; i++) {
         for (var j = 0; j < data[i].notifications.length; j++) {
-          var lctitle = title.toLowerCase();
-          var lcdescription = description.toLowerCase();
+          var lctitle = product.title.toLowerCase();
+          var lcdescription = product.description.toLowerCase();
           var lcnotification = data[i].notifications[j].toLowerCase();
           if ((lctitle.indexOf(lcnotification) > -1) || (lcdescription.indexOf(lcnotification) > -1)){
-            o.send(data[i], title, description, price);
+            o.send(data[i], product);
           }   
         }
       } 
@@ -225,12 +226,16 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
     });
   };
 
-  o.send = function(user, title, description, price) {
+  o.send = function(user, product) {
+    var title = product.title;
+    var description = product.description;
+    var price = product.price;
+    var id = product._id;
     console.log("Send function called");
     var to = user.email;
     to = to.toString();
     subject = "A product you were looking for is now available!";
-    body = "Hey "+user.firstName+",%0A%0AA new product recently posted for sale on Tiger Mart matched one of your alert notifications: %0A%0A Title: "+title+"%0A Description: "+description+"%0A Price: $"+price+" %0A%0ACheers, %0AThe TigerMart Team %0A%0ANote: Remember to update your alert notifications if you found what you were looking for!";
+    body = "Hey "+user.firstName+",%0A%0AA new product recently posted for sale on Tiger Mart matched one of your alert notifications: %0A%0A Title: "+title+"%0A Description: "+description+"%0A Price: $"+price+"%0Ahttp://tigermart.herokuapp.com/%23/products/"+id+"  %0A%0ACheers, %0AThe TigerMart Team %0A%0ANote: Remember to update your alert notifications if you found what you were looking for!";
     return $http.get("/send?to="+to+"&subject="+subject+"&body="+body);
  };
 
@@ -754,8 +759,6 @@ function($scope, products, $state, auth){
     if (!$scope.picFile1)
       picURL = "";
 
-
-    products.matchNotifications($scope.title, $scope.description, $scope.price);
 
 
     var newProd = {
