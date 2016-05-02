@@ -7,6 +7,8 @@ var UserSchema = new mongoose.Schema({
   net_id: {type: String, lowercase: true, unique: true, required: true},
   hash: String,
   salt: String,
+  code: Number,
+  verified: {type: Boolean, default: false},
   email: {type: String, required: true},
   firstName: {type: String, required: true},
   lastName: {type: String, required: true},
@@ -36,6 +38,7 @@ UserSchema.methods.generateJWT = function(){
 		lastName: this.lastName,
 		posted: this.posted,
 		notifications: this.notifications,
+		verified: this.verified,
 		exp: parseInt(exp.getTime() / 1000),
 	}, 'SECRET');
 };
