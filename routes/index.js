@@ -95,14 +95,14 @@ router.get('/productscat', function(req, res, next) {
 
 router.get('/search', function(req, res, next) {
 	var q = req.query.q;
-	var qu = Product.find({'$or': [
+	/*var qu = Product.find({'$or': [
 			{'title': {$regex: q, $options: "i"}},
 			{'description': {$regex: q, $options: "i"}}]});
 	qu.exec(function(err, products) {
 		if(err){return next(err);}
 		res.json(products);
-	});
-	/*var cat = req.query.cat;
+	}); */
+	var cat = req.query.cat;
 	if (cat == "All") {
 		var qu = Product.find({'$or': [
 			{'title': {$regex: q, $options: "i"}},
@@ -120,7 +120,7 @@ router.get('/search', function(req, res, next) {
             if(err){return next(err);}
             res.json(products);
         });
-    }*/
+    }
 });
 
 router.get('/matchNotifications', function(req, res, next) {
