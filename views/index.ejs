@@ -15,7 +15,6 @@
   </head>
 
   <body ng-app="tigerMart">
-    
     <div class="row">
       <div>
         <ui-view></ui-view>
@@ -28,29 +27,53 @@
     <!-- NAV BAR -->
     <!-- code source: https: //getbootstrap.com/components/#navbar-forms -->
 
-
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="#/home">TigerMart</a>
-        </div>
+
+      <!--
+        <ul class="nav navbar-nav">
+          <li><a href="#/home/">Home</a></li>
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Page 1
+            <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="#">My Profifle</a></li>
+              <li><a href="#">Log Out</a></li>
+            </ul>
+          </li> -->
+        
         <div class="navbar-form navbar-left btn-group" role="group" aria-label="...">
-          <a class="btn btn-info navbar-btn" href="#/home">Home</a>
+          <a class="btn btn-info navbar-btn" href="#/home/">Home</a>
         </div>
         
-        
-        <!-- Category dropdown button -->
+        <!-- Category dropdown button 
         <div class="navbar-form navbar-left" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-left">
             <div class="navbar-form">
-               <select name="cat" class="form-control" id="mySelect" ng-options="option.name for option in data.availableOptions track by option.id" ng-model="data.selectedOption">
+               <select name="cat" class="form-control" id="mySelect" ng-options="option.name for option in data.availableOptions track by option.id" ng-model="data.selectedOption" ng-change="filterCat()">
                 </select>
             </div>
           </ul>
-        </div>
+        </div> -->
 
         <!-- Search bar and search button -->
         <form ng-submit="search()" class="navbar-form navbar-left" role="search">
+          <ul class="nav navbar-left">
+            <div class="navbar-form">
+              <select name="cat" class="form-control" ng-model="cat">
+                <option value="All">All Categories</option>
+                <option value="Apparel">Apparel</option>
+                <option value="Dorm Items">Dorm Items</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Food and Drinks">Food and Drinks</option>
+                <option value="Furniture">Furniture</option>
+                <option value="Textbooks">Textbooks</option>
+                <option value="Tickets">Tickets</option>
+                <option value="Transportation">Transportation</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </ul>
           <div class="navbar-form navbar-left">
             <input type="text" class="form-control" placeholder="Search for ..." ng-model="q"></input>
           </div>
@@ -68,16 +91,40 @@
           </select>
         </div>
 
+        
         <!-- Button-group -->
+        <!--
+          <li><a href="#/home/All/">All Categories</a></li>
+          <li><a href="#/addproduct">Add Product</a>
+          <li><a href="" ng-click="logOut()">Log Out</a>
+        </ul> -->
+
+        
         <div class="navbar-form navbar-right btn-group" role="group" aria-label="...">
           <a class="btn btn-info navbar-btn" href="#/users/{{user._id}}">My Profile</a>
           <a class="btn btn-info navbar-btn" href="#/addproduct">Add Product</a>
           <button ng-click="logOut()" class="btn btn-info navbar-btn">Log Out</button>
-        </div>
+        </div> 
+      </div>
+
+      <!-- Category Buttons -->
+      <div class="container-fluid">
+        <ul class="nav navbar-nav">
+          <li><a href="#/home/All/">All Categories</a></li>
+          <li><a href="#/home/Apparel/">Apparel</a>
+          <li><a href="#/home/Dorm%20Items/">Dorm Items</a>
+          <li><a href="#/home/Electronics/">Electronics</a>
+          <li><a href="#/home/Food%20and%20Drinks/">Food and Drinks</a>
+          <li><a href="#/home/Furniture/">Furniture</a>
+          <li><a href="#/home/Textbooks/">Textbooks</a>
+          <li><a href="#/home/Tickets/">Tickets</a>
+          <li><a href="#/home/Transportation/">Transportation</a>
+          <li><a href="#/home/Other/">Apparel</a>
+        </ul>
       </div>
     </nav>
 
-    <div class="text-center" style="margin-top: 50px">
+    <div class="text-center" style="margin-top: 90px">
       <h1>Welcome to TigerMart, {{user.firstName}}!</h1>
     </div>
 
@@ -124,8 +171,76 @@
 
     <!-- ________________ ADD PRODUCT PAGE ____________________ -->
     <script type="text/ng-template" id="/addproduct.html">
+       <!-- NAV BAR -->
+      <!-- code source: https: //getbootstrap.com/components/#navbar-forms -->
+      <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+          <div class="navbar-form navbar-left btn-group" role="group" aria-label="...">
+            <a class="btn btn-info navbar-btn" href="#/home/">Home</a>
+          </div>
+
+          <!-- Search bar and search button -->
+        <form ng-submit="search()" class="navbar-form navbar-left" role="search">
+          <ul class="nav navbar-left">
+            <div class="navbar-form">
+               <select name="cat" class="form-control" ng-model="cat">
+                  <option value="All">All Categories</option>
+                  <option value="Apparel">Apparel</option>
+                  <option value="Dorm Items">Dorm Items</option>
+                  <option value="Electronics">Electronics</option>
+                  <option value="Food and Drinks">Food and Drinks</option>
+                  <option value="Furniture">Furniture</option>
+                  <option value="Textbooks">Textbooks</option>
+                  <option value="Tickets">Tickets</option>
+                  <option value="Transportation">Transportation</option>
+                  <option value="Other">Other</option>
+                </select>
+            </div>
+          </ul>
+          <div class="navbar-form navbar-left">
+            <input type="text" class="form-control" placeholder="Search for ..." ng-model="q"></input>
+          </div>
+          <button type="submit" class="btn btn-info navbar-btn">Search</button>
+        </form>
+
+          <!-- Sort the products -->
+          <div class="navbar-form navbar-left">
+           <select name="sorting" class="navbar-form form-control" ng-model="sorting" placeholder="Sorting order">
+              <option value="" selected="selected" disabled>Sort by ...</option>
+              <option value=price>Price: low to high</option>
+              <option value=-price>Price: high to low</option>
+              <option value=-date>Date: new to old</option>
+              <option value=date>Date: old to new</option>
+            </select>
+          </div>
+
+          <!-- Button-group -->
+          <div class="navbar-form navbar-right btn-group" role="group" aria-label="...">
+            <a class="btn btn-info navbar-btn" href="#/editUser/{{user._id}}">Edit My Profile</a>
+            <a class="btn btn-info navbar-btn" href="#/addproduct">Add Product</a>
+            <button ng-click="logOut()" class="btn btn-info navbar-btn">Log Out</button>
+          </div>
+        </div>
+
+        <!-- Category Buttons -->
+        <div class="container-fluid">
+          <ul class="nav navbar-nav">
+            <li><a href="#/home/All/">All Categories</a></li>
+            <li><a href="#/home/Apparel/">Apparel</a>
+            <li><a href="#/home/Dorm%20Items/">Dorm Items</a>
+            <li><a href="#/home/Electronics/">Electronics</a>
+            <li><a href="#/home/Food%20and%20Drinks/">Food and Drinks</a>
+            <li><a href="#/home/Furniture/">Furniture</a>
+            <li><a href="#/home/Textbooks/">Textbooks</a>
+            <li><a href="#/home/Tickets/">Tickets</a>
+            <li><a href="#/home/Transportation/">Transportation</a>
+            <li><a href="#/home/Other/">Apparel</a>
+          </ul>
+        </div>
+      </nav>
+
       <div style="margin-top: 20px">
-        <a class="btn btn-primary col-md-offset-10" href="#/home">Back to Home</a>
+        <a class="btn btn-primary col-md-offset-10" href="#/home/">Back to Home</a>
       </div>
       <form style="margin-top: 30px;" class="col-md-6 col-md-offset-3">
         <h3>Add a new product</h3>
@@ -221,8 +336,77 @@
 
     <!-- ________________ VIEW PRODUCT PAGE ____________________ -->
     <script type="text/ng-template" id="/products.html">
+
+      <!-- NAV BAR -->
+      <!-- code source: https: //getbootstrap.com/components/#navbar-forms -->
+      <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+          <div class="navbar-form navbar-left btn-group" role="group" aria-label="...">
+            <a class="btn btn-info navbar-btn" href="#/home/">Home</a>
+          </div>
+
+          <!-- Search bar and search button -->
+        <form ng-submit="search()" class="navbar-form navbar-left" role="search">
+          <ul class="nav navbar-left">
+            <div class="navbar-form">
+               <select name="cat" class="form-control" ng-model="cat">
+                  <option value="All">All Categories</option>
+                  <option value="Apparel">Apparel</option>
+                  <option value="Dorm Items">Dorm Items</option>
+                  <option value="Electronics">Electronics</option>
+                  <option value="Food and Drinks">Food and Drinks</option>
+                  <option value="Furniture">Furniture</option>
+                  <option value="Textbooks">Textbooks</option>
+                  <option value="Tickets">Tickets</option>
+                  <option value="Transportation">Transportation</option>
+                  <option value="Other">Other</option>
+                </select>
+            </div>
+          </ul>
+          <div class="navbar-form navbar-left">
+            <input type="text" class="form-control" placeholder="Search for ..." ng-model="q"></input>
+          </div>
+          <button type="submit" class="btn btn-info navbar-btn">Search</button>
+        </form>
+
+          <!-- Sort the products -->
+          <div class="navbar-form navbar-left">
+           <select name="sorting" class="navbar-form form-control" ng-model="sorting" placeholder="Sorting order">
+              <option value="" selected="selected" disabled>Sort by ...</option>
+              <option value=price>Price: low to high</option>
+              <option value=-price>Price: high to low</option>
+              <option value=-date>Date: new to old</option>
+              <option value=date>Date: old to new</option>
+            </select>
+          </div>
+
+          <!-- Button-group -->
+          <div class="navbar-form navbar-right btn-group" role="group" aria-label="...">
+            <a class="btn btn-info navbar-btn" href="#/editUser/{{user._id}}">Edit My Profile</a>
+            <a class="btn btn-info navbar-btn" href="#/addproduct">Add Product</a>
+            <button ng-click="logOut()" class="btn btn-info navbar-btn">Log Out</button>
+          </div>
+        </div>
+
+        <!-- Category Buttons -->
+        <div class="container-fluid">
+          <ul class="nav navbar-nav">
+            <li><a href="#/home/All/">All Categories</a></li>
+            <li><a href="#/home/Apparel/">Apparel</a>
+            <li><a href="#/home/Dorm%20Items/">Dorm Items</a>
+            <li><a href="#/home/Electronics/">Electronics</a>
+            <li><a href="#/home/Food%20and%20Drinks/">Food and Drinks</a>
+            <li><a href="#/home/Furniture/">Furniture</a>
+            <li><a href="#/home/Textbooks/">Textbooks</a>
+            <li><a href="#/home/Tickets/">Tickets</a>
+            <li><a href="#/home/Transportation/">Transportation</a>
+            <li><a href="#/home/Other/">Apparel</a>
+          </ul>
+        </div>
+      </nav>
+
       <div>
-        <a class="btn btn-primary col-md-offset-10" href="#/home">Back to Home</a>
+        <a class="btn btn-primary col-md-offset-10" href="#/home/">Back to Home</a>
       </div>
       <div class="page-header col-md-offset-1">
         <h3>{{product.title}}</h3>
@@ -263,6 +447,75 @@
 
     <!-- ________________ EDIT PRODUCT PAGE ____________________ -->
     <script type="text/ng-template" id="/productsEdit.html">
+
+      <!-- NAV BAR -->
+      <!-- code source: https: //getbootstrap.com/components/#navbar-forms -->
+      <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+          <div class="navbar-form navbar-left btn-group" role="group" aria-label="...">
+            <a class="btn btn-info navbar-btn" href="#/home/">Home</a>
+          </div>
+
+          <!-- Search bar and search button -->
+        <form ng-submit="search()" class="navbar-form navbar-left" role="search">
+          <ul class="nav navbar-left">
+            <div class="navbar-form">
+               <select name="cat" class="form-control" ng-model="cat">
+                  <option value="All">All Categories</option>
+                  <option value="Apparel">Apparel</option>
+                  <option value="Dorm Items">Dorm Items</option>
+                  <option value="Electronics">Electronics</option>
+                  <option value="Food and Drinks">Food and Drinks</option>
+                  <option value="Furniture">Furniture</option>
+                  <option value="Textbooks">Textbooks</option>
+                  <option value="Tickets">Tickets</option>
+                  <option value="Transportation">Transportation</option>
+                  <option value="Other">Other</option>
+                </select>
+            </div>
+          </ul>
+          <div class="navbar-form navbar-left">
+            <input type="text" class="form-control" placeholder="Search for ..." ng-model="q"></input>
+          </div>
+          <button type="submit" class="btn btn-info navbar-btn">Search</button>
+        </form>
+
+          <!-- Sort the products -->
+          <div class="navbar-form navbar-left">
+           <select name="sorting" class="navbar-form form-control" ng-model="sorting" placeholder="Sorting order">
+              <option value="" selected="selected" disabled>Sort by ...</option>
+              <option value=price>Price: low to high</option>
+              <option value=-price>Price: high to low</option>
+              <option value=-date>Date: new to old</option>
+              <option value=date>Date: old to new</option>
+            </select>
+          </div>
+
+          <!-- Button-group -->
+          <div class="navbar-form navbar-right btn-group" role="group" aria-label="...">
+            <a class="btn btn-info navbar-btn" href="#/editUser/{{user._id}}">Edit My Profile</a>
+            <a class="btn btn-info navbar-btn" href="#/addproduct">Add Product</a>
+            <button ng-click="logOut()" class="btn btn-info navbar-btn">Log Out</button>
+          </div>
+        </div>
+
+        <!-- Category Buttons -->
+        <div class="container-fluid">
+          <ul class="nav navbar-nav">
+            <li><a href="#/home/All/">All Categories</a></li>
+            <li><a href="#/home/Apparel/">Apparel</a>
+            <li><a href="#/home/Dorm%20Items/">Dorm Items</a>
+            <li><a href="#/home/Electronics/">Electronics</a>
+            <li><a href="#/home/Food%20and%20Drinks/">Food and Drinks</a>
+            <li><a href="#/home/Furniture/">Furniture</a>
+            <li><a href="#/home/Textbooks/">Textbooks</a>
+            <li><a href="#/home/Tickets/">Tickets</a>
+            <li><a href="#/home/Transportation/">Transportation</a>
+            <li><a href="#/home/Other/">Apparel</a>
+          </ul>
+        </div>
+      </nav>
+
       <div>
         <a class="btn btn-primary col-md-offset-10" ng-click="backbutton()">Back to User Page</a>
       </div>
@@ -339,14 +592,83 @@
 
     <!-- ________________ USER PAGE ____________________ -->
     <script type="text/ng-template" id="/user.html">
+
+       <!-- NAV BAR -->
+      <!-- code source: https: //getbootstrap.com/components/#navbar-forms -->
+      <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+          <div class="navbar-form navbar-left btn-group" role="group" aria-label="...">
+            <a class="btn btn-info navbar-btn" href="#/home/">Home</a>
+          </div>
+
+          <!-- Search bar and search button -->
+        <form ng-submit="search()" class="navbar-form navbar-left" role="search">
+          <ul class="nav navbar-left">
+            <div class="navbar-form">
+               <select name="cat" class="form-control" ng-model="cat">
+                  <option value="All">All Categories</option>
+                  <option value="Apparel">Apparel</option>
+                  <option value="Dorm Items">Dorm Items</option>
+                  <option value="Electronics">Electronics</option>
+                  <option value="Food and Drinks">Food and Drinks</option>
+                  <option value="Furniture">Furniture</option>
+                  <option value="Textbooks">Textbooks</option>
+                  <option value="Tickets">Tickets</option>
+                  <option value="Transportation">Transportation</option>
+                  <option value="Other">Other</option>
+                </select>
+            </div>
+          </ul>
+          <div class="navbar-form navbar-left">
+            <input type="text" class="form-control" placeholder="Search for ..." ng-model="q"></input>
+          </div>
+          <button type="submit" class="btn btn-info navbar-btn">Search</button>
+        </form>
+
+          <!-- Sort the products -->
+          <div class="navbar-form navbar-left">
+           <select name="sorting" class="navbar-form form-control" ng-model="sorting" placeholder="Sorting order">
+              <option value="" selected="selected" disabled>Sort by ...</option>
+              <option value=price>Price: low to high</option>
+              <option value=-price>Price: high to low</option>
+              <option value=-date>Date: new to old</option>
+              <option value=date>Date: old to new</option>
+            </select>
+          </div>
+
+          <!-- Button-group -->
+          <div class="navbar-form navbar-right btn-group" role="group" aria-label="...">
+            <a class="btn btn-info navbar-btn" href="#/editUser/{{user._id}}">Edit My Profile</a>
+            <a class="btn btn-info navbar-btn" href="#/addproduct">Add Product</a>
+            <button ng-click="logOut()" class="btn btn-info navbar-btn">Log Out</button>
+          </div>
+        </div>
+
+        <!-- Category Buttons -->
+        <div class="container-fluid">
+          <ul class="nav navbar-nav">
+            <li><a href="#/home/All/">All Categories</a></li>
+            <li><a href="#/home/Apparel/">Apparel</a>
+            <li><a href="#/home/Dorm%20Items/">Dorm Items</a>
+            <li><a href="#/home/Electronics/">Electronics</a>
+            <li><a href="#/home/Food%20and%20Drinks/">Food and Drinks</a>
+            <li><a href="#/home/Furniture/">Furniture</a>
+            <li><a href="#/home/Textbooks/">Textbooks</a>
+            <li><a href="#/home/Tickets/">Tickets</a>
+            <li><a href="#/home/Transportation/">Transportation</a>
+            <li><a href="#/home/Other/">Apparel</a>
+          </ul>
+        </div>
+      </nav>
+
       <div>
-        <a class="btn btn-primary col-md-offset-10" href="#/home">Back to Home</a>
+        <a class="btn btn-primary col-md-offset-10" href="#/home/">Back to Home</a>
       </div>
       <div>
         <a class="btn btn-primary col-md-offset-10" style="margin-top: 10px" href="#/editUser/{{user._id}}">Edit My Profile</a>
       </div>
       <div>
-        <a class="btn btn-success col-md-offset-10" style="margin-top: 10px" href="#/setNotifications/{{user._id}}">Set My Notifications</a>
+        <a class="btn btn-primary col-md-offset-10" style="margin-top: 10px" href="#/setNotifications/{{user._id}}">Set My Notifications</a>
       </div>
       <div class="text-center">
         <h2>{{user.firstName}} {{user.lastName}}</h2>
@@ -359,17 +681,17 @@
           <div class="btn-group col-md-12" style="margin-left: 10px">
 
           <div class="form-group col-md-2" style="margin-top: 10px">
-             <select name="filterActive" class="form-control" id="mySelect" ng-options="option.name for option in data.availableOptions track by option.id" ng-model="data.selectedOption">
-              </select>
-          </div>
-
-          <div class="form-group col-md-2" style="margin-top: 10px">
              <select name="filterActive" class="form-control" id="mySelect" ng-options="option.name for option in data2.availableOptions track by option.id" ng-model="data2.selectedOption">
               </select>
           </div>
 
           <div class="form-group col-md-2" style="margin-top: 10px">
              <select name="filterActive" class="form-control" id="mySelect" ng-options="option.name for option in data3.availableOptions track by option.id" ng-model="data3.selectedOption">
+              </select>
+          </div>
+
+          <div class="form-group col-md-2" style="margin-top: 10px">
+             <select name="filterActive" class="form-control" id="mySelect" ng-options="option.name for option in data4.availableOptions track by option.id" ng-model="data4.selectedOption">
               </select>
           </div>
 
@@ -416,8 +738,77 @@
 
     <!-- ________________ USER PAGE FOR OTHER USERS ____________________ -->
     <script type="text/ng-template" id="/userprofile.html">
+
+      <!-- NAV BAR -->
+      <!-- code source: https: //getbootstrap.com/components/#navbar-forms -->
+      <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+          <div class="navbar-form navbar-left btn-group" role="group" aria-label="...">
+            <a class="btn btn-info navbar-btn" href="#/home/">Home</a>
+          </div>
+
+          <!-- Search bar and search button -->
+        <form ng-submit="search()" class="navbar-form navbar-left" role="search">
+          <ul class="nav navbar-left">
+            <div class="navbar-form">
+               <select name="cat" class="form-control" ng-model="cat">
+                  <option value="All">All Categories</option>
+                  <option value="Apparel">Apparel</option>
+                  <option value="Dorm Items">Dorm Items</option>
+                  <option value="Electronics">Electronics</option>
+                  <option value="Food and Drinks">Food and Drinks</option>
+                  <option value="Furniture">Furniture</option>
+                  <option value="Textbooks">Textbooks</option>
+                  <option value="Tickets">Tickets</option>
+                  <option value="Transportation">Transportation</option>
+                  <option value="Other">Other</option>
+                </select>
+            </div>
+          </ul>
+          <div class="navbar-form navbar-left">
+            <input type="text" class="form-control" placeholder="Search for ..." ng-model="q"></input>
+          </div>
+          <button type="submit" class="btn btn-info navbar-btn">Search</button>
+        </form>
+
+          <!-- Sort the products -->
+          <div class="navbar-form navbar-left">
+           <select name="sorting" class="navbar-form form-control" ng-model="sorting" placeholder="Sorting order">
+              <option value="" selected="selected" disabled>Sort by ...</option>
+              <option value=price>Price: low to high</option>
+              <option value=-price>Price: high to low</option>
+              <option value=-date>Date: new to old</option>
+              <option value=date>Date: old to new</option>
+            </select>
+          </div>
+
+          <!-- Button-group -->
+          <div class="navbar-form navbar-right btn-group" role="group" aria-label="...">
+            <a class="btn btn-info navbar-btn" href="#/editUser/{{user._id}}">Edit My Profile</a>
+            <a class="btn btn-info navbar-btn" href="#/addproduct">Add Product</a>
+            <button ng-click="logOut()" class="btn btn-info navbar-btn">Log Out</button>
+          </div>
+        </div>
+
+        <!-- Category Buttons -->
+        <div class="container-fluid">
+          <ul class="nav navbar-nav">
+            <li><a href="#/home/All/">All Categories</a></li>
+            <li><a href="#/home/Apparel/">Apparel</a>
+            <li><a href="#/home/Dorm%20Items/">Dorm Items</a>
+            <li><a href="#/home/Electronics/">Electronics</a>
+            <li><a href="#/home/Food%20and%20Drinks/">Food and Drinks</a>
+            <li><a href="#/home/Furniture/">Furniture</a>
+            <li><a href="#/home/Textbooks/">Textbooks</a>
+            <li><a href="#/home/Tickets/">Tickets</a>
+            <li><a href="#/home/Transportation/">Transportation</a>
+            <li><a href="#/home/Other/">Apparel</a>
+          </ul>
+        </div>
+      </nav>
+
       <div>
-        <a class="btn btn-primary col-md-offset-10" href="#/home">Back to Home</a>
+        <a class="btn btn-primary col-md-offset-10" href="#/home/">Back to Home</a>
       </div>
       <div>
         <a class="btn btn-primary col-md-offset-10" href="https://tigerbook.herokuapp.com/student/{{user2.net_id}}" style="margin-top: 10px">See them on TigerBook</a>
@@ -478,17 +869,86 @@
 
     <!-- ________________ EDIT USER PAGE ____________________ -->
     <script type="text/ng-template" id="/editUser.html">
+
+      <!-- NAV BAR -->
+      <!-- code source: https: //getbootstrap.com/components/#navbar-forms -->
+      <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+          <div class="navbar-form navbar-left btn-group" role="group" aria-label="...">
+            <a class="btn btn-info navbar-btn" href="#/home/">Home</a>
+          </div>
+
+          <!-- Search bar and search button -->
+        <form ng-submit="search()" class="navbar-form navbar-left" role="search">
+          <ul class="nav navbar-left">
+            <div class="navbar-form">
+               <select name="cat" class="form-control" ng-model="cat">
+                  <option value="All">All Categories</option>
+                  <option value="Apparel">Apparel</option>
+                  <option value="Dorm Items">Dorm Items</option>
+                  <option value="Electronics">Electronics</option>
+                  <option value="Food and Drinks">Food and Drinks</option>
+                  <option value="Furniture">Furniture</option>
+                  <option value="Textbooks">Textbooks</option>
+                  <option value="Tickets">Tickets</option>
+                  <option value="Transportation">Transportation</option>
+                  <option value="Other">Other</option>
+                </select>
+            </div>
+          </ul>
+          <div class="navbar-form navbar-left">
+            <input type="text" class="form-control" placeholder="Search for ..." ng-model="q"></input>
+          </div>
+          <button type="submit" class="btn btn-info navbar-btn">Search</button>
+        </form>
+
+          <!-- Sort the products -->
+          <div class="navbar-form navbar-left">
+           <select name="sorting" class="navbar-form form-control" ng-model="sorting" placeholder="Sorting order">
+              <option value="" selected="selected" disabled>Sort by ...</option>
+              <option value=price>Price: low to high</option>
+              <option value=-price>Price: high to low</option>
+              <option value=-date>Date: new to old</option>
+              <option value=date>Date: old to new</option>
+            </select>
+          </div>
+
+          <!-- Button-group -->
+          <div class="navbar-form navbar-right btn-group" role="group" aria-label="...">
+            <a class="btn btn-info navbar-btn" href="#/editUser/{{user._id}}">Edit My Profile</a>
+            <a class="btn btn-info navbar-btn" href="#/addproduct">Add Product</a>
+            <button ng-click="logOut()" class="btn btn-info navbar-btn">Log Out</button>
+          </div>
+        </div>
+
+        <!-- Category Buttons -->
+        <div class="container-fluid">
+          <ul class="nav navbar-nav">
+            <li><a href="#/home/All/">All Categories</a></li>
+            <li><a href="#/home/Apparel/">Apparel</a>
+            <li><a href="#/home/Dorm%20Items/">Dorm Items</a>
+            <li><a href="#/home/Electronics/">Electronics</a>
+            <li><a href="#/home/Food%20and%20Drinks/">Food and Drinks</a>
+            <li><a href="#/home/Furniture/">Furniture</a>
+            <li><a href="#/home/Textbooks/">Textbooks</a>
+            <li><a href="#/home/Tickets/">Tickets</a>
+            <li><a href="#/home/Transportation/">Transportation</a>
+            <li><a href="#/home/Other/">Apparel</a>
+          </ul>
+        </div>
+      </nav>
+
       <div>
         <a class="btn btn-primary col-md-offset-10" ng-click="backbutton()">Back to User Page</a>
       </div>
       <div class="text-center">
-        <h2>Edit My Profile</h2>
+        <h2 style="margin-top: 80px">Edit My Profile</h2>
       </div>
       <div ng-show="error" class="alert alert-danger row">
         <span>{{ error.message }}</span>
       </div>
       <form ng-submit="editUser()" class="col-md-4 col-md-offset-4">
-      <h2 class="text" style="margin-bottom:20px;"> Netid: {{user.net_id}} </h3>
+      <h3 class="text-center" style="margin-bottom:20px;"> NetID: {{user.net_id}} </h3>
         <div class="form-group">
           <input type="text"
           class="form-control"
@@ -508,7 +968,7 @@
           ng-model="user.lastName"></input>
         </div>
         <div class="center-block">
-          <button ng-click="editUser()" class="text-center btn btn-primary center-block">Make Edits</button>
+          <button ng-click="editUser()" class="text-center btn btn-primary center-block">Save Changes</button>
         </div>
       </form>
     </script>
@@ -516,9 +976,76 @@
 <!-- ________________ SET NOTIFICATIONS PAGE ____________________ -->
 
     <script type="text/ng-template" id="/setNotifications.html">
-      <div>
-        <a class="btn btn-primary col-md-offset-10" ng-click="backbutton()">Back to User Page</a>
-      </div>
+
+      <!-- NAV BAR -->
+      <!-- code source: https: //getbootstrap.com/components/#navbar-forms -->
+      <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+          <div class="navbar-form navbar-left btn-group" role="group" aria-label="...">
+            <a class="btn btn-info navbar-btn" href="#/home/">Home</a>
+          </div>
+
+          <!-- Search bar and search button -->
+        <form ng-submit="search()" class="navbar-form navbar-left" role="search">
+          <ul class="nav navbar-left">
+            <div class="navbar-form">
+               <select name="cat" class="form-control" ng-model="cat">
+                  <option value="All">All Categories</option>
+                  <option value="Apparel">Apparel</option>
+                  <option value="Dorm Items">Dorm Items</option>
+                  <option value="Electronics">Electronics</option>
+                  <option value="Food and Drinks">Food and Drinks</option>
+                  <option value="Furniture">Furniture</option>
+                  <option value="Textbooks">Textbooks</option>
+                  <option value="Tickets">Tickets</option>
+                  <option value="Transportation">Transportation</option>
+                  <option value="Other">Other</option>
+                </select>
+            </div>
+          </ul>
+          <div class="navbar-form navbar-left">
+            <input type="text" class="form-control" placeholder="Search for ..." ng-model="q"></input>
+          </div>
+          <button type="submit" class="btn btn-info navbar-btn">Search</button>
+        </form>
+
+          <!-- Sort the products -->
+          <div class="navbar-form navbar-left">
+           <select name="sorting" class="navbar-form form-control" ng-model="sorting" placeholder="Sorting order">
+              <option value="" selected="selected" disabled>Sort by ...</option>
+              <option value=price>Price: low to high</option>
+              <option value=-price>Price: high to low</option>
+              <option value=-date>Date: new to old</option>
+              <option value=date>Date: old to new</option>
+            </select>
+          </div>
+
+          <!-- Button-group -->
+          <div class="navbar-form navbar-right btn-group" role="group" aria-label="...">
+            <a class="btn btn-info navbar-btn" href="#/editUser/{{user._id}}">Edit My Profile</a>
+            <a class="btn btn-info navbar-btn" href="#/addproduct">Add Product</a>
+            <button ng-click="logOut()" class="btn btn-info navbar-btn">Log Out</button>
+          </div>
+        </div>
+
+        <!-- Category Buttons -->
+        <div class="container-fluid">
+          <ul class="nav navbar-nav">
+            <li><a href="#/home/All/">All Categories</a></li>
+            <li><a href="#/home/Apparel/">Apparel</a>
+            <li><a href="#/home/Dorm%20Items/">Dorm Items</a>
+            <li><a href="#/home/Electronics/">Electronics</a>
+            <li><a href="#/home/Food%20and%20Drinks/">Food and Drinks</a>
+            <li><a href="#/home/Furniture/">Furniture</a>
+            <li><a href="#/home/Textbooks/">Textbooks</a>
+            <li><a href="#/home/Tickets/">Tickets</a>
+            <li><a href="#/home/Transportation/">Transportation</a>
+            <li><a href="#/home/Other/">Apparel</a>
+          </ul>
+        </div>
+      </nav>
+
+
       <div class="text-center">
         <h2>Set My Notifications</h2>
       </div>
@@ -526,7 +1053,7 @@
         <span>{{ error.message }}</span>
       </div>
       <form class="col-md-4 col-md-offset-4">
-      <h2 class="text" style="margin-bottom:20px;"> Netid: {{user.net_id}} </h3>
+      <h2 class="text-center" style="margin-bottom:20px;"> NetID: {{user.net_id}} </h3>
           <div ng-repeat="notification in user.notifications">
             <p style="margin-top: 5px">{{notification}}
             <span class="glyphicon glyphicon-remove"
@@ -550,7 +1077,7 @@
     <!-- ________________ WELCOME PAGE ____________________ -->
     <script type="text/ng-template" id="/welcome.html">
       <div class="text-center">
-        <h2>Welcome to TigerMart</h2>
+        <h2>Welcome to TigerMart!</h2>
       </div>
       <div ng-show="error" class="alert alert-danger row col-md-4 col-md-offset-4">
         <span>
@@ -564,9 +1091,9 @@
         <h4 class="text-center" style="margin-top: 20px">Register now to start using TigerMart</h4>
         <button class="btn btn-success center-block" style="margin-top: 20px; margin-bottom: 20px" onclick="location.href='#/register'">Register</button>
       </div>
-      <div class="panel panel-default form-group col-md-3 col-md-offset-2" style="margin-top: 30px">
+      <div class="panel panel-default form-group col-md-4 col-md-offset-1" style="margin-top: 30px">
         <h3 class="text-center">Are you a returning user?</h3>
-        <h4 class="text-center">Enter your NetID</h4>
+        <h4 class="text-center">Enter your NetID & password to login</h4>
         <form ng-submit= "logIn()">
           <div class="form-group">
             <input type="text"
@@ -592,7 +1119,7 @@
       </div>
 
       <form ng-submit="register()" class="col-md-4 col-md-offset-4">
-        <h3 class="text-center" style="margin-bottom:20px;">Register by filling out the following form</h3>
+        <h3 class="text-center" style="margin-bottom:20px;">Register as a new user</h3>
         <div ng-show="error" class="alert alert-danger row">
           <span>
             <center>
