@@ -394,7 +394,7 @@ function($scope, $state, products, auth){
   $scope.search = function(){
     console.log(auth.currentUser());
     if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
-    products.search($scope.cat, $scope.q);
+    $state.go('home', {category: $scope.cat, query: $scope.q});
   };
 
   $scope.logOut = function(){
