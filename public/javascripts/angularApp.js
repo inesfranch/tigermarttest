@@ -303,8 +303,8 @@ app.factory('auth', ['$http', '$window', function($http, $window) {
     }
   };
   auth.isVerified = function(){
-    var token = auth.getToken();
-    return token.verified;
+    var user = auth.currentUser();
+    return user.verified;
   }
   auth.currentUser = function() {
     if (auth.isLoggedIn()) {
@@ -984,7 +984,7 @@ app.controller('VerifyCtrl', [
       auth.verify($scope.code, $scope.user).error(function(error){
         $scope.error = error;
       }).then(function(){
-            $state.go('home', {category: "All", query: ""});
+        $state.go('home', {category: "All", query: ""});
       });
     }
   }]);
