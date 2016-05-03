@@ -248,7 +248,7 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
 
   o.changeProductAvail = function(id) {
     return $http.put('/products/changeAvail/' + id).success(function(data){
-      console.log(data); 
+      //console.log(data); 
       $http.get('/products?cat=All').success(function(data){
         angular.copy(data, o.products);
       });
@@ -283,8 +283,14 @@ app.factory('auth', ['$http', '$window', function($http, $window) {
   auth.isLoggedIn = function(){
     var token = auth.getToken();
     if (token){
-      var payload = JSON.parse($window.atob(token.split('.')[1]));
-      return payload.exp > Date.now() / 1000;
+      try {
+        var payload = JSON.parse($window.atob(token.split('.')[1]));
+        return payload.exp > Date.now() / 1000;
+      }
+      catch (err){
+        $window.localStorage.removeItem('tigermart-token');
+        return false;
+      }
     } else {
       return false;
     }
@@ -426,7 +432,7 @@ function($scope, products, product, $state, auth){
     var b = ($scope.user.net_id == product.userid.net_id);
     console.log(b);
     return b;
-  }
+  };
 
   $scope.search = function(){
     console.log(auth.currentUser());
@@ -545,16 +551,16 @@ function($scope, products, $state, auth){
   if (!auth.isVerified()) {$state.go('verify');}
   $scope.user = auth.currentUser();
   user = $scope.user;
-  console.log($scope.user);
+  //console.log($scope.user);
   
-  console.log(user);
+  //console.log(user);
 
   if($state.params.id != $scope.user._id) {
     $state.go('home', {category: "All", query: ""});
   } 
 
   $scope.search = function(){
-  console.log(auth.currentUser());
+  //console.log(auth.currentUser());
   if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
   $state.go('home', {category: $scope.cat, query: $scope.q});
   //products.search($scope.q);
@@ -567,13 +573,13 @@ function($scope, products, $state, auth){
   }; */
 
   //console.log(user.posted[0].title);
-
-  /*var statepref = JSON.parse(sessionStorage.getItem('state'));
+  //sessionStorage.clear();
+  var statepref = JSON.parse(sessionStorage.getItem('state'));
   var categorypref = JSON.parse(sessionStorage.getItem('category'));
-  var sortpref = JSON.parse(sessionStorage.getItem('sortorder'));*/
+  var sortpref = JSON.parse(sessionStorage.getItem('sortorder'));
 
 
-  /*if (!statepref) {*/
+
 
   $scope.data = { // for the navbar
     availableOptions: [
@@ -590,24 +596,19 @@ function($scope, products, $state, auth){
     ],
     selectedOption: {id: '1', name: 'All', value: ''}
   };
-
-    $scope.data2 = { // for the user filter
-      availableOptions: [
-        {id: '1', name: 'Active Posts', value: true},
-        {id: '2', name: 'Sold Posts', value: false}
-      ],
-      selectedOption: {id: '1', name: 'Active Posts', value: true}
-    };
-  /*}
-  else {
-    $scope.data = {
-      availableOptions: [
-        {id: '1', name: 'Active Posts', value: true},
-        {id: '2', name: 'Sold Posts', value: false}
-      ],
-      selectedOption: {id: '1', name: 'Active Posts', value: true}
-    };
-  }*/
+  //if (!statepref) {
+  $scope.data2 = { // for the user filter
+    availableOptions: [
+      {id: '1', name: 'Active Posts', value: true},
+      {id: '2', name: 'Sold Posts', value: false}
+    ],
+    selectedOption: {id: '1', name: 'Active Posts', value: true}
+  };
+  if(statepref) {
+    console.log(statepref);
+    $scope.data2.selectedOption = statepref;
+    console.log($scope.data2);
+  }
 
   $scope.data3 = { // for the user filter
     availableOptions: [
@@ -624,7 +625,9 @@ function($scope, products, $state, auth){
     ],
     selectedOption: {id: '1', name: 'All', value: ''}
   };
-
+  if (categorypref) {
+    $scope.data3.selectedOption = categorypref;
+  }
   $scope.data4 = { // for the user filter
     availableOptions: [
       {id: '1', name: 'Price: low to high', value: "price"},
@@ -634,20 +637,23 @@ function($scope, products, $state, auth){
     ],
     selectedOption: {id: '4', name: 'Date: old to new', value: "date"}
   };
-
+  if (sortpref) {
+    $scope.data4.selectedOption = sortpref;
+  }
   $scope.changeProductAvailability = function(id){
-    /*sessionStorage.setItem('state', $scope.data.selectedOption);
-    sessionStorage.setItem('category', $scope.data2.selectedOption);
-    sessionStorage.setItem('sortorder', $scope.data3.selectedOption);*/
+    console.log($scope.data2.selectedOption);
+    sessionStorage.setItem('state', JSON.stringify($scope.data2.selectedOption));
+    sessionStorage.setItem('category', JSON.stringify($scope.data3.selectedOption));
+    sessionStorage.setItem('sortorder', JSON.stringify($scope.data4.selectedOption));
     products.changeProductAvail(id).then(function(){
       $state.go($state.current, {}, {reload: true}); //second parameter is for $stateParams
     });
   };
 
   $scope.deleteProduct = function(productID, userID){
-    /*sessionStorage.setItem('state', $scope.data.selectedOption);
-    sessionStorage.setItem('category', $scope.data2.selectedOption);
-    sessionStorage.setItem('sortorder', $scope.data3.selectedOption);*/
+    sessionStorage.setItem('state', JSON.stringify($scope.data2.selectedOption));
+    sessionStorage.setItem('category', JSON.stringify($scope.data3.selectedOption));
+    sessionStorage.setItem('sortorder', JSON.stringify($scope.data4.selectedOption));
     var c = confirm('Are you sure you want to delete this product? This action is irreversible');
     if (c == true) {
       products.delProduct(productID, userID).then(function(){
@@ -657,6 +663,10 @@ function($scope, products, $state, auth){
       $state.go($state.current, {}, {reload: false});
     }
     
+  };
+  $scope.logOut = function(){
+    auth.logOut();
+    $state.go('welcome');
   };
 
 }]);
@@ -718,17 +728,13 @@ function($scope, products, $state, auth, user2){
     console.log(auth.currentUser());
     if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
     $state.go('home', {category: $scope.cat, query: $scope.q});
-<<<<<<< HEAD
     console.log("x");
-  }
-=======
   };
 
   $scope.logOut = function(){
     auth.logOut();
     $state.go('welcome');
   };
->>>>>>> 14ec7dd5e246bade0a91992c30bd3e35253ff29b
 
 }]);
 
@@ -762,16 +768,12 @@ function($scope, products, $state, auth){
     console.log(auth.currentUser());
     if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
     $state.go('home', {category: $scope.cat, query: $scope.q});
-<<<<<<< HEAD
     console.log("x");
-  }
-=======
   };
   $scope.logOut = function(){
     auth.logOut();
     $state.go('welcome');
   };
->>>>>>> 14ec7dd5e246bade0a91992c30bd3e35253ff29b
 
 }]);
 
