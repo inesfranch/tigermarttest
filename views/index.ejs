@@ -21,9 +21,8 @@
       </div>
     </div>
 
-    <!-- ________________ HOME PAGE (SEARCH FOR PRODUCTS) ____________________ -->
+    <!-- ________________ HOME PAGE (SEARCH FOR PRODUCTS) _______________ -->
     <script type="text/ng-template" id="/home.html">
-    
     <!-- NAV BAR -->
     <!-- code source: https: //getbootstrap.com/components/#navbar-forms -->
 
@@ -128,19 +127,19 @@
       <h1>Welcome to TigerMart, {{user.firstName}}!</h1>
     </div>
 
-      <div class="container col-md-12" style="margin-top: 50px"> <!-- Code modified from: http://bootsnipp.com/snippets/49An-->
+      <div class="container col-md-12" style="margin-top: 25px"> <!-- Code modified from: http://bootsnipp.com/snippets/49An-->
 
 
         <div id="products-view" class="row list-group">
           <div ng-repeat="product in products | orderBy:sorting | filter:{category: data.selectedOption.value}">
             <div class="item  col-md-4">
-              <div class="thumbnail">
+              <div class="thumbnail" style="background-color: rgba(255, 255, 255, .7)">
               <a href="#/products/{{product._id}}">
-                <img class="group list-group-image" ng-show=product.pictures ng-src="data:image/png;base64,{{product.pictures}}" alt=""/>
+                <img class="group list-group-image" ng-show=product.pictures ng-src="data:image/png;base64,{{product.pictures}}" alt=""/ style="margin-top: 8px">
                 <img ng-show=!product.pictures src="/images/default.jpg"/>
               </a>
                 <div class="caption">
-                  <h4 class="group inner list-group-item-heading">
+                  <h4 class="group inner list-group-item-heading" style="margin-top: 8px">
                     {{product.title}}</h4>
                   <div class="row">
                     <div class="col-md-6">
@@ -166,7 +165,6 @@
         </center>
 
       </div>
-
     </script>
 
     <!-- ________________ ADD PRODUCT PAGE ____________________ -->
@@ -239,11 +237,8 @@
         </div>
       </nav>
 
-      <div style="margin-top: 20px">
-        <a class="btn btn-primary col-md-offset-10" href="#/home/">Back to Home</a>
-      </div>
-      <form style="margin-top: 30px;" class="col-md-6 col-md-offset-3">
-        <h3>Add a new product</h3>
+      <form style="margin-top: 70px;" class="col-md-6 col-md-offset-3">
+        <h2 class="text-center">Add a new product</h2>
         <div ng-show="error" class="alert alert-danger row">
           <span>
             <center>
@@ -405,19 +400,16 @@
         </div>
       </nav>
 
-      <div>
-        <a class="btn btn-primary col-md-offset-10" href="#/home/">Back to Home</a>
-      </div>
-      <div class="page-header col-md-offset-1">
-        <h3>{{product.title}}</h3>
+      <div class="page-header col-md-offset-1" style="margin-top:90px">
+        <h2>{{product.title}}</h2>
       </div>
       <div id="products-view" class="row list-group">
         <div>
-          <div class="thumbnail col-md-4 col-md-offset-1" style="margin-top: 10px">
+          <div class="thumbnail col-md-4 col-md-offset-1" style="background-color: rgba(255, 255, 255, .7)">
             <img class="group list-group-image" ng-show=product.pictures ng-src="data:image/png;base64,{{product.pictures}}" alt="" />
             <img ng-show=!product.pictures src="/images/default.jpg" />
           </div>
-          <div class="thumbnail col-md-4 col-md-offset-1" style="margin-top: 10px">
+          <div class="thumbnail col-md-4 col-md-offset-1" style="background-color: rgba(255, 255, 255, .7)">
             <h4 class="group inner list-group-item-heading">
               {{product.title}} - ${{product.price}}
             </h4>
@@ -516,11 +508,8 @@
         </div>
       </nav>
 
-      <div>
-        <a class="btn btn-primary col-md-offset-10" ng-click="backbutton()">Back to User Page</a>
-      </div>
       <form style="margin-top: 30px;" class="col-md-6 col-md-offset-3">
-        <h3>Edit Your Product</h3>
+        <h2>Edit Your Product</h2>
         <div class="form-group">
           <label>Title:</label>
           <input type="text" class="form-control" ng-model="title"></input>
@@ -662,13 +651,7 @@
       </nav>
 
       <div>
-        <a class="btn btn-primary col-md-offset-10" href="#/home/">Back to Home</a>
-      </div>
-      <div>
-        <a class="btn btn-primary col-md-offset-10" style="margin-top: 10px" href="#/editUser/{{user._id}}">Edit My Profile</a>
-      </div>
-      <div>
-        <a class="btn btn-primary col-md-offset-10" style="margin-top: 10px" href="#/setNotifications/{{user._id}}">Set My Notifications</a>
+        <a class="btn btn-primary col-md-offset-10" style="margin-top: 90px" href="#/setNotifications/{{user._id}}">Set My Notifications</a>
       </div>
       <div class="text-center">
         <h2>{{user.firstName}} {{user.lastName}}</h2>
@@ -702,10 +685,10 @@
           <div ng-repeat="product in user.posted | filter:{active: data.selectedOption.value} | filter:{category: data2.selectedOption.value} | orderBy:data3.selectedOption.value">
             <div class="item  col-md-4">
               <div class="thumbnail">
-                <img class="group list-group-image" ng-show=product.pictures ng-src="data:image/png;base64,{{product.pictures}}" alt="" />
+                <img class="group list-group-image" ng-show=product.pictures ng-src="data:image/png;base64,{{product.pictures}}" alt="" style="margin-top: 8px"/>
                 <img ng-show=!product.pictures src="/images/default.jpg" />
                 <div class="caption">
-                  <h4 class="group inner list-group-item-heading">
+                  <h4 class="group inner list-group-item-heading" style="margin-top: 8px">
                     {{product.title}}</h4>
                   <div class="row">
                     <div class="col-md-6">
@@ -808,9 +791,6 @@
       </nav>
 
       <div>
-        <a class="btn btn-primary col-md-offset-10" href="#/home/">Back to Home</a>
-      </div>
-      <div>
         <a class="btn btn-primary col-md-offset-10" href="https://tigerbook.herokuapp.com/student/{{user2.net_id}}" style="margin-top: 10px">See them on TigerBook</a>
       </div>
       <div class="text-center">
@@ -845,10 +825,10 @@
           <div ng-repeat="product in user2.posted | filter:{active: data.selectedOption.value} | filter:{category: data2.selectedOption.value} | orderBy:data3.selectedOption.value">
             <div class="item  col-md-4">
               <div class="thumbnail">
-                <img class="group list-group-image" ng-show=product.pictures ng-src="data:image/png;base64,{{product.pictures}}" alt="" />
+                <img class="group list-group-image" ng-show=product.pictures ng-src="data:image/png;base64,{{product.pictures}}" alt="" style="margin-top: 8px"/>
                 <img ng-show=!product.pictures src="/images/default.jpg" />
                 <div class="caption">
-                  <h4 class="group inner list-group-item-heading">
+                  <h4 class="group inner list-group-item-heading" style="margin-top: 8px">
                     {{product.title}}</h4>
                   <div class="row">
                     <div class="col-md-6">
@@ -938,9 +918,6 @@
         </div>
       </nav>
 
-      <div>
-        <a class="btn btn-primary col-md-offset-10" ng-click="backbutton()">Back to User Page</a>
-      </div>
       <div class="text-center">
         <h2 style="margin-top: 80px">Edit My Profile</h2>
       </div>
@@ -1077,7 +1054,7 @@
     <!-- ________________ WELCOME PAGE ____________________ -->
     <script type="text/ng-template" id="/welcome.html">
       <div class="text-center">
-        <h2>Welcome to TigerMart!</h2>
+        <h1>Welcome to TigerMart!</h1>
       </div>
       <div ng-show="error" class="alert alert-danger row col-md-4 col-md-offset-4">
         <span>
@@ -1171,7 +1148,6 @@
       <div class="page-header col-md-6 col-md-offset-3 text-center">
         <h1>TigerMart</h1>
       </div>
-
 
       <form ng-submit="verify()" class="col-md-4 col-md-offset-4">
         <h3 class="text-center" style="margin-bottom:20px;">Please enter the verification code sent to your email it should be a four digit number</h3>
