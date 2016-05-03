@@ -87,9 +87,9 @@ app.config([
       templateUrl: '/welcome.html',
       controller: 'AuthCtrl',
       onEnter: ['$state', 'auth', function($state, auth){
-        //if(auth.isLoggedIn()){
-        //  $state.go('home', {category: "All", query: ""});
-        //}
+        if(auth.isLoggedIn()){
+          $state.go('home', {category: "All", query: ""});
+        }
       }]
     });
     $stateProvider
@@ -406,7 +406,7 @@ function($scope, $state, products, auth){
   $scope.notification = function() {
     sessionStorage.setItem('notification', $scope.q);
     $state.go('setNotifications', { id: $scope.user._id});
-  };
+  }
 
 }]);
 
@@ -441,19 +441,14 @@ function($scope, products, product, $state, auth){
     var b = ($scope.user.net_id == product.userid.net_id);
     console.log(b);
     return b;
-  };
-
-  $scope.logOut = function(){
-    auth.logOut();
-    $state.go('welcome');
-  };
+  }
 
   $scope.search = function(){
     console.log(auth.currentUser());
     if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
     $state.go('home', {category: $scope.cat, query: $scope.q});
     console.log("x");
-  };
+  }
   /*$scope.linkToCat = function(cat){
     products.getAll(cat).error(function(error){
       $scope.error = error;
@@ -504,7 +499,7 @@ $scope.search = function(){
   if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
   $state.go('home', {category: $scope.cat, query: $scope.q});
   console.log("x");
-};
+}
 
 $scope.editProduct = function(dataUrl1){
     if(!$scope.title || $scope.title === '') { return; }
@@ -544,11 +539,6 @@ $scope.editProduct = function(dataUrl1){
 
   $scope.backbutton = function(){
     $state.go('users', {id: $scope.user._id});
-  };
-
-  $scope.logOut = function(){
-    auth.logOut();
-    $state.go('welcome');
   };
 
 }]);
@@ -683,11 +673,6 @@ function($scope, products, $state, auth){
     
   };
 
-  $scope.logOut = function(){
-    auth.logOut();
-    $state.go('welcome');
-  };
-
 }]);
 
 // OTHER USER CONTROLLER
@@ -748,12 +733,7 @@ function($scope, products, $state, auth, user2){
     if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
     $state.go('home', {category: $scope.cat, query: $scope.q});
     console.log("x");
-  };
-
-  $scope.logOut = function(){
-    auth.logOut();
-    $state.go('welcome');
-  };
+  }
 
 }]);
 
@@ -790,11 +770,7 @@ function($scope, products, $state, auth){
     if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
     $state.go('home', {category: $scope.cat, query: $scope.q});
     console.log("x");
-  };
-  $scope.logOut = function(){
-    auth.logOut();
-    $state.go('welcome');
-  };
+  }
 
 }]);
 
@@ -841,12 +817,7 @@ app.controller('SetNotificationsCtrl', [
       if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
       $state.go('home', {category: $scope.cat, query: $scope.q});
       console.log("x");
-    };
-
-    $scope.logOut = function(){
-    auth.logOut();
-    $state.go('welcome');
-  };
+    }
 
   }]);
 
@@ -891,7 +862,7 @@ function($scope, products, $state, auth){
     if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
     $state.go('home', {category: $scope.cat, query: $scope.q});
     console.log("x");
-  };
+  }
 
   $scope.addProduct = function(dataUrl1){
 
@@ -944,11 +915,6 @@ function($scope, products, $state, auth){
     $scope.picFile1 = '';
     //$scope.tags = '';
     */
-  };
-
-  $scope.logOut = function(){
-    auth.logOut();
-    $state.go('welcome');
   };
 }]);
 
