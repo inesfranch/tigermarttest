@@ -952,7 +952,7 @@ app.controller('VerifyCtrl', [
   'auth',
   '$state',
   function($scope, auth, $state) {
-    $window.localStorage.removeItem('tigermart-token');
+
     if (!auth.isLoggedIn()) {$state.go('welcome');}
     $scope.user = auth.currentUser();
     if (auth.isVerified()){ $state.go('home', {category: "All", query: ""}); }
