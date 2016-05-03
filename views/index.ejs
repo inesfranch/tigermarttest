@@ -148,11 +148,14 @@
           </div>  
         </div>
         <center>
-        <div ng-show="q">
-          <h3>Didn't find what you were looking for?</h3>
-          <p>Set a notification for {{q}} and we'll alert you when another {{q}} is posted</p>
-          <a ng-click="notification()">Set Notification For This Search</h3>
-        </div>
+          <div class="panel panel-default" ng-show="q" style="background-color: rgba(0, 0, 0, 0.6); border-color: rgba(0, 0, 0, 0.6)">
+            <h3 style="color: white">Didn't find what you were looking for?</h3>
+            <p style="color: white">Set a notification for {{q}} and we'll alert you when another {{q}} is posted</p>
+            <a style="color: #00B7FF; text-decoration: underline" ng-click="notification()">Set Notification For This Search</h3>
+            <br>
+            <br>
+            <br>
+          </div>
         </center>
 
       </div>
@@ -315,7 +318,7 @@
         </div>-->
         
         <div class="center-block">
-          <button ng-click="addProduct(croppedDataUrl1)" style="margin-top: 10px" class="text-center btn btn-primary center-block">Post product</button>
+          <button ng-click="addProduct(croppedDataUrl1)" style="margin-top: 10px" class="text-center btn btn-info center-block">Post product</button>
         </div>
       </form>
     </script>
@@ -414,7 +417,7 @@
               Tags: {{product.tags}}
             </p>-->
             <p style="margin: 8px">
-              Posted by: <a ng-click=loadUserPage(product.userid._id)>{{product.userid.firstName}} {{product.userid.lastName}}</a>
+              Posted by: <a ng-click=loadUserPage(product.userid._id) style="text-decoration: underline">{{product.userid.firstName}} {{product.userid.lastName}}</a>
             </p>
             <p style="margin: 8px">
               Posted on: {{product.month}}/{{product.day}}/{{product.year}}
@@ -565,7 +568,7 @@
         </div>-->
 
         <div class="center-block">
-          <button ng-click="editProduct(croppedDataUrl1)" class="text-center btn btn-primary center-block">Save product</button>
+          <button ng-click="editProduct(croppedDataUrl1)" class="text-center btn btn-info center-block">Save product</button>
         </div>
       </form>
     </script>
@@ -642,7 +645,7 @@
       </nav>
 
       <div>
-        <a class="btn btn-primary col-md-offset-10" style="margin-top: 90px" href="#/setNotifications/{{user._id}}">Set My Notifications</a>
+        <a class="btn btn-info col-md-offset-10" style="margin-top: 90px" href="#/setNotifications/{{user._id}}">Set My Notifications</a>
       </div>
       <div class="text-center">
         <h2>{{user.firstName}} {{user.lastName}}</h2>
@@ -782,7 +785,7 @@
       </nav>
 
       <div>
-        <a class="btn btn-primary col-md-offset-10" href="https://tigerbook.herokuapp.com/student/{{user2.net_id}}" style="margin-top: 90px">See them on TigerBook</a>
+        <a class="btn btn-info col-md-offset-10" href="https://tigerbook.herokuapp.com/student/{{user2.net_id}}" style="margin-top: 90px">See them on TigerBook</a>
       </div>
       <div class="text-center">
         <h2>{{user2.firstName}} {{user2.lastName}}</h2>
@@ -936,7 +939,7 @@
           ng-model="user.lastName"></input>
         </div>
         <div class="center-block">
-          <button ng-click="editUser()" class="text-center btn btn-primary center-block">Save Changes</button>
+          <button ng-click="editUser()" class="text-center btn btn-info center-block">Save Changes</button>
         </div>
       </form>
     </script>
@@ -1023,7 +1026,7 @@
       <form class="col-md-4 col-md-offset-4">
       <h2 class="text-center" style="margin-bottom:20px;"> NetID: {{user.net_id}} </h3>
           <div ng-repeat="notification in user.notifications">
-            <p style="margin-top: 5px">{{notification}}
+            <p style="margin-top: 5px; color: white">{{notification}}
             <span class="glyphicon glyphicon-remove"
             ng-click="deleteNotification(notification)"></span> 
             </p>
@@ -1037,7 +1040,7 @@
           ng-model="notification"></input>
         </div>
         <div class="center-block">
-          <button ng-click="setNotifications()" href='#/setNotifications/{{user._id}}'class="text-center btn btn-primary center-block">Save!</button>
+          <button ng-click="setNotifications()" href='#/setNotifications/{{user._id}}'class="text-center btn btn-info center-block">Save!</button>
         </div>
       </form>
     </script>
@@ -1054,13 +1057,9 @@
           </center>
         </span>
       </div>  
-      <div class="panel panel-default col-md-3 col-md-offset-2" style="margin-top: 30px">
-        <h3 class="text-center">Are you a new user?</h3>
-        <h4 class="text-center" style="margin-top: 20px">Register now to start using TigerMart</h4>
-        <button class="btn btn-success center-block" style="margin-top: 20px; margin-bottom: 20px" onclick="location.href='#/register'">Register</button>
-      </div>
-      <div class="panel panel-default form-group col-md-4 col-md-offset-1" style="margin-top: 30px">
-        <h3 class="text-center">Are you a returning user?</h3>
+      <center>
+      <div class="panel panel-default form-group col-md-4 col-md-offset-4" style="margin-top: 30px">
+        <h3 class="text-center" style="color: black">Are you a returning user?</h3>
         <h4 class="text-center">Enter your NetID & password to login</h4>
         <form ng-submit= "logIn()">
           <div class="form-group">
@@ -1075,9 +1074,17 @@
             placeholder="Password"
             ng-model="user.password"></input>
           </div>
-          <button type="submit" class="btn btn-primary center-block">Log In</button>
+          <button type="submit" class="btn btn-info center-block">Log In</button>
         </form>
       </div>
+
+      <div class="panel panel-default col-md-4 col-md-offset-4" style="margin-top: 20px">
+        <h3 class="text-center" style="color: black">Are you a new user?</h3>
+        <h4 class="text-center" style="margin-top: 20px">Register now to start using TigerMart</h4>
+        <button class="btn btn-success center-block" style="margin-top: 20px; margin-bottom: 20px" onclick="location.href='#/register'">Register</button>
+      </div>
+      
+      </center>
     </script>
 
     <!-- ________________ REGISTRATION PAGE ____________________ -->
@@ -1130,7 +1137,7 @@
           placeholder="Last Name"
           ng-model="user.lastName"></input>
         </div>
-        <button type="submit" class="btn btn-primary center-block">Register</button>
+        <button type="submit" class="btn btn-info center-block">Register</button>
       </form>
     </script>
 
@@ -1156,9 +1163,9 @@
           placeholder="0000"
           ng-model="code"></input>
         </div>
-        <button type="submit" class="btn btn-primary center-block">Verify</button>
+        <button type="submit" class="btn btn-info center-block">Verify</button>
       </form>
-      <button type="submit" class="btn btn-primary center-block" ng-click="logOut()">Logout</button>
+      <button type="submit" class="btn btn-info center-block" ng-click="logOut()">Logout</button>
     </script>    
 
   </body>

@@ -342,10 +342,13 @@ app.controller('MainCtrl', [
 '$state',
 'products',
 'auth',
-function($scope, $state, products, auth){
+'$stateParams',
+function($scope, $state, products, auth, $stateParams){
 
   $scope.products = products.products;
   $scope.cat = "All";
+  console.log($stateParams.query);
+  $scope.q = $stateParams.query;
 
   if (!auth.isLoggedIn()) {$state.go('welcome');}
   if (!auth.isVerified()) {$state.go('verify');}
