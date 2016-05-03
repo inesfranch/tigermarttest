@@ -370,6 +370,7 @@ router.post('/getUser', function(req, res, next){
 	passport.authenticate('local', function(err, user, info){
 		if (err) {return next(err);}
 		if (user) {
+			console.log(user);
 			return res.json({token: user.generateJWT()});
 		} else {
 			return res.status(401).json(info);
