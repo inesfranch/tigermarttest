@@ -682,7 +682,7 @@
         </div>
 
         <div id="products-view" class="row list-group">
-          <div ng-repeat="product in user.posted | filter:{active: data.selectedOption.value} | filter:{category: data2.selectedOption.value} | orderBy:data3.selectedOption.value">
+          <div ng-repeat="product in user.posted | filter:{active: data2.selectedOption.value} | filter:{category: data3.selectedOption.value} | orderBy:data4.selectedOption.value">
             <div class="item  col-md-4">
               <div class="thumbnail">
                 <img class="group list-group-image" ng-show=product.pictures ng-src="data:image/png;base64,{{product.pictures}}" alt="" style="margin-top: 8px"/>

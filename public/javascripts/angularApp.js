@@ -13,9 +13,6 @@ app.config([
       controller: 'MainCtrl',
       resolve: {
         postPromise: ['$stateParams', 'products', function($stateParams, products){
-          console.log("Opening Home Page...");
-          console.log($stateParams.category);
-          console.log($stateParams.query);
           return products.search($stateParams.category, $stateParams.query);
         }]
       }
@@ -163,13 +160,10 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
     });
   };
   o.search = function(cat, q) {
-    console.log("Search Function entered...");
     if (q == null) q = "";
     else q = q.toString();
-    console.log("Calling HTTP Search req...");
     return $http.get("/search?cat="+cat+"&q="+q).success(function(data) {
       angular.copy(data, o.products);
-      console.log("HTTP Search req Returns");
     });
   };
   o.matchNotifications = function(product) {
@@ -196,6 +190,8 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
       var token = res.data.token;
       window.localStorage['tigermart-token'] = token;
       var user = JSON.parse($window.atob(token.split('.')[1]));
+      console.log(user.posted);
+      console.log(res.data);
       sessionStorage.setItem('user', JSON.stringify(res.data));
       return res.data;
     });
@@ -213,7 +209,6 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
   o.editProduct = function(product, id, user) {
     return $http.put('/products/' + id, product, user).success(function(data){
       console.log(data);
-      console.log("Product Edited...");
       $http.get('/products?cat=All').success(function(data){
         angular.copy(data, o.products);
       });
@@ -223,13 +218,9 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
   o.setNotifications= function(notification, user) {
     id = user._id.toString();
     notification = notification.toString();
-    console.log(id);
-    console.log(notification);
     return $http.put("/setNotifications/"+id+"?notification="+notification).success(function(data){
-      console.log(user.notifications);
       user.notifications.push(notification);
       auth.saveToken(data.token);
-      console.log(user.notifications);
       //sessionStorage.setItem('user', JSON.stringify(user));
       
       });
@@ -249,7 +240,6 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
     var description = product.description;
     var price = product.price;
     var id = product._id;
-    console.log("Send function called");
     var to = user.email;
     to = to.toString();
     subject = "A product you were looking for is now available!";
@@ -260,7 +250,6 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
   o.changeProductAvail = function(id) {
     return $http.put('/products/changeAvail/' + id).success(function(data){
       console.log(data); 
-      console.log("Product Availability changed...");
       $http.get('/products?cat=All').success(function(data){
         angular.copy(data, o.products);
       });
@@ -269,7 +258,6 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
   o.delProduct = function(productID, userID) {
     return $http.delete('/products/' + productID + '/' + userID).success(function(data){
       console.log(data);
-      console.log("Product Deleted...");
       $http.get('/products?cat=All').success(function(data){
         angular.copy(data, o.products);
       });
@@ -405,7 +393,7 @@ function($scope, $state, products, auth){
   $scope.notification = function() {
     sessionStorage.setItem('notification', $scope.q);
     $state.go('setNotifications', { id: $scope.user._id});
-  }
+  };
 
 }]);
 
@@ -436,18 +424,21 @@ function($scope, products, product, $state, auth){
     }
   };
   $scope.sameUser = function() {
-    console.log("hello friend");
     var b = ($scope.user.net_id == product.userid.net_id);
     console.log(b);
     return b;
-  }
+  };
+
+  $scope.logOut = function(){
+    auth.logOut();
+    $state.go('welcome');
+  };
 
   $scope.search = function(){
     console.log(auth.currentUser());
     if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
     $state.go('home', {category: $scope.cat, query: $scope.q});
-    console.log("x");
-  }
+  };
   /*$scope.linkToCat = function(cat){
     products.getAll(cat).error(function(error){
       $scope.error = error;
@@ -497,8 +488,7 @@ $scope.search = function(){
   console.log(auth.currentUser());
   if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
   $state.go('home', {category: $scope.cat, query: $scope.q});
-  console.log("x");
-}
+};
 
 $scope.editProduct = function(dataUrl1){
     if(!$scope.title || $scope.title === '') { return; }
@@ -540,6 +530,11 @@ $scope.editProduct = function(dataUrl1){
     $state.go('users', {id: $scope.user._id});
   };
 
+  $scope.logOut = function(){
+    auth.logOut();
+    $state.go('welcome');
+  };
+
 }]);
 
 // USER CONTROLLER
@@ -559,8 +554,9 @@ function($scope, products, $state, auth){
   $scope.user = auth.currentUser();
   user = $scope.user;
   
+  console.log(user);
+
   if($state.params.id != $scope.user._id) {
-    console.log("hello2");
     $state.go('home', {category: "All", query: ""});
   } 
 
@@ -568,7 +564,6 @@ function($scope, products, $state, auth){
   console.log(auth.currentUser());
   if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
   $state.go('home', {category: $scope.cat, query: $scope.q});
-  console.log("x");
   //products.search($scope.q);
   };
 
@@ -671,6 +666,11 @@ function($scope, products, $state, auth){
     
   };
 
+  $scope.logOut = function(){
+    auth.logOut();
+    $state.go('welcome');
+  };
+
 }]);
 
 // OTHER USER CONTROLLER
@@ -730,8 +730,12 @@ function($scope, products, $state, auth, user2){
     console.log(auth.currentUser());
     if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
     $state.go('home', {category: $scope.cat, query: $scope.q});
-    console.log("x");
-  }
+  };
+
+  $scope.logOut = function(){
+    auth.logOut();
+    $state.go('welcome');
+  };
 
 }]);
 
@@ -750,11 +754,9 @@ function($scope, products, $state, auth){
   $scope.cat = "All";
 
   $scope.editUser = function() {
-    console.log("hello");
     auth.editUser(user, user._id).error(function(error){
       $scope.error = error;
     }).success(function() { 
-      console.log("hello2");
       $state.go('users', {id: $scope.user._id}); 
     });
   };
@@ -767,8 +769,11 @@ function($scope, products, $state, auth){
     console.log(auth.currentUser());
     if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
     $state.go('home', {category: $scope.cat, query: $scope.q});
-    console.log("x");
-  }
+  };
+  $scope.logOut = function(){
+    auth.logOut();
+    $state.go('welcome');
+  };
 
 }]);
 
@@ -796,11 +801,9 @@ app.controller('SetNotificationsCtrl', [
     };
 
     $scope.setNotifications = function(){
-      console.log($scope.notification);
       products.setNotifications($scope.notification, $scope.user).error(function(error) {
         $scope.error = error;
       }).then(function() {
-        console.log($scope.user);
         $state.go($state.current, {}, {reload:true});
       });
       $scope.notification = '';
@@ -814,8 +817,12 @@ app.controller('SetNotificationsCtrl', [
       console.log(auth.currentUser());
       if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
       $state.go('home', {category: $scope.cat, query: $scope.q});
-      console.log("x");
-    }
+    };
+
+    $scope.logOut = function(){
+    auth.logOut();
+    $state.go('welcome');
+  };
 
   }]);
 
@@ -859,17 +866,13 @@ function($scope, products, $state, auth){
     console.log(auth.currentUser());
     if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
     $state.go('home', {category: $scope.cat, query: $scope.q});
-    console.log("x");
-  }
+  };
 
   $scope.addProduct = function(dataUrl1){
 
     var user = $scope.user;
 
     console.log($scope.title);
-
-    //console.log(document.getElementById("mySingleField").value);
-    //console.log($scope.tags);
 
     var picURL = dataUrl1.split("base64,")[1];
     if (!$scope.picFile1)
@@ -883,7 +886,6 @@ function($scope, products, $state, auth){
       description: $scope.description,
       price: $scope.price,
       pictures: picURL,
-      //tags: "tags",
       date: new Date(),
       month: ((new Date()).getMonth() + 1),
       day: (new Date()).getDate(),
@@ -898,47 +900,15 @@ function($scope, products, $state, auth){
       $state.go('home', {category: "All", query: ""});
 
     });
-    // ADD VALIDATIONS LATER!
-    /*products.create({
-      
-    }, user).error(function(error) {
-      $scope.error = error;
-    }).then(function() {
-      $state.go('home');
-    });
-    $scope.title = '';
-    $scope.category = '';
-    $scope.description = '';
-    $scope.price = '';
-    $scope.picFile1 = '';
-    //$scope.tags = '';
-    */
+  };
+
+  $scope.logOut = function(){
+    auth.logOut();
+    $state.go('welcome');
   };
 }]);
 
-/*app.controller('WelcomeCtrl', [
-'$scope',
-'$state',
-'products',
-function($scope, $state, products){
 
-  $scope.getUser = function() {
-    products.getUser($scope.user).error(function(error){
-      $scope.error = error;
-    }).then(function() {
-      $state.go('home');
-    });
-  };
-
-  $scope.register = function() {
-    products.register($scope.user).error(function(error) {
-      $scope.error = error;
-    }).then(function() {
-      $state.go('home');
-    });
-
-  };
-}]);*/
 
 app.controller('AuthCtrl', [
 '$scope',
@@ -965,7 +935,6 @@ function($scope, $state, auth){
       $scope.error = error;
       $scope.user.password = "";
     }).then(function(){
-      console.log("Logging in...");
       $state.go('home', {category: "All", query: ""});
     });
     
