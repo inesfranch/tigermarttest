@@ -445,6 +445,10 @@ function($scope, products, product, $state, auth){
       $scope.error = error;
     })
   };*/
+  $scope.logOut = function(){
+    auth.logOut();
+    $state.go('welcome');
+  };
 
 }]);
 
@@ -528,7 +532,10 @@ $scope.editProduct = function(dataUrl1){
     });
     
   };
-
+  $scope.logOut = function(){
+    auth.logOut();
+    $state.go('welcome');
+  };
   $scope.backbutton = function(){
     $state.go('users', {id: $scope.user._id});
   };
@@ -901,6 +908,10 @@ function($scope, products, $state, auth){
       $state.go('home', {category: "All", query: ""});
 
     });
+  };
+  $scope.logOut = function(){
+    auth.logOut();
+    $state.go('welcome');
   };
 }]);
 
