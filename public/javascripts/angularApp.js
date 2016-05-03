@@ -87,9 +87,9 @@ app.config([
       templateUrl: '/welcome.html',
       controller: 'AuthCtrl',
       onEnter: ['$state', 'auth', function($state, auth){
-        if(auth.isLoggedIn()){
-          $state.go('home', {category: "All", query: ""});
-        }
+        //if(auth.isLoggedIn()){
+        //  $state.go('home', {category: "All", query: ""});
+        //}
       }]
     });
     $stateProvider
@@ -148,6 +148,7 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
   };
   o.getUserProducts = function(userid) {
     return $http.get('/products?net_id='+userid.net_id).success(function(data){
+      console.log(userid);
       angular.copy(data, userid.posted);
     });
   };
@@ -196,7 +197,7 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
       var token = res.data.token;
       window.localStorage['tigermart-token'] = token;
       var user = JSON.parse($window.atob(token.split('.')[1]));
-      sessionStorage.setItem('user', JSON.stringify(res.data));
+      //sessionStorage.setItem('user', JSON.stringify(res.data));
       return res.data;
     });
   };
@@ -558,6 +559,7 @@ function($scope, products, $state, auth){
   if (!auth.isVerified()) {$state.go('verify');}
   $scope.user = auth.currentUser();
   user = $scope.user;
+  console.log($scope.user);
   
   if($state.params.id != $scope.user._id) {
     console.log("hello2");
@@ -976,6 +978,7 @@ app.controller('VerifyCtrl', [
   'auth',
   '$state',
   function($scope, auth, $state) {
+    $window.localStorage.removeItem('tigermart-token');
     if (!auth.isLoggedIn()) {$state.go('welcome');}
     $scope.user = auth.currentUser();
     if (auth.isVerified()){ $state.go('home', {category: "All", query: ""}); }
