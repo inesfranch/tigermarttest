@@ -1,12 +1,53 @@
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  background-image: url("/images/food_drinks.jpg");
+  /* background-color: rgba(255, 209, 163, 1); */ /* tangerine */
+  /* background-color: rgba(158, 207, 255, 1); */ /* light blue */
+  /* background-color: rgba(41, 187, 255, 1); */ /* bright blue */
+  /* background-image: url("/images/nassau_hall.png"); */
+  background-image: url("/images/wood7.jpg");
   background-attachment: fixed;
+  background-size: cover;
+  /*background-image: url("/images/blair_arch.jpg");
+  background-size: 110% 105%;
+  background-position: left top 110px;
+  background-attachment: fixed; */
+}
+
+body.home-page{
+  background-image: url("/images/food_drinks.jpg");
+}
+
+body.welcome{
+  background-image: url("/images/wood2.jpg");
 }
 
 a {
   color: #00B7FF;
+}
+
+h1 {
+  color: black;
+}
+
+h2 {
+  color: black;
+}
+
+h3 {
+  color: black;
+}
+
+p {
+  font-size: 16px;
+}
+
+.well{
+  background-color: rgba(255, 255, 255, .6);
+}
+
+.panel{
+  background-color: rgba(255, 255, 255, .6);
 }
 
 .cropArea {
