@@ -150,8 +150,8 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
     });
   };
   o.create = function(product, user) {
-    
-    return $http.post('/products/' + user._id, product/*, {
+    var body = { product: product, key : sessionStorage.getItem('loggedInKey') };
+    return $http.post('/products/' + user._id, body/*{
       headers: {Authorization: 'Bearer '+auth.getToken()}
     }*/).success(function(data){
       o.products.push(data);
@@ -206,7 +206,8 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
     });
   };
   o.editProduct = function(product, id, user) {
-    return $http.put('/products/' + id, product, user).success(function(data){
+    var body = {product: product, key: sessionStorage.getItem('loggedInKey') };
+    return $http.put('/products/' + id, body).success(function(data){
       console.log(data);
       $http.get('/products?cat=All').success(function(data){
         angular.copy(data, o.products);
@@ -217,7 +218,8 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
   o.setNotifications= function(notification, user) {
     id = user._id.toString();
     notification = notification.toString();
-    return $http.put("/setNotifications/"+id+"?notification="+notification).success(function(data){
+    var body = {key: sessionStorage.getItem('loggedInKey') };
+    return $http.put("/setNotifications/"+id+"?notification="+notification, body).success(function(data){
       user.notifications.push(notification);
       auth.saveToken(data.token);
       //sessionStorage.setItem('user', JSON.stringify(user));
@@ -227,7 +229,8 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
 
   o.delNotification = function(notification, user) {
     //var user = JSON.parse(sessionStorage.getItem('user'));
-    return $http.delete("/notifications/"+user._id+"?notification="+notification).success(function(data){
+    var body = {key: sessionStorage.getItem('loggedInKey') };
+    return $http.post("/delnotifications/"+user._id+"?notification="+notification, body).success(function(data){
       console.log("Notification deleted...");
       auth.saveToken(data.token);
 
@@ -247,7 +250,9 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
  };
 
   o.changeProductAvail = function(id) {
-    return $http.put('/products/changeAvail/' + id).success(function(data){
+    var body = {key: sessionStorage.getItem('loggedInKey') };
+    console.log(body.key +  " 1");
+    return $http.put('/products/changeAvail/' + id, body).success(function(data){
       //console.log(data); 
       $http.get('/products?cat=All').success(function(data){
         angular.copy(data, o.products);
@@ -255,7 +260,9 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
     });
   };
   o.delProduct = function(productID, userID) {
-    return $http.delete('/products/' + productID + '/' + userID).success(function(data){
+    var body = {key: sessionStorage.getItem('loggedInKey') };
+    console.log(body.key +  " 1");
+    return $http.post('/delproducts/'+productID+'/'+userID, body).success(function(data){
       console.log(data);
       $http.get('/products?cat=All').success(function(data){
         angular.copy(data, o.products);
@@ -311,13 +318,19 @@ app.factory('auth', ['$http', '$window', function($http, $window) {
   auth.register = function(user){
     return $http.post('/register', user).success(function(data){
       auth.saveToken(data.token);
-
+      var user = JSON.parse($window.atob(data.token.split('.')[1]));
+      sessionStorage.setItem('loggedInKey', user.loggedInAuthKey);
     });
   };
 
   auth.logIn = function(user){
+
     return $http.post('/getUser', user).success(function(data){
       auth.saveToken(data.token);
+      var user = JSON.parse($window.atob(data.token.split('.')[1]));
+      console.log(user);
+      sessionStorage.setItem('loggedInKey', user.loggedInAuthKey);
+      console.log(sessionStorage.getItem('loggedInKey'));
     });
   };
 
@@ -326,13 +339,15 @@ app.factory('auth', ['$http', '$window', function($http, $window) {
   };
 
   auth.editUser = function(user, id) {
-    return $http.put("/user/" + id, user).success(function(data) {
+    var body = { newuser: user, key: sessionStorage.getItem('loggedInKey') };
+    return $http.put("/user/" + id, body).success(function(data) {
       console.log(data);
       auth.saveToken(data.token);
     });
   };
   auth.verify =function(code, user){
-    return $http.put("/verify/" + user._id +"?code="+code).success(function(data) {
+    var body = {key: sessionStorage.getItem('loggedInKey') };
+    return $http.put("/verify/" + user._id +"?code="+code, body).success(function(data) {
       console.log(data);
       auth.saveToken(data.token);
     });

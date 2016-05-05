@@ -132,12 +132,19 @@ router.get('/matchNotifications', function(req, res, next) {
 });
 
 router.post('/products/:user', /*auth,*/ function(req, res, next) {
-	if(!req.body.title || req.body.title === '' || !req.body.description || req.body.description === '' || 
-      !req.body.price || req.body.price === '' || !req.body.category || req.body.category === '') { 
+	var product = new Product(req.body.product);
+	if(!product, !product.title || product.title === '' || !product.description || product.description === '' || 
+      !product.price || product.price === '' || !product.category || product.category === '') { 
 		return res.status(400).json({message: 'Please fill out all the required fields in the form'});
     }
-	var product = new Product(req.body);
+    console.log(req.query.key);
+	var product = new Product(req.body.product);
 	product.user = req.user;
+	console.log(req.body);
+	if (req.body.key != req.user.loggedInAuthKey) {
+		console.log("hello");
+		return res.status(400).json({message: 'You are not logged in as this user, you may be logged in on another machine, you must relogin if you wish to use this window'});
+	}
 	product.save(function(err, product) {
 		if(err){ console.log(err);
 			return next(err); }
@@ -168,25 +175,42 @@ router.get('/products/:product', function(req, res, next) {
 
 router.put('/products/:product', function(req, res, next) {
 	var editedProduct = req.product;
-	var user = req.user;
-	if (editedProduct.user != user) {
-		return res.status(400).json({message: 'You cannot edit Products that are not yours'});
-	}
-	editedProduct.title = req.body.title;
-	editedProduct.category = req.body.category;
-	editedProduct.description = req.body.description;
-	editedProduct.price = req.body.price;
-	editedProduct.pictures = req.body.pictures;
-	//editedProduct.tags = req.body.tags;
+	User.findById(editedProduct.userid).exec(function (err, user) {
+		if (err) {
+			return next(err);
+		}
+		console.log(user.net_id);
+		if (user.loggedInAuthKey != req.body.key) {
+			return res.status(400).json({message: 'You are not logged in as this user, you may be logged in on another machine, you must relogin if you wish to use this window'});
+		}
+		editedProduct.title = req.body.product.title;
+		editedProduct.category = req.body.product.category;
+		editedProduct.description = req.body.product.description;
+		editedProduct.price = req.body.product.price;
+		editedProduct.pictures = req.body.product.pictures;
+		//editedProduct.tags = req.body.tags;
 
-	editedProduct.save(function(err, product) {
-		if(err){ console.log(err);
-			return next(err); }
-		res.json(product);
+		editedProduct.save(function(err, product) {
+			if(err){ console.log(err);
+				return next(err); }
+			res.json(product);
+		});
 	});
 });
 
-router.delete('/products/:product/:user', function(req, res, next) {
+router.post('/delproducts/:product/:user', function(req, res, next) {
+	console.log(req.product.userid + " 1");
+	console.log(req.user.loggedInAuthKey);
+	console.log(typeof req.product.userid + "");
+	console.log(typeof req.user._id + "");
+	if ((req.product.userid + "") != (req.user._id + "")) {
+		return res.status(400).json({message: 'not user\'s product'});
+	}
+	console.log(req.body);
+	console.log(req.user.loggedInAuthKey);
+	if (req.user.loggedInAuthKey != req.body.key) {
+		return res.status(400).json({message: 'You are not logged in as this user, you may be logged in on another machine, you must relogin if you wish to use this window'});
+	}
 	Product.remove({
             _id: req.product._id
         }, function(err, product) {
@@ -216,12 +240,18 @@ router.delete('/products/:product/:user', function(req, res, next) {
 
 router.put('/products/changeAvail/:product', function(req, res, next) {
 	var editedProduct = req.product;
-	editedProduct.active = !editedProduct.active;
+	User.findById(editedProduct.userid).exec(function(err, user) {
 
-	editedProduct.save(function(err, product) {
-		if(err){ console.log(err);
-			return next(err); }
-		res.json(product);
+		if (user.loggedInAuthKey != req.body.key) {
+			return res.status(400).json({message: 'You are not logged in as this user, you may be logged in on another machine, you must relogin if you wish to use this window'});
+		}
+		editedProduct.active = !editedProduct.active;
+
+		editedProduct.save(function(err, product) {
+			if(err){ console.log(err);
+				return next(err); }
+			res.json(product);
+		});
 	});
 });
 
@@ -237,16 +267,21 @@ router.param('user', function(req, res, next, id) {
 
 router.put('/user/:user', function(req, res, next) {
 	var editedUser = req.user;
-	editedUser.firstName = req.body.firstName;
-	editedUser.lastName = req.body.lastName;
-	editedUser.email = req.body.email;
+	if (editedUser.loggedInAuthKey != req.body.key) {
+		return res.status(400).json({message: 'You are not logged in as this user, you may be logged in on another machine, you must relogin if you wish to use this window'});
+	}
+	var newuser = req.body.newuser;
+	editedUser.firstName = newuser.firstName;
+	editedUser.lastName = newuser.lastName;
+	editedUser.email = newuser.email;
 	console.log(editedUser);
 
+	var token = user.generateJWT(false);
 	editedUser.save(function (err, user){
 		if(err){ 
 			console.log(err);
 			return next(err); }
-		res.json({token: user.generateJWT()});
+		res.json({token: token});
 	});
 });
 
@@ -254,28 +289,34 @@ router.put('/setNotifications/:user', function(req, res, next) {
 	var editedUser = req.user;
 	console.log(editedUser);
 	console.log(req.query.notification);
+	if (req.user.loggedInAuthKey != req.body.key){
+		return res.status(400).json({message: 'You are not logged in as this user, you may be logged in on another machine, you must relogin if you wish to use this window'});
+	}
 	if(!req.query.notification || req.query.notification === '') { 
 		return res.status(400).json({message: 'Cannot set an empty alert'});
 	}
 	editedUser.notifications.push(req.query.notification);
 	editedUser.save(function(err, user) {
 			if (err) {return next(err);}
-			res.json({token: user.generateJWT()});
+			res.json({token: user.generateJWT(false)});
 	});
 });
 router.put('/verify/:user', function(req, res, next) {
 	var code = req.query.code;
 	var user = req.user;
+	if (user.loggedInAuthKey != req.body.key) {
+		return res.status(400).json({message: 'You are not logged in as this user, you may be logged in on another machine, you must relogin if you wish to use this window'});
+	}
 	if(!code || code < 1000 || code > 9999) { 
 		return res.status(400).json({message: 'Enter a valid code'});
 	}
 	var correctCode = user.code;
 	if (code == correctCode) {
 		user.verified = true;
-
+		var token = user.generateJWT(false);
 		user.save(function(err, user) {
 			if (err) {return next(err);}
-			res.json({token: user.generateJWT()});
+			res.json({token: token});
 	});
 
 	}
@@ -284,8 +325,13 @@ router.put('/verify/:user', function(req, res, next) {
 	}
 	
 });
-router.delete('/notifications/:user', function(req, res, next) {
+router.post('/delnotifications/:user', function(req, res, next) {
 	var curUser = req.user;
+	console.log(req.user.loggedInAuthKey);
+	console.log();
+	if (req.user.loggedInAuthKey != req.body.key){
+		return res.status(400).json({message: 'You are not logged in as this user, you may be logged in on another machine, you must relogin if you wish to use this window'});
+	}
 	for (var i = 0; i < curUser.notifications.length; i++) {
 		if (curUser.notifications[i] == req.query.notification) {
 			var del = curUser.notifications.splice(i,1);
@@ -295,16 +341,18 @@ router.delete('/notifications/:user', function(req, res, next) {
 
 	curUser.save(function(err, user) {
 		if (err) {return next(err);}
-		res.json({token: user.generateJWT()});
+		res.json({token: user.generateJWT(false)});
 	});
+
 });
 
 
 router.get('/users/:user', function(req, res, next) {
+	console.log(req.user.loggedInAuthKey);
 	req.user.populate('posted', function(err, user) {
 		if (err) { console.log(err);
 			return next(err);}
-		res.json({token: user.generateJWT()});
+		res.json({token: user.generateJWT(false)});
 	});
 });
 
@@ -350,12 +398,14 @@ router.post('/register', function(req, res, next){
 			}
 		});
 
-
+		var token = user.generateJWT(true);
 	  user.save(function (err){
 	    if(err){ 
 	    	console.log(err);
-	    	return next(err); }
-	    res.json({token: user.generateJWT()});
+	    	return next(err); 
+	    }
+	    console.log(user.loggedInAuthKey + " hello");
+	    res.json({token: token});
 	  });
 
   	}
@@ -371,7 +421,15 @@ router.post('/getUser', function(req, res, next){
 		if (err) {return next(err);}
 		if (user) {
 			console.log(user);
-			return res.json({token: user.generateJWT()});
+			var token = user.generateJWT(true);
+			user.save(function (err) {
+				if (err) {
+					console.log(err);
+					return next(err);
+				}
+				console.log(user.loggedInAuthKey + " hello");
+				return res.json({token: token});
+			});
 		} else {
 			return res.status(401).json(info);
 		}

@@ -13,6 +13,7 @@ var UserSchema = new mongoose.Schema({
   firstName: {type: String, required: true},
   lastName: {type: String, required: true},
   notifications: [{type: String, required:false}],
+  loggedInAuthKey: String,
   posted: [{type: mongoose.Schema.Types.ObjectId, ref: 'Product'}]
 });
 
@@ -26,10 +27,16 @@ UserSchema.methods.validPassword = function(password) {
 	return this.hash === hash;
 };
 
-UserSchema.methods.generateJWT = function(){
+UserSchema.methods.generateJWT = function(loggedIn){
 	var today = new Date();
 	var exp = new Date(today);
 	exp.setDate(today.getDate() + 90);
+	var logAuthKey = null;
+	if (loggedIn) {
+		this.loggedInAuthKey = crypto.randomBytes(16).toString('hex');
+		logAuthKey = this.loggedInAuthKey;
+	}
+	console.log(logAuthKey + "   ---1");
 	return jwt.sign({
 		_id: this._id,
 		net_id: this.net_id,
@@ -40,6 +47,7 @@ UserSchema.methods.generateJWT = function(){
 		notifications: this.notifications,
 		verified: this.verified,
 		exp: parseInt(exp.getTime() / 1000),
+		loggedInAuthKey: logAuthKey,
 	}, 'SECRET');
 };
 
