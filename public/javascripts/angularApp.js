@@ -316,26 +316,41 @@ app.factory('auth', ['$http', '$window', function($http, $window) {
   };
 
   auth.register = function(user){
+    var key = auth.newkey();
+    console.log(key);
+    user.key = key;
     return $http.post('/register', user).success(function(data){
       auth.saveToken(data.token);
       var user = JSON.parse($window.atob(data.token.split('.')[1]));
-      sessionStorage.setItem('loggedInKey', user.loggedInAuthKey);
+      sessionStorage.setItem('loggedInKey', key);
     });
   };
 
   auth.logIn = function(user){
-
+    //var crypto = require('crypto');
+    var key = auth.newkey();
+    console.log(key);
+    user.key = key;
     return $http.post('/getUser', user).success(function(data){
       auth.saveToken(data.token);
       var user = JSON.parse($window.atob(data.token.split('.')[1]));
-      console.log(user);
-      sessionStorage.setItem('loggedInKey', user.loggedInAuthKey);
+      sessionStorage.setItem('loggedInKey', key);
       console.log(sessionStorage.getItem('loggedInKey'));
     });
   };
 
   auth.logOut = function(){
     $window.localStorage.removeItem('tigermart-token');
+  };
+
+  auth.newkey = function() {
+    var chars = '0123456789abcdef';
+    var key = '';
+    for (var i = 0; i < 32; i++) {
+      var num = Math.floor(Math.random() * 16);
+      key += chars.substring(num, num + 1);
+    }
+    return key;
   };
 
   auth.editUser = function(user, id) {
@@ -778,6 +793,7 @@ function($scope, products, $state, auth){
   $scope.cat = "All";
 
   $scope.editUser = function() {
+    console.log("2");
     auth.editUser(user, user._id).error(function(error){
       $scope.error = error;
     }).success(function() { 
@@ -786,6 +802,7 @@ function($scope, products, $state, auth){
   };
 
   $scope.backbutton = function(){
+    console.log("3");
     $state.go('users', {id: $scope.user._id});
   };
 
@@ -797,6 +814,7 @@ function($scope, products, $state, auth){
   };
   $scope.logOut = function(){
     auth.logOut();
+    console.log("1");
     $state.go('welcome');
   };
 

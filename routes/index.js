@@ -273,10 +273,30 @@ router.put('/user/:user', function(req, res, next) {
 	var newuser = req.body.newuser;
 	editedUser.firstName = newuser.firstName;
 	editedUser.lastName = newuser.lastName;
-	editedUser.email = newuser.email;
-	console.log(editedUser);
+	
+	if (editedUser.email != newuser.email) {
+		editedUser.email = newuser.email;
+		editedUser.verified = false;
+		editedUser.code = Math.floor((Math.random() * 9000) + 1000);
 
-	var token = user.generateJWT(false);
+		var transporter = nodemailer.createTransport(smtpTransport(options));
+		var mailOptions = {
+			to : editedUser.email,
+			subject : "TigerMart Verification",
+			text : "Hey "+editedUser.firstName+",\n\nYour verification code is "+editedUser.code+". Once you enter this code again you'll be good to go. \n\nHappy shopping!"
+		}
+		transporter.sendMail(mailOptions, function(error, response){
+			if (error) {
+				console.log(error);
+				res.end("error");
+			} else {
+				console.log("Message sent: " + response.message);
+				res.end("sent");
+			}
+		});
+	}
+
+	var token = editedUser.generateJWT();
 	editedUser.save(function (err, user){
 		if(err){ 
 			console.log(err);
@@ -298,7 +318,7 @@ router.put('/setNotifications/:user', function(req, res, next) {
 	editedUser.notifications.push(req.query.notification);
 	editedUser.save(function(err, user) {
 			if (err) {return next(err);}
-			res.json({token: user.generateJWT(false)});
+			res.json({token: user.generateJWT()});
 	});
 });
 router.put('/verify/:user', function(req, res, next) {
@@ -313,7 +333,7 @@ router.put('/verify/:user', function(req, res, next) {
 	var correctCode = user.code;
 	if (code == correctCode) {
 		user.verified = true;
-		var token = user.generateJWT(false);
+		var token = user.generateJWT();
 		user.save(function(err, user) {
 			if (err) {return next(err);}
 			res.json({token: token});
@@ -341,7 +361,7 @@ router.post('/delnotifications/:user', function(req, res, next) {
 
 	curUser.save(function(err, user) {
 		if (err) {return next(err);}
-		res.json({token: user.generateJWT(false)});
+		res.json({token: user.generateJWT()});
 	});
 
 });
@@ -352,7 +372,7 @@ router.get('/users/:user', function(req, res, next) {
 	req.user.populate('posted', function(err, user) {
 		if (err) { console.log(err);
 			return next(err);}
-		res.json({token: user.generateJWT(false)});
+		res.json({token: user.generateJWT()});
 	});
 });
 
@@ -397,9 +417,9 @@ router.post('/register', function(req, res, next){
 				res.end("sent");
 			}
 		});
-
-		var token = user.generateJWT(true);
-	  user.save(function (err){
+		user.setKey(req.body.key);
+		var token = user.generateJWT();
+	  	user.save(function (err){
 	    if(err){ 
 	    	console.log(err);
 	    	return next(err); 
@@ -421,7 +441,8 @@ router.post('/getUser', function(req, res, next){
 		if (err) {return next(err);}
 		if (user) {
 			console.log(user);
-			var token = user.generateJWT(true);
+			var token = user.generateJWT();
+			user.setKey(req.body.key);
 			user.save(function (err) {
 				if (err) {
 					console.log(err);
