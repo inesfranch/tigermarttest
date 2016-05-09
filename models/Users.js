@@ -13,7 +13,6 @@ var UserSchema = new mongoose.Schema({
   firstName: {type: String, required: true},
   lastName: {type: String, required: true},
   notifications: [{type: String, required:false}],
-  loggedInAuthKey: String,
   posted: [{type: mongoose.Schema.Types.ObjectId, ref: 'Product'}]
 });
 
@@ -27,15 +26,10 @@ UserSchema.methods.validPassword = function(password) {
 	return this.hash === hash;
 };
 
-UserSchema.methods.setKey = function(loggedInAuthKey){
-	this.loggedInAuthKey = loggedInAuthKey
-};
-
 UserSchema.methods.generateJWT = function(){
 	var today = new Date();
 	var exp = new Date(today);
 	exp.setDate(today.getDate() + 90);
-
 	return jwt.sign({
 		_id: this._id,
 		net_id: this.net_id,

@@ -6,13 +6,11 @@ var ProductSchema = new mongoose.Schema({
   description: String,
   price: {type: Number, min: 0, required: true},
   pictures: {type: String},
-  //tags: [{type: String}],
   date: {type: Date, default: Date.now, required: true},
   month: {type: String, required: true},
   day: {type: String, required: true},
   year: {type: String, required: true},
   userid: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  //net_id: {type: String, required: true}, // NEED TO CHANGE NET_ID DEFAULT!
   active: {type: Boolean, default: true, required: true}
 });
 
