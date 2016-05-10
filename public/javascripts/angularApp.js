@@ -45,7 +45,13 @@ app.config([
       templateUrl: '/user.html',
       controller: 'UsersCtrl',
       resolve: {
-        user_id: ['$stateParams', 'products', function($stateParams, products) {
+        user_id: ['$stateParams', '$state', 'products', 'auth', function($stateParams, $state, products, auth) {
+          console.log($stateParams.id + ", "+ auth.currentUser()._id);
+          if (($stateParams.id + "") != (auth.currentUser()._id +"")) {
+            console.log("no");
+            $state.go('usersprofile', {id: $stateParams.id}); 
+          }
+          console.log("yup");
           return products.getUserInfo($stateParams.id);
         }]
       }
@@ -97,7 +103,7 @@ app.config([
     });
     $stateProvider
     .state('editUser', {
-      url: '/editUser/{id}',
+      url: '/editUser',
       templateUrl: '/editUser.html',
       controller: 'EditUserCtrl',
     });
@@ -476,6 +482,9 @@ function($scope, products, product, auth, $state){
   if (!auth.isLoggedIn()) {$state.go('welcome');}
   if (!auth.isVerified()) {$state.go('verify');}
   $scope.user = auth.currentUser();
+  if (($scope.user._id) != (product.userid._id)) {
+    $state.go ('products', {id: product._id});
+  }
   $scope.cat = "All";
   console.log($scope.user);
   console.log(product);
