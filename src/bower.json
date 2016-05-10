@@ -1,0 +1,17 @@
+{
+  "name": "tigermart",
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "https://github.com/inesfranch/tigermarttest",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "ng-img-crop": "ngImgCrop#^0.3.2"
+  }
+}

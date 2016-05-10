@@ -1,0 +1,70 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-image: url("/images/02.jpg");
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+body.home-page{
+  background-image: url("/images/food_drinks.jpg");
+}
+
+body.welcome{
+  background-image: url("/images/wood2.jpg");
+}
+
+a {
+  color: #000000;
+}
+
+h1 {
+  color: white;
+}
+
+h2 {
+  color: white;
+}
+
+h3 {
+  color: white;
+}
+
+p {
+  font-size: 16px;
+}
+
+label {
+  color: white;
+}
+
+.well{
+  background-color: rgba(255, 255, 255, .7);
+}
+
+.panel{
+  background-color: rgba(255, 255, 255, .7);
+}
+
+.cropArea {
+    background: #E4E4E4;
+    overflow: hidden;
+    width:500px;
+    height:350px;
+}
+
+.carousel-inner .active.left { left: -33%; }
+.carousel-inner .next        { left:  33%; }
+.carousel-inner .prev        { left: -33%; }
+.carousel-control.left,.carousel-control.right {background-image:none;}
+
+.form-group.required .control-label:after {
+  content:"*";
+  color:red;
+}
+
+.vcenter {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+}
