@@ -28,23 +28,10 @@
 
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container-fluid">
-      <!--
-        <ul class="nav navbar-nav">
-          <li><a href="#/home/">Home</a></li> -->
         
         <div class="navbar-form navbar-left btn-group" role="group" aria-label="...">
           <a class="btn btn-info navbar-btn" href="#/home/">Home</a>
         </div>
-        
-        <!-- Category dropdown button 
-        <div class="navbar-form navbar-left" id="bs-example-navbar-collapse-1">
-          <ul class="nav navbar-left">
-            <div class="navbar-form">
-               <select name="cat" class="form-control" id="mySelect" ng-options="option.name for option in data.availableOptions track by option.id" ng-model="data.selectedOption" ng-change="filterCat()">
-                </select>
-            </div>
-          </ul>
-        </div> -->
 
         <!-- Search bar and search button -->
         <form ng-submit="search()" class="navbar-form navbar-left" role="search">
@@ -80,14 +67,6 @@
             <option value=date>Date: old to new</option>
           </select>
         </div>
-
-        
-        <!-- Button-group -->
-        <!--
-          <li><a href="#/users/{{user._id}}">My Profile</a></li>
-          <li><a href="#/addproduct">Add Product</a>
-          <li><a href="" ng-click="logOut()">Log Out</a>
-        </ul> -->
 
         
         <div class="navbar-form navbar-right btn-group" role="group" aria-label="...">
@@ -294,28 +273,6 @@
             </div>
           </center>
         </div>
-
-        <!-- <div class="form-group">
-          <h5>Upload picture(s)</h5>
-          <input type="file" class="form-control" ng-model="pictures" name="pic" accept="image/*"></input>
-        </div>
-
-        <div class="form-group">
-          <input type="file" class="form-control" data-ng-file-select="onFileSelect($files)" accept="image/png, image/jpeg">
-          <span data-ng-if="uploadInProgress">Upload progress: {{ uploadProgress }}</span>
-          <img data-ng-src="uploadedImage" data-ng-if="uploadedImage">
-        </div> -->
-
-         <!--<div class="form-group">
-          <input type="text" class="form-control" style="margin-top: 20px" placeholder="Add Tags" ng-model="tags"></input>
-        </div>-->
-
-        <!--<div class="form-group" style="margin-top: 20px">
-          <label class=" control-label">Tags</label>
-          <h5>Create tags (separate by Enter key)</h5>
-          <input name="tags" id="mySingleField" value="Apple, Orange" disabled="true" ng-model="tags">
-          <ul class="form-control" id="singleFieldTags"></ul>
-        </div>-->
         
         <div class="center-block">
           <button ng-click="addProduct(croppedDataUrl1)" style="margin-top: 10px" class="text-center btn btn-info center-block">Post product</button>
@@ -413,9 +370,6 @@
             <p style="margin: 8px">
               Category: {{product.category}}
             </p>
-            <!--<p style="font-size: 16px">
-              Tags: {{product.tags}}
-            </p>-->
             <p style="margin: 8px">
               Posted by: <a ng-click=loadUserPage(product.userid._id) style="text-decoration: underline">{{product.userid.firstName}} {{product.userid.lastName}}</a>
             </p>
@@ -561,11 +515,6 @@
             </div>
           </center>
         </div>
-
-         <!--<div class="form-group">
-          <label>Tags:</label>
-          <input type="text" class="form-control" style="margin-top: 20px" ng-model="tags"></input>
-        </div>-->
 
         <div class="center-block">
           <button ng-click="editProduct(croppedDataUrl1)" class="text-center btn btn-info center-block">Save product</button>
@@ -939,7 +888,7 @@
           ng-model="user.lastName"></input>
         </div>
         <div class="center-block">
-          <button type="submit" class="text-center btn btn-info center-block">Save Changes</button>
+         <button type="submit" class="text-center btn btn-info center-block">Save Changes</button>
         </div>
       </form>
     </script>

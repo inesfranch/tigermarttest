@@ -35,7 +35,6 @@ UserSchema.methods.generateJWT = function(){
 	var today = new Date();
 	var exp = new Date(today);
 	exp.setDate(today.getDate() + 90);
-
 	return jwt.sign({
 		_id: this._id,
 		net_id: this.net_id,

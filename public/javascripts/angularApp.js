@@ -66,11 +66,6 @@ app.config([
       url: '/verify/{id}',
       templateUrl: '/verify.html',
       controller: 'VerifyCtrl',
-      /*resolve: {
-        user: ['$stateParams', 'products', function($stateParams, products) {
-          return products.getUserInfo($stateParams.id);
-        }]
-      }*/
     });
     $stateProvider
     .state('form', {
@@ -198,7 +193,7 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
   o.getOtherUserInfo = function(id) {
     return $http.get("/users/" + id).then(function(res){
       var token = res.data.token;
-      //window.localStorage['tigermart-token2'] = token;
+      window.localStorage['tigermart-token2'] = token;
       var user2 = JSON.parse($window.atob(token.split('.')[1]));
       sessionStorage.setItem('user2', JSON.stringify(user2));
       console.log(user2);
@@ -341,7 +336,6 @@ app.factory('auth', ['$http', '$window', function($http, $window) {
 
   auth.logOut = function(){
     $window.localStorage.removeItem('tigermart-token');
-    sessionStorage.clear();
   };
 
   auth.newkey = function() {
@@ -407,17 +401,6 @@ function($scope, $state, products, auth, $stateParams){
     selectedOption: {id: '1', name: 'All', value: ''}
   };
 
-  /*if(!sessionStorage.getItem('user')){
-    $state.go('welcome');
-  }*/
-
-  //$scope.user = JSON.parse(sessionStorage.getItem('user'));
-
-  /*$scope.logOut = function(){
-    sessionStorage.removeItem('user');
-    $state.go('welcome');
-  };*/
-
   $scope.search = function(){
     console.log(auth.currentUser());
     if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
@@ -474,11 +457,7 @@ function($scope, products, product, $state, auth){
     $state.go('home', {category: $scope.cat, query: $scope.q});
     console.log("x");
   };
-  /*$scope.linkToCat = function(cat){
-    products.getAll(cat).error(function(error){
-      $scope.error = error;
-    })
-  };*/
+
   $scope.logOut = function(){
     auth.logOut();
     $state.go('welcome');
@@ -508,9 +487,7 @@ function($scope, products, product, auth, $state){
     $scope.category = newproduct.category;
     $scope.description = newproduct.description;
     $scope.price = newproduct.price;
-    //$scope.tags = product.tags;
     $scope.pictures = newproduct.pictures;
-    //     pictures: dataUrl1.split("base64,")[1],
   }
   else {
     $scope.userid = product.userid;
@@ -518,9 +495,7 @@ function($scope, products, product, auth, $state){
     $scope.category = product.category;
     $scope.description = product.description;
     $scope.price = product.price;
-    //$scope.tags = product.tags;
     $scope.pictures = product.pictures;
-    //     pictures: dataUrl1.split("base64,")[1],
   }
   
 $scope.search = function(){
@@ -545,7 +520,6 @@ $scope.editProduct = function(dataUrl1){
       description: $scope.description,
       price: $scope.price,
       pictures: picURL,
-      //tags: $scope.tags,
       date: '',
       month: '',
       day: '',
@@ -560,7 +534,6 @@ $scope.editProduct = function(dataUrl1){
       $scope.description = '';
       $scope.price = '';
       $scope.picFile1 = '';
-      //$scope.tags = '';
       $state.go('users', { id: $scope.user._id});
 
     });
@@ -585,36 +558,22 @@ app.controller('UsersCtrl', [
 
 function($scope, products, $state, auth){
 
-  //$scope.product = product;
   $scope.cat = "All";
   
   if (!auth.isLoggedIn()) {$state.go('welcome');}
   if (!auth.isVerified()) {$state.go('verify');}
   $scope.user = auth.currentUser();
   user = $scope.user;
-  //console.log($scope.user);
-  
-  //console.log(user);
 
   if($state.params.id != $scope.user._id) {
     $state.go('home', {category: "All", query: ""});
   } 
 
   $scope.search = function(){
-  //console.log(auth.currentUser());
   if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
   $state.go('home', {category: $scope.cat, query: $scope.q});
-  //products.search($scope.q);
   };
 
-    /* $scope.search = function(){
-    console.log(auth.currentUser());
-    if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
-    products.search($scope.cat, $scope.q);
-  }; */
-
-  //console.log(user.posted[0].title);
-  //sessionStorage.clear();
   var statepref = JSON.parse(sessionStorage.getItem('state'));
   var categorypref = JSON.parse(sessionStorage.getItem('category'));
   var sortpref = JSON.parse(sessionStorage.getItem('sortorder'));
@@ -637,7 +596,7 @@ function($scope, products, $state, auth){
     ],
     selectedOption: {id: '1', name: 'All', value: ''}
   };
-  //if (!statepref) {
+
   $scope.data2 = { // for the user filter
     availableOptions: [
       {id: '1', name: 'Active Posts', value: true},
@@ -726,10 +685,6 @@ function($scope, products, $state, auth, user2){
 
   if (!auth.isLoggedIn()) {$state.go('welcome');}
   if (!auth.isVerified()) {$state.go('verify');}
-  /*$scope.user = auth.currentUser();
-  user = $scope.user;
-
-  console.log(user.posted[0].title);*/
 
   $scope.data = {
     availableOptions: [
@@ -786,7 +741,6 @@ app.controller('EditUserCtrl', [
 'auth',
 
 function($scope, products, $state, auth){
-  //$scope.product = product;
   if (!auth.isLoggedIn()) {$state.go('welcome');}
   if (!auth.isVerified()) {$state.go('verify');}
   $scope.user = auth.currentUser();
@@ -794,7 +748,6 @@ function($scope, products, $state, auth){
   $scope.cat = "All";
 
   $scope.editUser = function() {
-    console.log("2");
     auth.editUser(user, user._id).error(function(error){
       $scope.error = error;
     }).success(function() { 
@@ -803,7 +756,6 @@ function($scope, products, $state, auth){
   };
 
   $scope.backbutton = function(){
-    console.log("3");
     $state.go('users', {id: $scope.user._id});
   };
 
@@ -815,7 +767,6 @@ function($scope, products, $state, auth){
   };
   $scope.logOut = function(){
     auth.logOut();
-    console.log("1");
     $state.go('welcome');
   };
 
@@ -827,9 +778,8 @@ app.controller('SetNotificationsCtrl', [
   '$state',
   'auth',
   function($scope, products, $state, auth){
-    //$scope.product = product;
     if (!auth.isLoggedIn()) {$state.go('welcome');}
-  if (!auth.isVerified()) {$state.go('verify');}
+    if (!auth.isVerified()) {$state.go('verify');}
     $scope.user = auth.currentUser();
     $scope.cat = "All";
 
@@ -840,8 +790,8 @@ app.controller('SetNotificationsCtrl', [
 
     $scope.deleteNotification = function(notification) {
       products.delNotification(notification, $scope.user).then(function(){
-      $state.go($state.current, {}, {reload:true});
-    });
+        $state.go($state.current, {}, {reload:true});
+      });
     };
 
     $scope.setNotifications = function(){
@@ -893,20 +843,9 @@ function($scope, products, $state, auth){
     $scope.category = newproduct.category;
     $scope.description = newproduct.description;
     $scope.price = newproduct.price;
-    //$scope.tags = product.tags;
     $scope.pictures = newproduct.pictures;
-    //     pictures: dataUrl1.split("base64,")[1],
   }
-  /*else {
-    $scope.userid = product.userid;
-    $scope.title = product.title;
-    $scope.category = product.category;
-    $scope.description = product.description;
-    $scope.price = product.price;
-    //$scope.tags = product.tags;
-    $scope.pictures = product.pictures;
-    //     pictures: dataUrl1.split("base64,")[1],
-  }*/
+
   $scope.search = function(){
     console.log(auth.currentUser());
     if(!$scope.cat || $scope.cat === '') {$scope.cat = "All";}
@@ -922,8 +861,6 @@ function($scope, products, $state, auth){
     var picURL = dataUrl1.split("base64,")[1];
     if (!$scope.picFile1)
       picURL = "";
-
-
 
     var newProd = {
       title: $scope.title,

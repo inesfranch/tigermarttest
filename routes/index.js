@@ -23,14 +23,6 @@ var options = {
 var jwt = require('express-jwt');
 var auth = jwt({secret: 'SECRET', userProperty: 'payload'});
 
-
-/*router.get('/products', function(req, res, next) {
-	Product.find(function(err, products){
-		if(err){return next(err);}
-		res.json(products);
-	});
-});*/
-
 router.get('/send', function(req,res, next){
 	var transporter = nodemailer.createTransport(smtpTransport(options));
 	var mailOptions = {
@@ -55,22 +47,6 @@ router.get('/products', function(req, res, next) {
 		if(err){return next(err);}
 		res.json(products);
 	});
-	/*var cat = req.query.cat;
-	if (cat == "All") {
-		Product.find(function(err, products){
-			if(err){return next(err);}
-			res.json(products);
-		});
-	}
-	else {
-		var qu = Product.find({
-			'category': cat
-		});
-		qu.exec(function(err, products){
-			if(err){return next(err);}
-			res.json(products);
-		});
-	}*/
 
 });
 
@@ -95,13 +71,6 @@ router.get('/productscat', function(req, res, next) {
 
 router.get('/search', function(req, res, next) {
 	var q = req.query.q;
-	/*var qu = Product.find({'$or': [
-			{'title': {$regex: q, $options: "i"}},
-			{'description': {$regex: q, $options: "i"}}]});
-	qu.exec(function(err, products) {
-		if(err){return next(err);}
-		res.json(products);
-	}); */
 	var cat = req.query.cat;
 	if (cat == "All") {
 		var qu = Product.find({'$or': [
@@ -145,6 +114,9 @@ router.get('/matchNotifications', function(req, res, next) {
 
 router.post('/products/:user', /*auth,*/ function(req, res, next) {
 	var product = new Product(req.body.product);
+	if (req.user.loggedInAuthKey != req.body.key){
+		return res.status(400).json({message: 'You are not logged in as this user, you may be logged in on another machine, you must relogin if you wish to use this window'});
+	}
 	if(!req.user.verified){
 		return res.status(400).json({message: 'user is not verified'});
 	}
@@ -153,13 +125,7 @@ router.post('/products/:user', /*auth,*/ function(req, res, next) {
 		return res.status(400).json({message: 'Please fill out all the required fields in the form'});
     }
     //console.log(req.query.key);
-	var product = new Product(req.body.product);
 	product.user = req.user;
-	console.log(req.body);
-	if (req.body.key != req.user.loggedInAuthKey) {
-		console.log("hello");
-		return res.status(400).json({message: 'You are not logged in as this user, you may be logged in on another machine, you must relogin if you wish to use this window'});
-	}
 	product.save(function(err, product) {
 		if(err){ console.log(err);
 			return next(err); }
@@ -347,19 +313,16 @@ router.put('/setNotifications/:user', function(req, res, next) {
 router.put('/verify/:user', function(req, res, next) {
 	var code = req.query.code;
 	var user = req.user;
-	if (user.loggedInAuthKey != req.body.key) {
-		return res.status(400).json({message: 'You are not logged in as this user, you may be logged in on another machine, you must relogin if you wish to use this window'});
-	}
 	if(!code || code < 1000 || code > 9999) { 
 		return res.status(400).json({message: 'Enter a valid code'});
 	}
 	var correctCode = user.code;
 	if (code == correctCode) {
 		user.verified = true;
-		var token = user.generateJWT();
+
 		user.save(function(err, user) {
 			if (err) {return next(err);}
-			res.json({token: token});
+			res.json({token: user.generateJWT()});
 	});
 
 	}
@@ -386,12 +349,10 @@ router.post('/delnotifications/:user', function(req, res, next) {
 		if (err) {return next(err);}
 		res.json({token: user.generateJWT()});
 	});
-
 });
 
 
 router.get('/users/:user', function(req, res, next) {
-	console.log(req.user.loggedInAuthKey);
 	req.user.populate('posted', function(err, user) {
 		if (err) { console.log(err);
 			return next(err);}
@@ -462,7 +423,7 @@ router.post('/getUser', function(req, res, next){
 
 	passport.authenticate('local', function(err, user, info){
 		if (err) {return next(err);}
-		if (user) {
+		if (user) {
 			console.log(user);
 			var token = user.generateJWT();
 			user.setKey(req.body.key);
@@ -478,16 +439,6 @@ router.post('/getUser', function(req, res, next){
 			return res.status(401).json(info);
 		}
 	})(req, res, next);
-
-	/*var net_id = req.body.net_id;
-	var uqu = User.findOne({'net_id': net_id});
-	uqu.exec(function(err, user){
-		if (err) {
-			return next(err);
-		}
-		if(!user) {return res.status(400).json({message: 'Unregistered NetID, plase create an account'});}
-		res.json(user);
-	});*/
 });
 
 router.get('/addproduct', function(req, res) {
@@ -498,33 +449,4 @@ router.get('/welcome', function(req, res) {
   	res.json(req);
 });
 
-/*app.app.get('/splash', function(req, res){
-  res.render('splash', {name: req.session.cas_user});
-});
-
-app.app.get('/logout', app.cas.logout);
-
-app.app.get('/login', app.cas.bouncer, function(req, res){
-  res.redirect('/');
-});
-
-app.app.get('/', app.cas.blocker, function(req, res){
-  res.render('index', {name: req.session.cas_user});
-});*/
-
-/*exports.index = function(req, res){
-	res.render('index', {name: req.session.cas_user});
-};
-
-exports.splash = function(req, res){
-	res.render('splash', {name: req.session.cas_user});
-};
-
-exports.login = function(req, res){
-	res.redirect('/');
-};*/
-
-
 module.exports = router;
-
-
