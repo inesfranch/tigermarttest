@@ -125,19 +125,34 @@ router.get('/search', function(req, res, next) {
 
 router.get('/matchNotifications', function(req, res, next) {
 	var qu = User.find({});
-		qu.exec(function(err, users) {
-			if(err){return next(err);}
-			res.json(users);
-		});
+	qu.exec(function(err, users) {
+		if(err){return next(err);}
+		var u = [];
+		for (var i = 0; i < users.length; i++) {
+			var user = users[i];
+			var unew = {
+				'firstname': user.firstName,
+				'lastName': user.lastName,
+				'notifications': user.notifications,
+				'email': user.email,
+			}
+			u.push(unew);
+		}
+		console.log(u[10]);
+		res.json(users);
+	});
 });
 
 router.post('/products/:user', /*auth,*/ function(req, res, next) {
 	var product = new Product(req.body.product);
+	if(!req.user.verified){
+		return res.status(400).json({message: 'user is not verified'});
+	}
 	if(!product, !product.title || product.title === '' || !product.description || product.description === '' || 
       !product.price || product.price === '' || !product.category || product.category === '') { 
 		return res.status(400).json({message: 'Please fill out all the required fields in the form'});
     }
-    console.log(req.query.key);
+    //console.log(req.query.key);
 	var product = new Product(req.body.product);
 	product.user = req.user;
 	console.log(req.body);
@@ -179,6 +194,9 @@ router.put('/products/:product', function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
+		if(!user.verified){
+			return res.status(400).json({message: 'user is not verified'});
+		}
 		console.log(user.net_id);
 		if (user.loggedInAuthKey != req.body.key) {
 			return res.status(400).json({message: 'You are not logged in as this user, you may be logged in on another machine, you must relogin if you wish to use this window'});
@@ -205,6 +223,9 @@ router.post('/delproducts/:product/:user', function(req, res, next) {
 	console.log(typeof req.user._id + "");
 	if ((req.product.userid + "") != (req.user._id + "")) {
 		return res.status(400).json({message: 'not user\'s product'});
+	}
+	if(!req.user.verified){
+		return res.status(400).json({message: 'user is not verified'});
 	}
 	console.log(req.body);
 	console.log(req.user.loggedInAuthKey);
@@ -241,7 +262,9 @@ router.post('/delproducts/:product/:user', function(req, res, next) {
 router.put('/products/changeAvail/:product', function(req, res, next) {
 	var editedProduct = req.product;
 	User.findById(editedProduct.userid).exec(function(err, user) {
-
+		if(!user.verified){
+			return res.status(400).json({message: 'user is not verified'});
+		}
 		if (user.loggedInAuthKey != req.body.key) {
 			return res.status(400).json({message: 'You are not logged in as this user, you may be logged in on another machine, you must relogin if you wish to use this window'});
 		}

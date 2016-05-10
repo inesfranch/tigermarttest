@@ -198,7 +198,7 @@ app.factory('products', ['$http', 'auth', '$window', function($http, auth, $wind
   o.getOtherUserInfo = function(id) {
     return $http.get("/users/" + id).then(function(res){
       var token = res.data.token;
-      window.localStorage['tigermart-token2'] = token;
+      //window.localStorage['tigermart-token2'] = token;
       var user2 = JSON.parse($window.atob(token.split('.')[1]));
       sessionStorage.setItem('user2', JSON.stringify(user2));
       console.log(user2);
@@ -341,6 +341,7 @@ app.factory('auth', ['$http', '$window', function($http, $window) {
 
   auth.logOut = function(){
     $window.localStorage.removeItem('tigermart-token');
+    sessionStorage.clear();
   };
 
   auth.newkey = function() {
