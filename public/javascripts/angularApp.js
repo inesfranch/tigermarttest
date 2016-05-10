@@ -528,7 +528,9 @@ $scope.editProduct = function(dataUrl1){
       active: true
     };
     sessionStorage.setItem('newProd', JSON.stringify(newProd));
-    products.editProduct(newProd, product._id, $scope.user).then(function() {
+    products.editProduct(newProd, product._id, $scope.user).error(function(error) {
+        $scope.error = error;
+      }).then(function() {
       $scope.title = '';
       $scope.category = '';
       $scope.description = '';
@@ -645,7 +647,9 @@ function($scope, products, $state, auth){
     sessionStorage.setItem('state', JSON.stringify($scope.data2.selectedOption));
     sessionStorage.setItem('category', JSON.stringify($scope.data3.selectedOption));
     sessionStorage.setItem('sortorder', JSON.stringify($scope.data4.selectedOption));
-    products.changeProductAvail(id).then(function(){
+    products.changeProductAvail(id).error(function(error) {
+        $scope.error = error;
+    }).then(function(){
       $state.go($state.current, {}, {reload: true}); //second parameter is for $stateParams
     });
   };
@@ -656,7 +660,9 @@ function($scope, products, $state, auth){
     sessionStorage.setItem('sortorder', JSON.stringify($scope.data4.selectedOption));
     var c = confirm('Are you sure you want to delete this product? This action is irreversible');
     if (c == true) {
-      products.delProduct(productID, userID).then(function(){
+      products.delProduct(productID, userID).error(function(error) {
+        $scope.error = error;
+      }).then(function(){
         $state.go($state.current, {}, {reload: true});
       });
     } else {
@@ -789,7 +795,9 @@ app.controller('SetNotificationsCtrl', [
     }
 
     $scope.deleteNotification = function(notification) {
-      products.delNotification(notification, $scope.user).then(function(){
+      products.delNotification(notification, $scope.user).error(function(error) {
+        $scope.error = error;
+      }).then(function(){
         $state.go($state.current, {}, {reload:true});
       });
     };

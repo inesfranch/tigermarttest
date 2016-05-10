@@ -457,6 +457,13 @@
       </nav>
 
       <form style="margin-top: 90px;" class="col-md-6 col-md-offset-3">
+        <div ng-show="error" class="alert alert-danger row">
+          <span>
+            <center>
+              {{ error.message }}
+            </center>
+          </span>
+        </div>
         <h2 class="text-center">Edit your product</h2>
         <div class="form-group">
           <label>Title:</label>
@@ -599,7 +606,13 @@
       <div class="text-center">
         <h2>{{user.firstName}} {{user.lastName}}</h2>
       </div>
-
+      <div ng-show="error" class="alert alert-danger row">
+          <span>
+            <center>
+              {{ error.message }}
+            </center>
+          </span>
+      </div>
       <div class="container col-md-12" style="margin-top: 20px"> <!-- Code modified from: http://bootsnipp.com/snippets/49An-->
 
         <div class="well well-sm col-md-12">
